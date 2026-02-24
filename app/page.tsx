@@ -1,66 +1,126 @@
+import CategoryCard from "@/components/CategoryCard";
+import PaintingCard from "@/components/PaintingCard";
 import Image from "next/image";
 
 export default function Home() {
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans">
-			<main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+		<div className="flex flex-col bg-white">
+			<section className="flex flex-col md:flex-row items-center justify-between px-5 lg:px-20 gap-x-7">
+				<div className="flex w-full md:w-1/2 flex-col justify-start pt-14 md:pt-28 order-2 md:order-1">
+					<span className="font-bold text-[#0F1724] text-4xl md:text-5xl">
+						Discover & Collect Extraordinary Art
+					</span>
+					<span className="text-[#98A0AB] text-xl pt-4 md:pt-3">
+						The premier marketplace for digital art, paintings,
+						photography, and portraits. Connect with creators
+						worldwide.
+					</span>
+
+					<div className="flex flex-row w-full gap-x-3 pt-9 md:pt-13 items-center">
+						<a
+							href="/explore"
+							className="px-4 py-2 rounded-lg bg-[#0061f2] text-white font-semibold hover:bg-blue-700 
+                            transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
+						>
+							Start Exploring
+						</a>
+						<a
+							href="/seller"
+							download
+							className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 font-medium hover:bg-gray-100 
+                            transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
+						>
+							Sell Your Art
+						</a>
+					</div>
+				</div>
+				<div
+					className="flex w-full md:w-1/2 flex-col justify-center items-center 
+                    md:items-end pt-23 order-1 md:order-2"
+				>
+					<Image
+						className="rounded-full md:rounded-xl w-full aspect-square md:aspect-auto object-cover"
+						src="/images/bgHome.jpg"
+						alt="My pic"
+						width={1184}
+						height={864}
+						priority
+					/>
+				</div>
+			</section>
+			<section className="flex flex-col justify-center px-5 lg:px-20 mt-15 md:mt-36">
+				<span className="font-bold text-[#0F1724] text-3xl">
+					Browse by Category
+				</span>
+				<span className="text-[#98A0AB] text-lg mt-2 ">
+					Explore our curated collection of digital art, paintings,
+					photography, and portraits.
+				</span>
+				<div className="flex flex-wrap gap-y-3 w-full mt-10 justify-between">
+					<CategoryCard
+						uri="/images/digCat.jpg"
+						category="Digital Art"
+						path="/digital-art"
+					/>
+					<CategoryCard
+						uri="/images/paiCat.jpg"
+						category="Paintings"
+						path="/paintings"
+					/>
+					<CategoryCard
+						uri="/images/phoCat.jpg"
+						category="Photography"
+						path="/photography"
+					/>
+					<CategoryCard
+						uri="/images/selCat.jpg"
+						category="Self Portrait"
+						path="/portrait"
+					/>
+				</div>
+			</section>
+			<section className="flex flex-col justify-center px-5 lg:px-20 mt-15 md:mt-36">
+				<span className="font-bold text-[#0F1724] text-3xl">
+					Featured Artwork
+				</span>
+				<span className="text-[#98A0AB] text-lg mt-2 ">
+					Hand-picked selection of exceptional digital art, paintings
+					and photography.
+				</span>
+				<div className="flex flex-wrap gap-y-3 w-full mt-10 justify-between">
+					<PaintingCard index={0} />
+					<PaintingCard index={0} />
+					<PaintingCard index={0} />
+					<PaintingCard index={0} />
+				</div>
+			</section>
+			<section className="flex flex-col sm:flex-row justify-center gap-5 py-14 px-5 lg:px-20 mt-15 md:mt-36 mb-20 bg-[#f4f7ff]">
+				<div className="flex flex-col justify-center items-start gap-y-3 order-2 sm:order-1">
+					<span className="font-bold text-[#0F1724] text-3xl">
+						Ready to sell your art?
+					</span>
+					<span className="text-[#98A0AB] text-lg mt-2 ">
+						Join thousands of artists selling digital and physical
+						artworks. Simple setup, secure payments, and a global
+						audience.
+					</span>
+					<a
+						href="/seller"
+						className="px-4 py-2 rounded-lg bg-[#0061f2] text-white font-medium hover:bg-blue-700 
+                            transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
+					>
+						Create Seller Account
+					</a>
+				</div>
 				<Image
-					className="dark:invert"
-					src="/images/icon.png"
-					alt="Next.js logo"
-					width={100}
-					height={20}
+					className="rounded-lg w-full sm:w-1/3 aspect-4/2 sm:aspect-4/3 object-cover self-center sm:self-center order-1 sm:order-2"
+					src="/images/phoCat.jpg"
+					alt="My pic"
+					width={1184}
+					height={864}
 					priority
 				/>
-				<div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-					<h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-						To get started, edit the page.tsx file.
-					</h1>
-					<p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-						Looking for a starting point or more instructions? Head
-						over to{" "}
-						<a
-							href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-							className="font-medium text-zinc-950 dark:text-zinc-50"
-						>
-							Templates
-						</a>{" "}
-						or the{" "}
-						<a
-							href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-							className="font-medium text-zinc-950 dark:text-zinc-50"
-						>
-							Learning
-						</a>{" "}
-						center.
-					</p>
-				</div>
-				<div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-					<a
-						className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-						href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<Image
-							className="dark:invert"
-							src="/vercel.svg"
-							alt="Vercel logomark"
-							width={16}
-							height={16}
-						/>
-						Deploy Now
-					</a>
-					<a
-						className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-						href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Documentation
-					</a>
-				</div>
-			</main>
+			</section>
 		</div>
 	);
 }

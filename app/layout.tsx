@@ -1,6 +1,7 @@
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import type { Metadata } from "next";
+import { PaintingProvider } from "./_context/PaintingConext";
 import { fontInter } from "./_lib/fonts";
 import "./globals.css";
 
@@ -18,9 +19,11 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${fontInter.className} bg-white`}>
-				<Header />
-				{children}
-				<Footer />
+				<PaintingProvider>
+					<Header />
+					{children}
+					<Footer />
+				</PaintingProvider>
 			</body>
 		</html>
 	);

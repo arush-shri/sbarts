@@ -38,7 +38,7 @@ export default function Header(): ReactElement {
 				show ? "translate-y-0" : "-translate-y-full"
 			}`}
 		>
-			<div className="flex flex-col px-6 md:px-20 py-3 items-center bg-white border-b-1 border-[#0000001A]">
+			<div className="flex flex-col px-6 lg:px-20 py-2 items-center bg-white border-b-1 border-[#0000001A]">
 				<div className="flex flex-row justify-between items-center w-full">
 					<Link
 						href="/"
@@ -55,7 +55,7 @@ export default function Header(): ReactElement {
 							SBArts
 						</span>
 					</Link>
-					<div className="hidden sm:flex items-center gap-3 w-1/2 lg:w-1/3 rounded-xl bg-[#f4f7ff] px-5 py-3">
+					<div className="hidden sm:flex items-center gap-3 w-1/2 lg:w-1/3 rounded-xl bg-[#f4f7ff] px-5 py-2.5">
 						<Search className="w-6 h-6 text-gray-500" />
 						<input
 							type="text"
