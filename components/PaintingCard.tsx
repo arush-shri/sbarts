@@ -7,14 +7,18 @@ import { ReactElement } from "react";
 
 export default function PaintingCard({
 	index,
+	extraStyle,
 }: {
 	index: number;
+	extraStyle?: string;
 }): ReactElement {
 	const paintingsData: PaintingType[] = usePaintingContext();
 	const painting: PaintingType = paintingsData[index];
 
 	return (
-		<div className="flex flex-col sm:w-[20dvw] rounded-lg overflow-hidden cursor-pointer">
+		<div
+			className={`flex flex-col w-full ${extraStyle || ""} rounded-lg overflow-hidden cursor-pointer`}
+		>
 			<Image
 				src={painting.images}
 				alt={`${painting.title} image`}

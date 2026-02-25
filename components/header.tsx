@@ -65,7 +65,7 @@ export default function Header(): ReactElement {
 					</div>
 					<div className="hidden lg:flex flex-row gap-x-5 items-center">
 						<Link
-							href="/#resume"
+							href="/explore"
 							className="cursor-pointer transition-all hover:-translate-y-1 duration-200 ease-in-out 
                             hover:text-[#0F1724] text-[#98A0AB] font-medium text-md"
 						>
@@ -126,7 +126,7 @@ export default function Header(): ReactElement {
 						/>
 					</div>
 					<Link
-						href="/#resume"
+						href="/explore"
 						className="cursor-pointer transition-all hover:-translate-y-1 duration-200 ease-in-out 
                         hover:text-[#0F1724] text-[#98A0AB] font-medium text-md"
 					>

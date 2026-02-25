@@ -28,3 +28,7 @@ export type SellerType = {
 	id: string;
 	name: string;
 };
+
+export type FilterButtonRef = {
+	trigger: () => void;
+};
