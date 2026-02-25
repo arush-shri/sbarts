@@ -4,7 +4,7 @@ import { ReactElement } from "react";
 
 export default function Footer(): ReactElement {
 	return (
-		<div className="flex flex-col px-5 lg:px-20 bg-white w-full py-6 border-t-1 border-[#0000001A] justify-center">
+		<div className="flex flex-col px-5 lg:px-20 bg-[#fbfbfd] w-full py-6 border-t-1 border-[#0000001A] justify-center">
 			<div className="justify-between flex flex-col md:flex-row gap-x-2 gap-y-3">
 				<section className="flex flex-col md:max-w-2/5">
 					<div className="flex flex-row gap-x-2 items-center h-13">

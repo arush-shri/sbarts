@@ -38,7 +38,7 @@ export default function Header(): ReactElement {
 				show ? "translate-y-0" : "-translate-y-full"
 			}`}
 		>
-			<div className="flex flex-col px-6 lg:px-20 py-2 items-center bg-white border-b-1 border-[#0000001A]">
+			<div className="flex flex-col px-6 lg:px-20 py-2 items-center bg-[#fbfbfd] border-b-1 border-[#0000001A]">
 				<div className="flex flex-row justify-between items-center w-full">
 					<Link
 						href="/"
@@ -116,7 +116,7 @@ export default function Header(): ReactElement {
 				</div>
 			</div>
 			{mobileOpen && (
-				<div className="lg:hidden flex flex-col gap-4 px-6 py-4 bg-white w-full rounded-b-xl">
+				<div className="lg:hidden flex flex-col gap-4 px-6 py-4 bg-[#fbfbfd] w-full rounded-b-xl">
 					<div className="flex w-full items-center gap-3 rounded-xl bg-[#f4f7ff] px-5 py-3">
 						<Search className="w-6 h-6 text-gray-500" />
 						<input
@@ -141,7 +141,7 @@ export default function Header(): ReactElement {
 					</Link>
 					<div className="h-px w-full bg-[#0000001A]" />
 					<button
-						className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 font-medium hover:bg-gray-100 
+						className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-[#0F1724] font-medium hover:bg-gray-100 
                         transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
 					>
 						Sign In
