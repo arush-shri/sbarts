@@ -11,8 +11,10 @@ const painting: PaintingType = {
 	category: "Digital Art",
 	keywords: ["cyberpunk", "neon", "city", "futuristic"],
 	seller: {
+		// just store ID in painting data, fetch seller details separately in real app
 		id: "seller_001",
 		name: "Arush Art Studio",
+		image: "/images/digCat.jpg",
 	},
 
 	price: 1499,

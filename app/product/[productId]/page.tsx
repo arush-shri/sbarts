@@ -1,0 +1,169 @@
+"use client";
+
+import { usePaintingContext } from "@/app/_context/PaintingConext";
+import { PaintingType } from "@/app/_lib/customTypes";
+import { PaintingImage } from "@/components/PaintingParts";
+import { Share2 } from "lucide-react";
+import Image from "next/image";
+import { notFound, useParams } from "next/navigation";
+
+export default function ProductPage() {
+	const { productId } = useParams();
+	const paintings: PaintingType[] = usePaintingContext();
+
+	// Filter the specific painting based on the URL ID
+	const painting: PaintingType | undefined = paintings.find(
+		(p) => p.id === productId,
+	);
+
+	if (!painting) {
+		notFound(); // Render 404 page if painting not found
+	}
+
+	const handleShare = async () => {
+		const shareData = {
+			title: document.title,
+			text: "Check out this painting!",
+			url: window.location.href,
+		};
+
+		try {
+			if (navigator.share) {
+				await navigator.share(shareData);
+			} else {
+				// fallback (copy link)
+				await navigator.clipboard.writeText(window.location.href);
+				alert("Link copied to clipboard!");
+			}
+		} catch (err) {
+			console.log("Share cancelled");
+		}
+	};
+
+	return (
+		<div className="flex w-full px-4 py-8 px-5 lg:px-20 pt-24">
+			<div className="flex flex-col md:flex-row gap-12">
+				{/* Left Column: Image Gallery/Preview */}
+				<PaintingImage uri={painting.images} title={painting.title} />
+
+				{/* Right Column: Product Details */}
+				<section className="flex flex-col space-y-8 w-full md:w-2/3">
+					{/* Seller Info */}
+					<div className="flex items-center gap-3">
+						<div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
+							{/* Fallback for seller avatar */}
+							<Image
+								src={painting.seller.image}
+								alt={`${painting.seller.name} image`}
+								width={512}
+								height={512}
+								className="object-cover rounded-lg aspect-square"
+							/>
+						</div>
+						<div>
+							<p className="font-semibold text-[#0F1724] leading-none">
+								{painting.seller.name}
+							</p>
+							{
+								//Text rethink
+							}
+							<p className="text-sm text-[#98A0AB]">
+								Pro Artist • {painting.purchases} Sales
+							</p>
+						</div>
+					</div>
+
+					{/* Title and Price */}
+					<div className="space-y-2">
+						<h1 className="text-4xl font-bold text-[#0F1724]">
+							{painting.title}
+						</h1>
+						<p className="text-2xl font-semibold text-[#0F1724]">
+							${painting.price.toFixed(2)}
+						</p>
+					</div>
+
+					{/* Action Buttons */}
+					<div className="flex items-center gap-3">
+						<button className="flex-1 rounded-lg bg-[#0061f2] py-4 font-bold text-white transition hover:bg-blue-700">
+							Purchase License
+						</button>
+						<button
+							onClick={handleShare}
+							className="rounded-lg border border-gray-200 p-4 transition hover:bg-gray-100"
+						>
+							<Share2 className="h-auto w-6 text-[#0F1724]" />
+						</button>
+					</div>
+
+					{/* Technical Specs Grid */}
+					<div className="grid grid-cols-2 gap-y-6 rounded-xl bg-[#f4f7ff] p-6">
+						<div>
+							<p className="text-xs text-[#98A0AB] uppercase tracking-wider mb-1">
+								Format
+							</p>
+							<p className="font-semibold text-[#0F1724] text-md">
+								{painting.isDigital
+									? "Digital Download"
+									: "Physical Item"}
+							</p>
+						</div>
+						<div>
+							<p className="text-xs text-[#98A0AB] uppercase tracking-wider mb-1">
+								Resolution
+							</p>
+							<p className="font-semibold text-[#0F1724] text-md">
+								4500 x 4500 px
+							</p>
+						</div>
+						<div>
+							<p className="text-xs text-[#98A0AB] uppercase tracking-wider mb-1">
+								File Type
+							</p>
+							<p className="font-semibold text-[#0F1724] text-md">
+								High-Res JPG
+							</p>
+						</div>
+						<div>
+							<p className="text-xs text-[#98A0AB] uppercase tracking-wider mb-1">
+								License
+							</p>
+							<p className="font-semibold text-[#0F1724] text-md">
+								Standard Commercial
+							</p>
+						</div>
+					</div>
+
+					{/* Description Section */}
+					<div className="space-y-4">
+						<h3 className="font-bold text-[#0F1724]">
+							About this artwork
+						</h3>
+						<p className="leading-relaxed text-[#98A0AB]">
+							{painting.description}
+						</p>
+						{painting.isDigital && (
+							<p className="text-sm text-[#98A0AB]">
+								Upon purchase, you will receive a
+								high-resolution link to download the artwork
+								without the watermark.
+							</p>
+						)}
+					</div>
+
+					{/* Tags */}
+					<div className="flex flex-wrap gap-2 pt-4">
+						{painting.keywords.map((tag) => (
+							<span
+								key={tag}
+								className="rounded-md bg-[#f4f7ff] px-3 py-1 text-sm font-medium text-[#98A0AB] first-letter:uppercase"
+							>
+								{tag}
+							</span>
+						))}
+					</div>
+				</section>
+			</div>
+		</div>
+	);
+}

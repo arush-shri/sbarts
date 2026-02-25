@@ -16,7 +16,8 @@ export default function PaintingCard({
 	const painting: PaintingType = paintingsData[index];
 
 	return (
-		<div
+		<a
+			href={`/product/${painting.id}`}
 			className={`flex flex-col w-full ${extraStyle || ""} rounded-lg overflow-hidden cursor-pointer`}
 		>
 			<Image
@@ -39,6 +40,6 @@ export default function PaintingCard({
 					{painting.seller.name}
 				</span>
 			</div>
-		</div>
+		</a>
 	);
 }

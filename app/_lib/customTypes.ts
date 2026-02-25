@@ -27,6 +27,7 @@ export type PaintingType = {
 export type SellerType = {
 	id: string;
 	name: string;
+	image: string;
 };
 
 export type FilterButtonRef = {
