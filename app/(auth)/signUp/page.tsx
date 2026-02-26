@@ -27,7 +27,7 @@ export default function SellerOnboarding(): ReactElement {
 	};
 
 	return (
-		<div className="flex min-h-screen bg-white font-sans">
+		<div className="flex min-h-screen bg-white">
 			{/* Left Side: Hero Image Section */}
 			<div
 				className="hidden lg:h-screen lg:flex w-1/2 relative bg-cover bg-center"

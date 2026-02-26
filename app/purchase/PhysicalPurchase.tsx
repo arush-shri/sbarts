@@ -58,7 +58,7 @@ export default function PhysicalPurchase({
 
 	// Form validation can be added here before allowing checkout
 	return (
-		<div className="min-h-screen bg-[#FDFDFD] px-5 lg:px-20 pt-27 font-sans">
+		<div className="min-h-screen bg-[#FDFDFD] px-5 lg:px-20 pt-27">
 			<div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12">
 				{/* Sidebar Navigation */}
 				<aside className="w-full h-auto md:w-64 shrink-0">
@@ -203,7 +203,7 @@ export default function PhysicalPurchase({
 						<h3 className="text-[#0F1724] font-bold border-b border-[#0000001A] pb-4">
 							2. Shipping Method
 						</h3>
-						<div className="w-full max-w-4xl font-sans">
+						<div className="w-full max-w-4xl">
 							<h3 className="text-[#0F1724] font-bold text-lg mb-4">
 								Shipping Method
 							</h3>

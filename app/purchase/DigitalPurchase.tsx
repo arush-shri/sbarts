@@ -68,7 +68,7 @@ export default function DigitalPurchase({
 
 	// Form validation can be added here before allowing checkout
 	return (
-		<div className="min-h-screen bg-[#FDFDFD] px-5 lg:px-20 pt-27 font-sans">
+		<div className="min-h-screen bg-[#FDFDFD] px-5 lg:px-20 pt-27">
 			<div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12">
 				{/* Sidebar Navigation */}
 				<aside className="w-full h-auto md:w-64 shrink-0">
