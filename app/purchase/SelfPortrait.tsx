@@ -89,6 +89,7 @@ export default function PortraitPurchase(): ReactElement {
 
 				{/* Main Form Content */}
 				<main className="flex flex-col space-y-8 mb-20">
+					{/* Upload Logic */}
 					<section className="bg-white border border-gray-100 rounded-2xl p-8 space-y-8 shadow-md">
 						<h3 className="text-[#0F1724] text-xl font-bold border-b border-[#0000001A] pb-4">
 							1. Upload Your Photo
@@ -113,7 +114,7 @@ export default function PortraitPurchase(): ReactElement {
 					</section>
 
 					<section className="bg-white border border-gray-100 rounded-2xl p-8 space-y-8 shadow-md">
-						<h3 className="text-[#0F1724] font-bold border-b border-[#0000001A] pb-4">
+						<h3 className="text-[#0F1724] text-xl font-bold border-b border-[#0000001A] pb-4">
 							2. Select an Artist
 						</h3>
 						<p className="text-xs text-[#98A0AB]">
@@ -135,8 +136,8 @@ export default function PortraitPurchase(): ReactElement {
 					</section>
 
 					<section className="bg-white border border-gray-100 rounded-2xl p-8 space-y-8 shadow-md">
-						<h3 className="text-[#0F1724] font-bold border-b border-[#0000001A] pb-4">
-							2. Shipping Method
+						<h3 className="text-[#0F1724] text-xl font-bold border-b border-[#0000001A] pb-4">
+							3. Shipping & Payment
 						</h3>
 						<div className="w-full max-w-4xl font-sans">
 							<div className="space-y-6">
