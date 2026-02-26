@@ -35,8 +35,6 @@ export default function PhysicalPurchase({
 		address: "",
 		city: "",
 		postalCode: "",
-		cardNumber: "",
-		licenseType: "Commercial",
 		email: "",
 		phoneNumber: "",
 	});

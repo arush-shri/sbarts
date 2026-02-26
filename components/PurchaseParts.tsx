@@ -105,3 +105,40 @@ export const InputField = memo(
 		);
 	},
 );
+
+export const ArtistCard = memo(({ seller, onSelect, isSelected }: any) => {
+	return (
+		<div
+			onClick={() => onSelect(seller.id, seller.portraitPrice)}
+			className={`relative shrink-0 cursor-pointer rounded-xl border-2 transition-all duration-200 overflow-hidden ${
+				isSelected
+					? "border-[#0061f2] bg-[#f4f7ff]"
+					: "border-gray-100 bg-white"
+			}`}
+		>
+			<div className="h-32 bg-gray-200 relative">
+				<img
+					src={seller.image}
+					alt={seller.name}
+					className="w-full h-full object-cover opacity-80"
+				/>
+				<span className="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-[10px] font-bold text-[#0F1724]">
+					${seller.portraitPrice}
+				</span>
+			</div>
+			<div className="p-3 pr-10">
+				<div className="flex items-center gap-2">
+					<div className="w-5 h-5 rounded-full bg-gray-300 overflow-hidden">
+						<img src={seller.image} alt="avatar" />
+					</div>
+					<p className="text-sm font-bold text-[#0F1724]">
+						{seller.name}
+					</p>
+				</div>
+				<p className="text-[11px] text-[#98A0AB] mt-1 ml-7">
+					Custom Portrait Style
+				</p>
+			</div>
+		</div>
+	);
+});

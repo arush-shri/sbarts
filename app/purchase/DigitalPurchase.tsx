@@ -34,7 +34,6 @@ export default function DigitalPurchase({
 		address: "",
 		city: "",
 		postalCode: "",
-		cardNumber: "",
 		licenseType: "Commercial",
 		email: "",
 		phoneNumber: "",

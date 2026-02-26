@@ -18,7 +18,12 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 	const [sellers, setSellers] = useState<SellerType[]>([
 		seller,
 		{ ...seller, id: "seller_002", name: "Creative Minds Art" },
-		{ ...seller, id: "seller_003", name: "Vibrant Visions Art" },
+		{
+			...seller,
+			id: "seller_003",
+			name: "Vibrant Visions Art",
+			portraitPrice: 199,
+		},
 		{ ...seller, id: "seller_004", name: "Colorful Canvas Art" },
 		{ ...seller, id: "seller_005", name: "Artistic Expressions" },
 	]);

@@ -14,7 +14,7 @@ export default async function Purchase({
 	const params = await searchParams;
 	const productId: string = params.productId || "";
 
-	const isSelfPurchase: boolean = params.orderType === "self";
+	const isSelfPurchase: boolean = params.orderType === "portrait";
 	if (isSelfPurchase) return <SelfPortrait />;
 
 	const isDigitalPurchase: boolean = params.orderType === "digital";
