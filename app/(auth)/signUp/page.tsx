@@ -16,6 +16,7 @@ export default function SellerOnboarding(): ReactElement {
 		city: "",
 		state: "",
 		zip: "",
+		password: "",
 		country: "",
 		stripeConnected: false,
 	});

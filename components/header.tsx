@@ -79,18 +79,20 @@ export default function Header(): ReactElement {
 							Categories
 						</Link>
 						<div className="h-9 w-px bg-[#0000001A]" />
-						<button
+						<a
+							href="/signIn"
 							className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 font-medium hover:bg-gray-100 
                         transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
 						>
 							Sign In
-						</button>
-						<button
+						</a>
+						<a
+							href="/signUp"
 							className="px-4 py-2 rounded-lg bg-[#0061f2] text-white font-semibold hover:bg-blue-700 
                         transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
 						>
 							Join Now
-						</button>
+						</a>
 					</div>
 
 					<button
@@ -140,18 +142,20 @@ export default function Header(): ReactElement {
 						Categories
 					</Link>
 					<div className="h-px w-full bg-[#0000001A]" />
-					<button
+					<a
+						href="/signIn"
 						className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-[#0F1724] font-medium hover:bg-gray-100 
                         transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
 					>
 						Sign In
-					</button>
-					<button
+					</a>
+					<a
+						href="/signUp"
 						className="px-4 py-2 rounded-lg bg-[#0061f2] text-white font-semibold hover:bg-blue-700 
                         transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
 					>
 						Join Now
-					</button>
+					</a>
 				</div>
 			)}
 		</div>

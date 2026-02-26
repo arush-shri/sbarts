@@ -1,15 +1,15 @@
 // @ts-ignore
 import { getNames } from "country-list";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Eye, EyeOff } from "lucide-react";
 import { memo, useState } from "react";
 interface Props {
 	initialData: any;
 	onChange: (key: string, value: string) => void;
+	passReqs?: boolean;
 }
 
 export const AccountInfo = memo(({ initialData, onChange }: Props) => {
 	const [fullName, setFullName] = useState(initialData.fullName);
-	const [email, setEmail] = useState(initialData.email);
 
 	return (
 		<div className="space-y-4 text-[#0F1724]">
@@ -34,26 +34,11 @@ export const AccountInfo = memo(({ initialData, onChange }: Props) => {
 				/>
 			</div>
 
-			<div>
-				<label className="block text-sm font-medium text-[#0F1724] mb-1">
-					Email Address
-				</label>
-				<div className="relative">
-					<input
-						type="email"
-						value={email}
-						placeholder="Enter Email Address"
-						onChange={(e) => {
-							setEmail(e.target.value);
-							onChange("email", e.target.value);
-						}}
-						className="w-full px-4 py-2 border border-[#0000001A] placeholder:text-[#98A0AB] rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 pr-24"
-					/>
-					{/* <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-emerald-500 text-sm font-medium">
-						Verified <CheckCircle2 size={16} />
-					</div> */}
-				</div>
-			</div>
+			<CredentioalsForm
+				initialData={initialData}
+				onChange={onChange}
+				passReqs={true}
+			/>
 		</div>
 	);
 });
@@ -198,6 +183,71 @@ export const StripeConnect = memo(
 					</button>
 				</div>
 			</div>
+		);
+	},
+);
+
+export const CredentioalsForm = memo(
+	({ initialData, onChange, passReqs }: Props) => {
+		const [email, setEmail] = useState(initialData.email);
+		const [password, setPassword] = useState("");
+		const [showPassword, setShowPassword] = useState(false);
+		return (
+			<>
+				<div>
+					<label className="block text-sm font-medium text-[#0F1724] mb-1">
+						Email Address
+					</label>
+					<div className="relative">
+						<input
+							type="email"
+							value={email}
+							placeholder="Enter Email Address"
+							onChange={(e) => {
+								setEmail(e.target.value);
+								onChange("email", e.target.value);
+							}}
+							className="w-full px-4 py-2 border border-[#0000001A] placeholder:text-[#98A0AB] rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 pr-24"
+						/>
+						{/* <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-emerald-500 text-sm font-medium">
+						Verified <CheckCircle2 size={16} />
+					</div> */}
+					</div>
+				</div>
+				<div>
+					<label className="block text-sm font-medium text-[#0F1724] mb-1">
+						Password
+					</label>
+					<div className="relative">
+						<input
+							type={showPassword ? "text" : "password"}
+							placeholder="••••••••"
+							value={password}
+							onChange={(e) => {
+								setPassword(e.target.value);
+								onChange("password", e.target.value);
+							}}
+							className="w-full px-4 py-2 border border-[#0000001A] rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 pr-10"
+						/>
+						<button
+							type="button"
+							onClick={() => setShowPassword(!showPassword)}
+							className="absolute right-3 top-1/2 -translate-y-1/2 text-[#98A0AB] hover:text-[#0F1724]"
+						>
+							{showPassword ? (
+								<EyeOff size={18} />
+							) : (
+								<Eye size={18} />
+							)}
+						</button>
+					</div>
+					{passReqs && (
+						<p className="text-[11px] text-[#98A0AB] mt-1">
+							Must be at least 8 characters.
+						</p>
+					)}
+				</div>
+			</>
 		);
 	},
 );
