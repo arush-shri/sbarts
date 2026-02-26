@@ -4,7 +4,7 @@ export type PaintingType = {
 	description: string;
 	category: string;
 	keywords: string[];
-	seller: SellerType;
+	sellerId: string;
 
 	price: number;
 	isDigital: boolean;
@@ -28,6 +28,9 @@ export type SellerType = {
 	id: string;
 	name: string;
 	image: string;
+	makeSelfPortrait?: boolean;
+	portraitPrice?: number;
+	address?: string;
 };
 
 export type FilterButtonRef = {

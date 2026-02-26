@@ -1,8 +1,10 @@
 "use client";
 
+import { useSellerContext } from "@/app/_context/SellerContext";
+import { SellerType } from "@/app/_lib/customTypes";
 import { X, ZoomIn } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 
 export function PaintingImage({ uri, title }: { uri: string; title: string }) {
 	const [isOpen, setIsOpen] = useState(false);
@@ -60,5 +62,43 @@ export function PaintingImage({ uri, title }: { uri: string; title: string }) {
 				</div>
 			)}
 		</>
+	);
+}
+
+export function SellerInfo({
+	sellerId,
+	purchases,
+}: {
+	sellerId: string;
+	purchases: number;
+}): ReactElement {
+	const sellers: SellerType[] = useSellerContext();
+	const paintingSeller: SellerType | undefined = sellers.find(
+		(seller) => seller.id === sellerId,
+	);
+	return (
+		<div className="flex items-center gap-3">
+			<div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
+				{/* Fallback for seller avatar */}
+				<Image
+					src={paintingSeller?.image || "/default-avatar.png"}
+					alt={`${paintingSeller?.name || "Seller"} image`}
+					width={512}
+					height={512}
+					className="object-cover rounded-lg aspect-square"
+				/>
+			</div>
+			<div>
+				<p className="font-semibold text-[#0F1724] leading-none">
+					{paintingSeller?.name || "Unknown Seller"}
+				</p>
+				{
+					//Text rethink
+				}
+				<p className="text-sm text-[#98A0AB]">
+					Pro Artist • {purchases} Sales
+				</p>
+			</div>
+		</div>
 	);
 }

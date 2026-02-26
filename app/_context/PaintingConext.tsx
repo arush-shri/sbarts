@@ -10,12 +10,7 @@ const painting: PaintingType = {
 		"A futuristic digital artwork inspired by cyberpunk city lights and night life.",
 	category: "Digital Art",
 	keywords: ["cyberpunk", "neon", "city", "futuristic"],
-	seller: {
-		// just store ID in painting data, fetch seller details separately in real app
-		id: "seller_001",
-		name: "Arush Art Studio",
-		image: "/images/digCat.jpg",
-	},
+	sellerId: "seller_001",
 
 	price: 1499,
 	isDigital: true,

@@ -1,7 +1,8 @@
 "use client";
 
 import { usePaintingContext } from "@/app/_context/PaintingConext";
-import { PaintingType } from "@/app/_lib/customTypes";
+import { useSellerContext } from "@/app/_context/SellerContext";
+import { PaintingType, SellerType } from "@/app/_lib/customTypes";
 import Image from "next/image";
 import { ReactElement } from "react";
 
@@ -14,6 +15,10 @@ export default function PaintingCard({
 }): ReactElement {
 	const paintingsData: PaintingType[] = usePaintingContext();
 	const painting: PaintingType = paintingsData[index];
+	const sellers: SellerType[] = useSellerContext();
+	const paintingSeller: SellerType | undefined = sellers.find(
+		(seller) => seller.id === painting?.sellerId,
+	);
 
 	return (
 		<a
@@ -37,7 +42,7 @@ export default function PaintingCard({
 					</span>
 				</div>
 				<span className="text-[#98A0AB] text-sm mt-2">
-					{painting.seller.name}
+					{paintingSeller?.name || "Seller"}
 				</span>
 			</div>
 		</a>

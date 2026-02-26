@@ -6,7 +6,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ReactElement, useCallback, useRef, useState } from "react";
 import { usePaintingContext } from "../_context/PaintingConext";
-import { PaintingType } from "../_lib/customTypes";
+import { useSellerContext } from "../_context/SellerContext";
+import { PaintingType, SellerType } from "../_lib/customTypes";
 export default function DigitalPurchase({
 	productId,
 }: {
@@ -15,6 +16,10 @@ export default function DigitalPurchase({
 	const paintings: PaintingType[] = usePaintingContext();
 	const painting: PaintingType | undefined = paintings.find(
 		(p) => p.id === productId,
+	);
+	const sellers: SellerType[] = useSellerContext();
+	const paintingSeller: SellerType | undefined = sellers.find(
+		(seller) => seller.id === painting?.sellerId,
 	);
 
 	if (!painting || !painting.isDigital) {
@@ -131,7 +136,7 @@ export default function DigitalPurchase({
 									</span>
 								</div>
 								<span className="text-[#98A0AB] text-sm mt-1">
-									by {painting.seller.name}
+									by {paintingSeller?.name || "Seller"}
 								</span>
 								<span className="self-start flex flex-row gap-x-2 rounded-md bg-[#f4f7ff] px-3 py-1 text-sm font-medium text-[#0F1724] mt-3">
 									<ImageIcon className="h-auto w-4" />

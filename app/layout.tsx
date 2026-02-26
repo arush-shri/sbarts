@@ -2,6 +2,7 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import type { Metadata } from "next";
 import { PaintingProvider } from "./_context/PaintingConext";
+import { SellerProvider } from "./_context/SellerContext";
 import { fontInter } from "./_lib/fonts";
 import "./globals.css";
 
@@ -19,11 +20,13 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${fontInter.className} bg-white`}>
-				<PaintingProvider>
-					<Header />
-					{children}
-					<Footer />
-				</PaintingProvider>
+				<SellerProvider>
+					<PaintingProvider>
+						<Header />
+						{children}
+						<Footer />
+					</PaintingProvider>
+				</SellerProvider>
 			</body>
 		</html>
 	);

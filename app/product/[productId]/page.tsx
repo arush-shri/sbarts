@@ -2,9 +2,8 @@
 
 import { usePaintingContext } from "@/app/_context/PaintingConext";
 import { PaintingType } from "@/app/_lib/customTypes";
-import { PaintingImage } from "@/components/PaintingParts";
+import { PaintingImage, SellerInfo } from "@/components/PaintingParts";
 import { Share2 } from "lucide-react";
-import Image from "next/image";
 import { notFound, useParams } from "next/navigation";
 
 export default function ProductPage() {
@@ -49,29 +48,11 @@ export default function ProductPage() {
 				{/* Right Column: Product Details */}
 				<section className="flex flex-col space-y-8 w-full md:w-2/3">
 					{/* Seller Info */}
-					<div className="flex items-center gap-3">
-						<div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
-							{/* Fallback for seller avatar */}
-							<Image
-								src={painting.seller.image}
-								alt={`${painting.seller.name} image`}
-								width={512}
-								height={512}
-								className="object-cover rounded-lg aspect-square"
-							/>
-						</div>
-						<div>
-							<p className="font-semibold text-[#0F1724] leading-none">
-								{painting.seller.name}
-							</p>
-							{
-								//Text rethink
-							}
-							<p className="text-sm text-[#98A0AB]">
-								Pro Artist • {painting.purchases} Sales
-							</p>
-						</div>
-					</div>
+
+					<SellerInfo
+						sellerId={painting.sellerId}
+						purchases={painting.purchases}
+					/>
 
 					{/* Title and Price */}
 					<div className="space-y-2">
