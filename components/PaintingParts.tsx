@@ -4,6 +4,7 @@ import { useSellerContext } from "@/app/_context/SellerContext";
 import { SellerType } from "@/app/_lib/customTypes";
 import { X, ZoomIn } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ReactElement, useState } from "react";
 
 export function PaintingImage({ uri, title }: { uri: string; title: string }) {
@@ -72,12 +73,16 @@ export function SellerInfo({
 	sellerId: string;
 	purchases: number;
 }): ReactElement {
+	const router = useRouter();
 	const sellers: SellerType[] = useSellerContext();
 	const paintingSeller: SellerType | undefined = sellers.find(
 		(seller) => seller.id === sellerId,
 	);
 	return (
-		<div className="flex items-center gap-3">
+		<div
+			onClick={() => router.push(`/profile/${sellerId}`)}
+			className="flex items-center gap-3 cursor-pointer"
+		>
 			<div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
 				{/* Fallback for seller avatar */}
 				<Image

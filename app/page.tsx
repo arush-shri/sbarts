@@ -25,8 +25,7 @@ export default function Home() {
 							Start Exploring
 						</a>
 						<a
-							href="/seller"
-							download
+							href="/signUp"
 							className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 font-medium hover:bg-gray-100 
                             transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
 						>
@@ -48,7 +47,10 @@ export default function Home() {
 					/>
 				</div>
 			</section>
-			<section className="flex flex-col justify-center px-5 lg:px-20 mt-15 md:mt-36">
+			<section
+				id="categories"
+				className="flex flex-col justify-center px-5 lg:px-20 mt-15 md:mt-36"
+			>
 				<span className="font-bold text-[#0F1724] text-3xl">
 					Browse by Category
 				</span>
@@ -60,22 +62,22 @@ export default function Home() {
 					<CategoryCard
 						uri="/images/digCat.jpg"
 						category="Digital Art"
-						path="/digital-art"
+						path="/explore?category=digitalart"
 					/>
 					<CategoryCard
 						uri="/images/paiCat.jpg"
 						category="Paintings"
-						path="/paintings"
+						path="/explore?category=paintings"
 					/>
 					<CategoryCard
 						uri="/images/phoCat.jpg"
 						category="Photography"
-						path="/photography"
+						path="/explore?category=photography"
 					/>
 					<CategoryCard
 						uri="/images/selCat.jpg"
 						category="Self Portrait"
-						path="/portrait"
+						path="/purchase?orderType=portrait"
 					/>
 				</div>
 			</section>
@@ -105,7 +107,7 @@ export default function Home() {
 						audience.
 					</span>
 					<a
-						href="/seller"
+						href="/signUp"
 						className="px-4 py-2 rounded-lg bg-[#0061f2] text-white font-medium hover:bg-blue-700 
                             transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
 					>

@@ -3,7 +3,7 @@ import { PaintingType, SellerType } from "@/app/_lib/customTypes";
 import { convertNumToDate } from "@/app/_lib/dataProcessing";
 import { Edit2, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { ReactElement, useMemo } from "react";
+import { ReactElement, useMemo, useRef, useState } from "react";
 
 export function SidebarProfile({
 	artistData,
@@ -170,5 +170,144 @@ export function StatsCards({
 				</div>
 			))}
 		</div>
+	);
+}
+
+export default function ArtworkUpload({
+	callback,
+}: {
+	callback: (name: string, value: string) => void;
+}) {
+	const inputRef = useRef<HTMLInputElement>(null);
+	const [preview, setPreview] = useState<string | null>(null);
+	const [fileName, setFileName] = useState("");
+
+	const handleClick = () => {
+		inputRef.current?.click();
+	};
+
+	const validateAndProcess = (file: File) => {
+		// ---------- TYPE ----------
+		if (!["image/jpeg", "image/png"].includes(file.type)) {
+			alert("Only JPEG or PNG images are allowed.");
+			return;
+		}
+
+		// ---------- SIZE ----------
+		const maxSize = 50 * 1024 * 1024;
+		if (file.size > maxSize) {
+			alert("Max file size is 50MB.");
+			return;
+		}
+
+		const img = new window.Image();
+		const objectUrl = URL.createObjectURL(file);
+
+		img.onload = () => {
+			const w = img.width;
+			const h = img.height;
+
+			// ---------- MIN HD ----------
+			if (w < 1920 || h < 1080) {
+				alert("Image must be at least 1920×1080.");
+				URL.revokeObjectURL(objectUrl);
+				return;
+			}
+
+			// ---------- ASPECT RATIO ----------
+			const ratio = w / h;
+
+			const allowed =
+				Math.abs(ratio - 1) < 0.02 || // 1:1
+				Math.abs(ratio - 4 / 3) < 0.02 || // 4:3
+				Math.abs(ratio - 16 / 9) < 0.02; // 16:9
+
+			if (!allowed) {
+				alert("Allowed ratios: 1:1, 4:3, 16:9.");
+				URL.revokeObjectURL(objectUrl);
+				return;
+			}
+
+			setPreview(objectUrl);
+			setFileName(file.name);
+
+			callback("uploadedFile", objectUrl);
+		};
+
+		img.src = objectUrl;
+	};
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) validateAndProcess(file);
+	};
+
+	const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		const file = e.dataTransfer.files?.[0];
+		if (file) validateAndProcess(file);
+	};
+
+	return (
+		<>
+			<input
+				ref={inputRef}
+				type="file"
+				accept="image/jpeg,image/png"
+				className="hidden"
+				onChange={handleChange}
+			/>
+
+			<div
+				onClick={handleClick}
+				onDragOver={(e) => e.preventDefault()}
+				onDrop={handleDrop}
+				className="border-2 border-dashed border-[#0000001A] bg-[#f4f7ff] rounded-xl mt-3 p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-[#eef3ff] transition"
+			>
+				{preview ? (
+					<>
+						<img
+							src={preview}
+							alt="preview"
+							className="w-32 h-32 object-cover rounded-lg mb-3"
+						/>
+						<p className="text-[#0F1724] font-semibold">
+							{fileName}
+						</p>
+						<p className="text-xs text-[#98A0AB]">
+							Image selected successfully
+						</p>
+					</>
+				) : (
+					<>
+						<div className="w-10 h-10 mb-4 text-blue-500 bg-white rounded-full flex items-center justify-center shadow-sm">
+							<svg
+								className="w-6 h-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+								/>
+							</svg>
+						</div>
+
+						<p className="text-[#0F1724] font-semibold">
+							Click to upload or drag and drop
+						</p>
+
+						<p className="text-xs text-[#98A0AB] mt-1">
+							High resolution required. Max file size 50MB.
+							<br />
+							Recommended aspect ratios: 1:1, 4:3, or 16:9.
+						</p>
+					</>
+				)}
+			</div>
+		</>
 	);
 }

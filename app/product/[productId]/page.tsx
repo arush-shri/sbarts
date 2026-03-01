@@ -89,30 +89,16 @@ export default function ProductPage() {
 									: "Physical Item"}
 							</p>
 						</div>
-						<div>
-							<p className="text-xs text-[#98A0AB] uppercase tracking-wider mb-1">
-								Resolution
-							</p>
-							<p className="font-semibold text-[#0F1724] text-md">
-								4500 x 4500 px
-							</p>
-						</div>
-						<div>
-							<p className="text-xs text-[#98A0AB] uppercase tracking-wider mb-1">
-								File Type
-							</p>
-							<p className="font-semibold text-[#0F1724] text-md">
-								High-Res JPG
-							</p>
-						</div>
-						<div>
-							<p className="text-xs text-[#98A0AB] uppercase tracking-wider mb-1">
-								License
-							</p>
-							<p className="font-semibold text-[#0F1724] text-md">
-								Standard Commercial
-							</p>
-						</div>
+						{painting.isDigital && (
+							<div>
+								<p className="text-xs text-[#98A0AB] uppercase tracking-wider mb-1">
+									Resolution
+								</p>
+								<p className="font-semibold text-[#0F1724] text-md">
+									4500 x 4500 px
+								</p>
+							</div>
+						)}
 					</div>
 
 					{/* Description Section */}

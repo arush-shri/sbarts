@@ -1,6 +1,6 @@
 "use client";
 
-import { FilterButtonRef } from "@/app/_lib/customTypes";
+import { ExploreButtonProps, FilterButtonRef } from "@/app/_lib/customTypes";
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { forwardRef, ReactElement, useImperativeHandle, useState } from "react";
 
@@ -136,22 +136,24 @@ export function ExplorePriceRange({
 	);
 }
 
-export const ExploreFilterButton = forwardRef<FilterButtonRef, {}>(
-	(props, ref) => {
-		const [isFilterOpen, setIsFilterOpen] = useState(false);
-		const handleTrigger = () => {
-			setIsFilterOpen((prev) => !prev);
-		};
+export const ExploreFilterButton = forwardRef<
+	FilterButtonRef,
+	ExploreButtonProps
+>((props, ref) => {
+	const [isFilterOpen, setIsFilterOpen] = useState(false);
+	const handleTrigger = () => {
+		setIsFilterOpen((prev) => !prev);
+	};
 
-		useImperativeHandle(ref, () => ({
-			trigger() {
-				handleTrigger();
-			},
-		}));
+	useImperativeHandle(ref, () => ({
+		trigger() {
+			handleTrigger();
+		},
+	}));
 
-		return (
-			<aside
-				className={`
+	return (
+		<aside
+			className={`
                         fixed md:static top-0 left-0 z-50 md:z-auto
                         h-screen md:h-auto
                         bg-white md:bg-transparent
@@ -163,70 +165,78 @@ export const ExploreFilterButton = forwardRef<FilterButtonRef, {}>(
                         shadow-lg md:shadow-none
                         p-0 md:pr-8 p-6 md:p-0
                     `}
-			>
-				<div>
-					<div className="flex items-center gap-2 mb-6">
-						<SlidersHorizontal className="w-5 h-auto hidden md:block text-[#0F1724]" />
-						<button
-							onClick={() => setIsFilterOpen(false)}
-							className="block md:hidden"
-						>
-							<X className="w-5 h-auto text-[#0F1724]" />
-						</button>
-						<span className="text-lg font-bold text-[#0F1724]">
-							Filters
-						</span>
-					</div>
-
-					{/* Category */}
-					<div className="space-y-4 mb-8">
-						<h3 className="text-[#0F1724] font-semibold text-sm">
-							Category
-						</h3>
-						<ExploreCategories
-							callback={(selectedCategories: string[]) =>
-								console.log(
-									"Selected Categories:",
-									selectedCategories,
-								)
-							}
-						/>
-					</div>
-
-					<hr className="border-[#0000001A]" />
-
-					{/* Type */}
-					<div className="space-y-4 my-8">
-						<h3 className="text-[#0F1724] font-semibold text-sm">
-							Type
-						</h3>
-						<ExploreTypes
-							callback={(selectedTypes: string[]) =>
-								console.log("Selected Types:", selectedTypes)
-							}
-						/>
-					</div>
-
-					<hr className="border-[#0000001A]" />
-
-					{/* Price Range */}
-					<div className="space-y-4 mt-8">
-						<h3 className="text-[#0F1724] font-semibold text-sm">
-							Price Range
-						</h3>
-						<ExplorePriceRange
-							callback={(minPrice, maxPrice) =>
-								console.log(
-									`Selected price range: $${minPrice} - $${maxPrice}`,
-								)
-							}
-						/>
-					</div>
+		>
+			<div>
+				<div className="flex items-center gap-2 mb-6">
+					<SlidersHorizontal className="w-5 h-auto hidden md:block text-[#0F1724]" />
+					<button
+						onClick={() => setIsFilterOpen(false)}
+						className="block md:hidden"
+					>
+						<X className="w-5 h-auto text-[#0F1724]" />
+					</button>
+					<span className="text-lg font-bold text-[#0F1724]">
+						Filters
+					</span>
 				</div>
-			</aside>
-		);
-	},
-);
+
+				{/* Category */}
+				<div className="space-y-4 mb-8">
+					<h3 className="text-[#0F1724] font-semibold text-sm">
+						Category
+					</h3>
+					<ExploreCategories
+						callback={(selectedCategories: string[]) => {
+							console.log(
+								"Selected Categories:",
+								selectedCategories,
+							);
+							props.onClickCallback?.(
+								"category",
+								selectedCategories,
+							);
+						}}
+					/>
+				</div>
+
+				<hr className="border-[#0000001A]" />
+
+				{/* Type */}
+				<div className="space-y-4 my-8">
+					<h3 className="text-[#0F1724] font-semibold text-sm">
+						Type
+					</h3>
+					<ExploreTypes
+						callback={(selectedTypes: string[]) => {
+							console.log("Selected Types:", selectedTypes);
+							props.onClickCallback?.("type", selectedTypes);
+						}}
+					/>
+				</div>
+
+				<hr className="border-[#0000001A]" />
+
+				{/* Price Range */}
+				<div className="space-y-4 mt-8">
+					<h3 className="text-[#0F1724] font-semibold text-sm">
+						Price Range
+					</h3>
+					<ExplorePriceRange
+						callback={(minPrice, maxPrice) => {
+							console.log(
+								`Selected price range: $${minPrice} - $${maxPrice}`,
+							);
+							props.onClickCallback?.(
+								"price",
+								`${minPrice},${maxPrice}`,
+							);
+						}}
+					/>
+				</div>
+			</div>
+		</aside>
+	);
+});
 
 export function ExploreSort({
 	callback,

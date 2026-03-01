@@ -1,6 +1,7 @@
 "use client";
 
 import InputBox from "@/components/EnlistPart";
+import ArtworkUpload from "@/components/SellerParts";
 import { useRef, useState } from "react";
 
 export default function CreateListing() {
@@ -146,31 +147,7 @@ export default function CreateListing() {
 						<label className="text-sm font-semibold text-[#0F1724]">
 							Main Artwork Image
 						</label>
-						<div className="border-2 border-dashed border-[#0000001A] bg-[#f4f7ff] rounded-xl mt-3 p-12 flex flex-col items-center justify-center text-center cursor-pointer">
-							<div className="w-10 h-10 mb-4 text-blue-500 bg-white rounded-full flex items-center justify-center shadow-sm">
-								<svg
-									className="w-6 h-6"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="2"
-										d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-									/>
-								</svg>
-							</div>
-							<p className="text-[#0F1724] font-semibold">
-								Click to upload or drag and drop
-							</p>
-							<p className="text-xs text-[#98A0AB] mt-1">
-								High resolution required. Max file size 50MB.
-								<br />
-								Recommended aspect ratios: 1:1, 4:3, or 16:9.
-							</p>
-						</div>
+						<ArtworkUpload callback={handleInputChange} />
 					</section>
 
 					{/* Pricing & Inventory */}

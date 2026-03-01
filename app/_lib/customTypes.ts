@@ -18,13 +18,12 @@ export type PaintingType = {
 	purchases: number;
 	createdAt: number;
 	updatedAt: number;
-	totalSales: number;
 };
 
 export type SellerType = {
 	id: string;
 	name: string;
-	image: string; //To be removed
+	image: string;
 	makeSelfPortrait: boolean;
 	portraitPrice: number;
 	address: {
@@ -43,4 +42,8 @@ export type SellerType = {
 
 export type FilterButtonRef = {
 	trigger: () => void;
+};
+
+export type ExploreButtonProps = {
+	onClickCallback?: (key: string, value: string | string[]) => void;
 };

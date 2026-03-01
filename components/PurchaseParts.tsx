@@ -1,7 +1,8 @@
 "use client";
 
-import { Check } from "lucide-react";
-import React, { memo, useState } from "react";
+import { Check, Upload } from "lucide-react";
+import NextImage from "next/image";
+import React, { memo, useRef, useState } from "react";
 
 export const LicenseCard = memo(
 	({
@@ -142,3 +143,112 @@ export const ArtistCard = memo(({ seller, onSelect, isSelected }: any) => {
 		</div>
 	);
 });
+
+export const ImageUploadCard = memo(
+	({ callback }: { callback: (name: string, value: string) => void }) => {
+		const inputRef = useRef<HTMLInputElement>(null);
+
+		const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+		const [fileName, setFileName] = useState<string>("");
+
+		const handleClick = () => {
+			inputRef.current?.click();
+		};
+
+		const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+			const file = e.target.files?.[0];
+			if (!file) return;
+
+			// ---------- TYPE CHECK ----------
+			const validTypes = ["image/jpeg", "image/png"];
+			if (!validTypes.includes(file.type)) {
+				alert("Only JPG or PNG images are allowed.");
+				return;
+			}
+
+			// ---------- SIZE CHECK ----------
+			const maxSize = 5 * 1024 * 1024;
+			if (file.size > maxSize) {
+				alert("Image must be less than 5MB.");
+				return;
+			}
+
+			const img = new Image();
+			const objectUrl = URL.createObjectURL(file);
+
+			img.onload = () => {
+				if (img.width < 1024 || img.height < 1024) {
+					alert("Image must be at least 1024x1024.");
+					URL.revokeObjectURL(objectUrl);
+					return;
+				}
+
+				// set preview + filename
+				setPreviewUrl(objectUrl);
+				setFileName(file.name);
+
+				callback("uploadedFile", objectUrl);
+			};
+
+			img.src = objectUrl;
+		};
+
+		return (
+			<>
+				{/* Hidden input */}
+				<input
+					ref={inputRef}
+					type="file"
+					accept="image/jpeg,image/png"
+					className="hidden"
+					onChange={handleFileChange}
+				/>
+
+				{/* Upload Card */}
+				<div
+					onClick={handleClick}
+					className="border-2 border-dashed border-[#0000001A] rounded-xl p-6 flex flex-col items-center 
+          justify-center text-center space-y-3 bg-[#f4f7ff]/50 hover:bg-[#f1f5ff] transition cursor-pointer"
+				>
+					{previewUrl ? (
+						<>
+							{/* IMAGE PREVIEW */}
+							<NextImage
+								src={previewUrl}
+								alt="Selected preview"
+								width={1024}
+								height={1024}
+								className="w-32 h-32 object-cover rounded-lg"
+							/>
+
+							<p className="text-sm font-bold text-[#0F1724]">
+								{fileName}
+							</p>
+
+							<p className="text-xs text-[#98A0AB]">
+								File selected successfully
+							</p>
+						</>
+					) : (
+						<>
+							<div className="p-3 bg-blue-50 text-[#0066FF] rounded-full">
+								<Upload className="h-auto w-5" />
+							</div>
+
+							<p className="text-sm font-bold text-[#0F1724]">
+								Click to upload your photo
+							</p>
+
+							<p className="text-xs text-[#98A0AB]">
+								Use a clear, well-lit photo for the best
+								results.
+								<br />
+								Supported formats: JPG, PNG.
+							</p>
+						</>
+					)}
+				</div>
+			</>
+		);
+	},
+);

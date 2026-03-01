@@ -3,7 +3,36 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { ReactElement, RefObject, useEffect, useRef, useState } from "react";
+
+function CategoriesLink() {
+	const pathname = usePathname();
+	const router = useRouter();
+
+	const handleClick = (e: React.MouseEvent) => {
+		// If already on homepage → scroll manually
+		if (pathname === "/") {
+			e.preventDefault();
+
+			document
+				.getElementById("categories")
+				?.scrollIntoView({ behavior: "smooth" });
+		}
+		// otherwise allow normal navigation
+	};
+
+	return (
+		<Link
+			href="/#categories"
+			onClick={handleClick}
+			className="cursor-pointer transition-all hover:-translate-y-1 duration-200 ease-in-out 
+      hover:text-[#0F1724] text-[#98A0AB] font-medium text-md"
+		>
+			Categories
+		</Link>
+	);
+}
 
 export default function Header(): ReactElement {
 	const [show, setShow] = useState(true);
@@ -71,13 +100,7 @@ export default function Header(): ReactElement {
 						>
 							Explore
 						</Link>
-						<Link
-							href="/#categories"
-							className="cursor-pointer transition-all hover:-translate-y-1 duration-200 ease-in-out 
-                            hover:text-[#0F1724] text-[#98A0AB] font-medium text-md"
-						>
-							Categories
-						</Link>
+						<CategoriesLink />
 						<div className="h-9 w-px bg-[#0000001A]" />
 						<a
 							href="/signIn"

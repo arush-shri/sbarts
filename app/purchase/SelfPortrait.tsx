@@ -1,7 +1,11 @@
 "use client";
 
-import { ArtistCard, InputField } from "@/components/PurchaseParts";
-import { Lock, Upload } from "lucide-react";
+import {
+	ArtistCard,
+	ImageUploadCard,
+	InputField,
+} from "@/components/PurchaseParts";
+import { Lock } from "lucide-react";
 import { ReactElement, useCallback, useRef, useState } from "react";
 import { useSellerContext } from "../_context/SellerContext";
 import { SellerType } from "../_lib/customTypes";
@@ -22,7 +26,6 @@ export default function PortraitPurchase(): ReactElement {
 		postalCode: "",
 		email: "",
 		phoneNumber: "",
-		sellerId: "seller_001",
 		uploadedFile: null,
 	});
 
@@ -94,23 +97,7 @@ export default function PortraitPurchase(): ReactElement {
 						<h3 className="text-[#0F1724] text-xl font-bold border-b border-[#0000001A] pb-4">
 							1. Upload Your Photo
 						</h3>
-						<div
-							className="border-2 border-dashed border-[#0000001A] rounded-xl p-12 flex flex-col items-center 
-                        justify-center text-center space-y-3 bg-[#f4f7ff]/50 hover:bg-[#f1f5ff] transition cursor-pointer"
-						>
-							<div className="p-3 bg-blue-50 text-[#0066FF] rounded-full">
-								<Upload className="h-auto w-5" />
-							</div>
-							<p className="text-sm font-bold text-[#0F1724]">
-								Click to upload your photo
-							</p>
-							<p className="text-xs text-[#98A0AB]">
-								Use a clear, well-lit photo for the best
-								results.
-								<br />
-								Supported formats: JPG, PNG.
-							</p>
-						</div>
+						<ImageUploadCard callback={handleRefUpdate} />
 					</section>
 
 					<section className="bg-white border border-gray-100 rounded-2xl p-8 space-y-8 shadow-md">

@@ -32,17 +32,26 @@ export default function Footer(): ReactElement {
 						<div className="flex flex-col gap-y-3">
 							<a
 								href="/"
-								className="text-[#6b7280] pt-3 text-md "
+								className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
 							>
 								All Art
 							</a>
-							<a href="/" className="text-[#6b7280] text-md ">
+							<a
+								href="/"
+								className="text-[#6b7280] text-md hover:text-[#0F1724]"
+							>
 								Digital Art
 							</a>
-							<a href="/" className="text-[#6b7280] text-md ">
+							<a
+								href="/"
+								className="text-[#6b7280] text-md hover:text-[#0F1724]"
+							>
 								Painting
 							</a>
-							<a href="/" className="text-[#6b7280] text-md ">
+							<a
+								href="/"
+								className="text-[#6b7280] text-md hover:text-[#0F1724]"
+							>
 								Photography
 							</a>
 						</div>
@@ -54,14 +63,20 @@ export default function Footer(): ReactElement {
 						<div className="flex flex-col gap-y-3">
 							<a
 								href="/"
-								className="text-[#6b7280] pt-3 text-md "
+								className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
 							>
 								Sell Your Art
 							</a>
-							<a href="/" className="text-[#6b7280] text-md ">
+							<a
+								href="/"
+								className="text-[#6b7280] text-md hover:text-[#0F1724]"
+							>
 								Seller Guidelines
 							</a>
-							<a href="/" className="text-[#6b7280] text-md ">
+							<a
+								href="/"
+								className="text-[#6b7280] text-md hover:text-[#0F1724]"
+							>
 								Seller Dashboard
 							</a>
 						</div>
@@ -73,14 +88,20 @@ export default function Footer(): ReactElement {
 						<div className="flex flex-col gap-y-3">
 							<a
 								href="/"
-								className="text-[#6b7280] pt-3 text-md "
+								className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
 							>
 								Terms & Conditions
 							</a>
-							<a href="/" className="text-[#6b7280] text-md ">
+							<a
+								href="/"
+								className="text-[#6b7280] text-md hover:text-[#0F1724]"
+							>
 								Privacy Policy
 							</a>
-							<a href="/" className="text-[#6b7280] text-md ">
+							<a
+								href="/"
+								className="text-[#6b7280] text-md hover:text-[#0F1724]"
+							>
 								Cookie Policy
 							</a>
 						</div>

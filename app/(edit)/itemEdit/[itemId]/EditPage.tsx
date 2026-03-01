@@ -210,7 +210,7 @@ export default function EditArtwork({
 									label: "Type",
 									value: `${painting.isDigital ? "Digital download" : "Physical art"}`,
 								},
-								{ label: "Sales", value: painting.totalSales },
+								{ label: "Sales", value: painting.purchases },
 								{
 									label: "Last updated",
 									value: convertNumToDate(painting.updatedAt),
