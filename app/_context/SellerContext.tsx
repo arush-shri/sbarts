@@ -9,7 +9,22 @@ const seller: SellerType = {
 	image: "/images/icon.png",
 	makeSelfPortrait: true,
 	portraitPrice: 249,
-	address: "Bhopal, Madhya Pradesh, India",
+
+	address: {
+		address: "Shahpura",
+		country: "India",
+		city: "Bhopal",
+		postalCode: "462016",
+	},
+
+	primaryCategories: ["Abstract", "Portrait", "Modern Art"],
+
+	createdAt: Date.now(),
+
+	artWorks: ["painting_001", "painting_002", "painting_003"],
+	email: "a@example.com",
+	totalSale: 100,
+	itemSold: 10,
 };
 
 const SellerContext: Context<SellerType[]> = createContext<SellerType[]>([]);

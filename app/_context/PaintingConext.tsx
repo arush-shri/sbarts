@@ -15,20 +15,16 @@ const painting: PaintingType = {
 	price: 1499,
 	isDigital: true,
 	isPhysical: false,
-	quantity: 1,
+	quantityDigital: 1,
+	quantityPhysical: 1,
 
 	images: "/images/digCat.jpg",
-
-	pickupAddress: {
-		country: "India",
-		city: "Lucknow",
-		postalCode: "226001",
-	},
 
 	views: 120,
 	purchases: 8,
 	createdAt: Date.now(),
 	updatedAt: Date.now(),
+	totalSales: 1,
 };
 
 const PaintingContext: Context<PaintingType[]> = createContext<PaintingType[]>(
@@ -38,15 +34,16 @@ const PaintingContext: Context<PaintingType[]> = createContext<PaintingType[]>(
 export function PaintingProvider({ children }: { children: ReactNode }) {
 	const [paintings, setPaintings] = useState<PaintingType[]>([
 		painting,
-		painting,
-		painting,
-		painting,
-		painting,
-		painting,
-		painting,
-		painting,
-		painting,
-		painting,
+		{ ...painting, id: "painting_002" },
+		{ ...painting, id: "painting_003" },
+		{ ...painting, id: "painting_004" },
+		{ ...painting, id: "painting_005" },
+		{ ...painting, id: "painting_006" },
+		{ ...painting, id: "painting_007" },
+		{ ...painting, id: "painting_008" },
+		{ ...painting, id: "painting_009" },
+		{ ...painting, id: "painting_010" },
+		{ ...painting, id: "painting_011" },
 	]);
 
 	return (

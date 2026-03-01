@@ -29,7 +29,7 @@ export default async function RootLayout({
 					<PaintingProvider>
 						<Header />
 						{children}
-						{isLoggedIn && <Footer />}
+						<Footer />
 					</PaintingProvider>
 				</SellerProvider>
 			</body>

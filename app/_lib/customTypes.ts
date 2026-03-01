@@ -9,28 +9,36 @@ export type PaintingType = {
 	price: number;
 	isDigital: boolean;
 	isPhysical: boolean;
-	quantity?: number;
+	quantityDigital: number;
+	quantityPhysical: number;
 
 	images: string; //will be image id in db
-	pickupAddress: {
-		country: string;
-		city: string;
-		postalCode: string;
-	};
 
 	views: number;
 	purchases: number;
 	createdAt: number;
 	updatedAt: number;
+	totalSales: number;
 };
 
 export type SellerType = {
 	id: string;
 	name: string;
-	image: string;
-	makeSelfPortrait?: boolean;
-	portraitPrice?: number;
-	address?: string;
+	image: string; //To be removed
+	makeSelfPortrait: boolean;
+	portraitPrice: number;
+	address: {
+		address: string;
+		country: string;
+		city: string;
+		postalCode: string;
+	};
+	primaryCategories: string[];
+	createdAt: number;
+	artWorks: string[];
+	email: string;
+	totalSale: number;
+	itemSold: number;
 };
 
 export type FilterButtonRef = {

@@ -8,6 +8,7 @@ import { FilterButtonRef } from "../_lib/customTypes";
 
 // assume this exists
 // import PaintingCard from "./PaintingCard";
+// make api call for paintings
 
 export default function Explore() {
 	const filterRef = useRef<FilterButtonRef>(null);
