@@ -7,18 +7,24 @@ import Image from "next/image";
 import { ReactElement } from "react";
 
 export default function PaintingCard({
-	index,
+	artData,
 	extraStyle,
+	index,
 }: {
-	index: number;
+	artData?: PaintingType;
 	extraStyle?: string;
+	index?: number;
 }): ReactElement {
 	const paintingsData: PaintingType[] = usePaintingContext();
-	const painting: PaintingType = paintingsData[index];
+	const painting: PaintingType | undefined = index
+		? paintingsData[index]
+		: artData;
 	const sellers: SellerType[] = useSellerContext();
 	const paintingSeller: SellerType | undefined = sellers.find(
 		(seller) => seller.id === painting?.sellerId,
 	);
+
+	if (!painting) return <></>;
 
 	return (
 		<a

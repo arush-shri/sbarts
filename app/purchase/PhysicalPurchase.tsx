@@ -4,18 +4,17 @@ import { InputField } from "@/components/PurchaseParts";
 import { Image as ImageIcon, Lock } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ReactElement, useCallback, useRef, useState } from "react";
-import { usePaintingContext } from "../_context/PaintingConext";
+import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { useSellerContext } from "../_context/SellerContext";
 import { PaintingType, SellerType } from "../_lib/customTypes";
+
 export default function PhysicalPurchase({
 	productId,
 }: {
 	productId: string;
 }): ReactElement {
-	const paintings: PaintingType[] = usePaintingContext();
-	const painting: PaintingType | undefined = paintings.find(
-		(p) => p.id === productId,
+	const [painting, setPainting] = useState<PaintingType | undefined>(
+		undefined,
 	);
 	const sellers: SellerType[] = useSellerContext();
 	const paintingSeller: SellerType | undefined = sellers.find(
@@ -23,6 +22,27 @@ export default function PhysicalPurchase({
 	);
 
 	const [selectedShipping, setSelectedShipping] = useState("standard");
+
+	const loadData = async () => {
+		const res = await fetch("/api/painting", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ id: productId }),
+		});
+
+		if (!res.ok) return null;
+
+		const json = await res.json();
+
+		const art: PaintingType = json.data;
+		setPainting(art);
+	};
+
+	useEffect(() => {
+		loadData();
+	}, []);
 
 	if (!painting || painting.isPhysical) {
 		notFound();

@@ -47,3 +47,19 @@ export type FilterButtonRef = {
 export type ExploreButtonProps = {
 	onClickCallback?: (key: string, value: string | string[]) => void;
 };
+
+export type ExploreRequest = {
+	search?: string;
+	category?: string;
+	type?: "digital" | "physical" | "all";
+
+	minPrice?: number;
+	maxPrice?: number;
+
+	sort?:
+		| "Relevance"
+		| "Price: Low to High"
+		| "Price: High to Low"
+		| "Newest"
+		| "Most Popular";
+};

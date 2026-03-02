@@ -1,19 +1,37 @@
 "use client";
 
-import { usePaintingContext } from "@/app/_context/PaintingConext";
 import { PaintingType } from "@/app/_lib/customTypes";
 import { PaintingImage, SellerInfo } from "@/components/PaintingParts";
 import { Share2 } from "lucide-react";
 import { notFound, useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ProductPage() {
 	const { productId } = useParams();
-	const paintings: PaintingType[] = usePaintingContext();
-
-	// Filter the specific painting based on the URL ID
-	const painting: PaintingType | undefined = paintings.find(
-		(p) => p.id === productId,
+	const [painting, setPainting] = useState<PaintingType | undefined>(
+		undefined,
 	);
+
+	const loadData = async () => {
+		const res = await fetch("/api/painting", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ id: productId }),
+		});
+
+		if (!res.ok) return null;
+
+		const json = await res.json();
+
+		const art: PaintingType = json.data;
+		setPainting(art);
+	};
+
+	useEffect(() => {
+		loadData();
+	}, []);
 
 	if (!painting) {
 		notFound(); // Render 404 page if painting not found

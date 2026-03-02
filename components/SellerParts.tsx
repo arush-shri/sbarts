@@ -1,9 +1,8 @@
-import { usePaintingContext } from "@/app/_context/PaintingConext";
 import { PaintingType, SellerType } from "@/app/_lib/customTypes";
 import { convertNumToDate } from "@/app/_lib/dataProcessing";
 import { Edit2, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { ReactElement, useMemo, useRef, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 
 export function SidebarProfile({
 	artistData,
@@ -63,12 +62,30 @@ export function ListingsTable({
 }: {
 	artworkIds: string[];
 }): ReactElement {
-	const paintings: PaintingType[] = usePaintingContext();
-	const displayedArtworks = useMemo(() => {
-		return artworkIds
-			.map((id) => paintings.find((p) => p.id === id))
-			.filter((p): p is PaintingType => p !== undefined);
-	}, [artworkIds, paintings]);
+	const [displayedArtworks, setDisplayedArtworks] = useState<PaintingType[]>(
+		[],
+	);
+
+	const loadData = async () => {
+		const res = await fetch("/api/painting", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ ids: artworkIds }),
+		});
+
+		if (!res.ok) return null;
+
+		const json = await res.json();
+
+		const art: PaintingType[] = json.data;
+		setDisplayedArtworks(art);
+	};
+
+	useEffect(() => {
+		loadData();
+	}, []);
 
 	return (
 		<div>
@@ -176,7 +193,7 @@ export function StatsCards({
 export default function ArtworkUpload({
 	callback,
 }: {
-	callback: (name: string, value: string) => void;
+	callback: (name: string, value: File) => void;
 }) {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [preview, setPreview] = useState<string | null>(null);
@@ -231,7 +248,7 @@ export default function ArtworkUpload({
 			setPreview(objectUrl);
 			setFileName(file.name);
 
-			callback("uploadedFile", objectUrl);
+			callback("uploadedFile", file);
 		};
 
 		img.src = objectUrl;

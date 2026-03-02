@@ -1,9 +1,8 @@
 "use client";
 
-import { usePaintingContext } from "@/app/_context/PaintingConext";
 import { PaintingType } from "@/app/_lib/customTypes";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
 	artworkIds: string[];
@@ -12,14 +11,30 @@ interface Props {
 const ArtworkGrid = ({ artworkIds }: Props) => {
 	const ITEMS_PER_PAGE = 6;
 	const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
-	const paintings: PaintingType[] = usePaintingContext();
+	const [displayedArtworks, setDisplayedArtworks] = useState<PaintingType[]>(
+		[],
+	);
 
-	const displayedArtworks = useMemo(() => {
-		return artworkIds
-			.slice(0, visibleCount)
-			.map((id) => paintings.find((p) => p.id === id))
-			.filter((p): p is PaintingType => p !== undefined);
-	}, [artworkIds, visibleCount, paintings]);
+	const loadData = async () => {
+		const res = await fetch("/api/painting", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ ids: artworkIds }),
+		});
+
+		if (!res.ok) return null;
+
+		const json = await res.json();
+
+		const art: PaintingType[] = json.data;
+		setDisplayedArtworks(art);
+	};
+
+	useEffect(() => {
+		loadData();
+	}, []);
 
 	const hasMore = visibleCount < artworkIds.length;
 

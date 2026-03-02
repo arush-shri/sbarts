@@ -2,29 +2,84 @@
 
 import InputBox from "@/components/EnlistPart";
 import ArtworkUpload from "@/components/SellerParts";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 export default function CreateListing() {
 	// Using ref to store form data as requested
+	const router = useRouter();
 	const formData = useRef({
 		title: "",
-		category: "",
+		category: "Digital Art",
 		medium: "",
 		description: "",
 		price: 0,
 		quantity: 1,
 		listingType: "Digital Download",
+		uploadedFile: "",
 	});
 
 	const [activeStep, setActiveStep] = useState("Basic Details");
 
-	const handleInputChange = (name: string, value: string | number) => {
+	const handleInputChange = (name: string, value: string | number | File) => {
 		formData.current = { ...formData.current, [name]: value };
 	};
 
-	const handleSubmit = () => {
-		console.log("Submitting Data:", formData.current);
-		alert("Listing Published! Check console for data.");
+	const handleSubmit = async () => {
+		const data = formData.current;
+		// ---------- VALIDATION ----------
+		if (
+			!data.title.trim() ||
+			!data.category.trim() ||
+			!data.medium.trim() ||
+			!data.description.trim() ||
+			!data.listingType.trim() ||
+			!data.uploadedFile
+		) {
+			alert("Please fill all required fields.");
+			return;
+		}
+
+		if (data.price <= 0) {
+			alert("Price must be greater than 0.");
+			return;
+		}
+
+		if (data.quantity <= 0) {
+			alert("Quantity must be greater than 0.");
+			return;
+		}
+
+		// ---------- CREATE FORMDATA ----------
+		const body = new FormData();
+
+		body.append("title", data.title);
+		body.append("category", data.category);
+		body.append("medium", data.medium);
+		body.append("description", data.description);
+		body.append("price", String(data.price));
+		body.append("quantity", String(data.quantity));
+		body.append("listingType", data.listingType);
+
+		// uploadedFile should be File object ideally
+		body.append("uploadedFile", data.uploadedFile as any);
+
+		// ---------- SEND ----------
+		try {
+			const res = await fetch("/api/listing", {
+				method: "POST",
+				body,
+			});
+
+			if (!res.ok) {
+				alert("Upload failed");
+				return;
+			}
+			router.replace("/dashboard");
+		} catch (err) {
+			console.error(err);
+			alert("Something went wrong");
+		}
 	};
 
 	return (

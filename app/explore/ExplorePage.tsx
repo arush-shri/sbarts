@@ -3,8 +3,8 @@
 import { ExploreFilterButton, ExploreSort } from "@/components/ExploreParts";
 import PaintingCard from "@/components/PaintingCard";
 import { SlidersHorizontal } from "lucide-react";
-import { ReactElement, useRef } from "react";
-import { FilterButtonRef } from "../_lib/customTypes";
+import { ReactElement, useEffect, useRef, useState } from "react";
+import { FilterButtonRef, PaintingType } from "../_lib/customTypes";
 
 export default function ExplorePage({
 	category,
@@ -14,9 +14,34 @@ export default function ExplorePage({
 	keyword?: string;
 }): ReactElement {
 	const filterRef = useRef<FilterButtonRef>(null);
-	console.log(category, keyword);
-	// Mock data for rendering components
-	const items = Array.from({ length: 6 });
+	const [items, setItems] = useState<PaintingType[]>([]);
+
+	const loadData = async (
+		minPrice?: number,
+		maxPrice?: number,
+		type?: string,
+		sort?: string,
+	) => {
+		const res = await fetch("/api/explore", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				search: keyword,
+				category: category,
+				minPrice: minPrice,
+				maxPrice: maxPrice,
+				type: type,
+				sort: sort,
+			}),
+		});
+
+		const data = await res.json();
+		setItems(data);
+	};
+
+	useEffect(() => {
+		loadData();
+	}, []);
 
 	return (
 		<div className="px-5 md:px-20 pt-24">
@@ -49,8 +74,12 @@ export default function ExplorePage({
 				{/* Art Grid */}
 				<main className="flex-1">
 					<div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3">
-						{items.map((_, idx) => (
-							<PaintingCard index={idx} key={idx} extraStyle="" />
+						{items.map((art, idx) => (
+							<PaintingCard
+								artData={art}
+								key={art.id}
+								extraStyle=""
+							/>
 						))}
 					</div>
 				</main>

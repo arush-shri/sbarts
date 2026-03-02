@@ -1,10 +1,9 @@
 "use client";
-import { usePaintingContext } from "@/app/_context/PaintingConext";
 import { PaintingType } from "@/app/_lib/customTypes";
 import { convertNumToDate } from "@/app/_lib/dataProcessing";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import React, { ReactElement, useRef } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 
 interface InputBoxProps {
 	label: string;
@@ -66,9 +65,8 @@ export default function EditArtwork({
 }: {
 	itemId: string;
 }): ReactElement {
-	const paintings: PaintingType[] = usePaintingContext();
-	const painting: PaintingType | undefined = paintings.find(
-		(p) => p.id === itemId,
+	const [painting, setPainting] = useState<PaintingType | undefined>(
+		undefined,
 	);
 
 	const editedData = useRef({
@@ -88,6 +86,36 @@ export default function EditArtwork({
 	const saveChanges = () => {
 		console.log("Saving data:", editedData.current);
 	};
+
+	const loadData = async () => {
+		const res = await fetch("/api/painting", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ id: itemId }),
+		});
+
+		if (!res.ok) return null;
+
+		const json = await res.json();
+
+		const art: PaintingType = json.data;
+		editedData.current = {
+			title: art?.title,
+			category: art?.category,
+			description: art?.description,
+			price: art?.price,
+			quantity: art?.isDigital
+				? art?.quantityDigital
+				: art?.quantityPhysical,
+		};
+		setPainting(art);
+	};
+
+	useEffect(() => {
+		loadData();
+	}, []);
 
 	if (!painting) notFound();
 
