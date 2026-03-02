@@ -1,23 +1,43 @@
 "use client";
 
-import { useSellerContext } from "@/app/_context/SellerContext";
 import { SellerType } from "@/app/_lib/customTypes";
 import { convertNumToDate } from "@/app/_lib/dataProcessing";
 import ArtworkGrid from "@/components/ArtworkGrid";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 export default function ArtistProfile({
 	sellerId,
 }: {
 	sellerId: string;
 }): ReactElement {
-	const sellers: SellerType[] = useSellerContext();
-
-	const artistData: SellerType | undefined = sellers.find(
-		(seller) => seller.id === sellerId,
+	const [artistData, setArtistData] = useState<SellerType | undefined>(
+		undefined,
 	);
+
+	const loadData = async () => {
+		try {
+			const res = await fetch("/api/seller", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ sellerId }),
+			});
+
+			if (!res.ok) return null;
+
+			const json = await res.json();
+			setArtistData(json.data as SellerType);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	useEffect(() => {
+		loadData();
+	}, []);
 
 	if (!artistData) notFound();
 

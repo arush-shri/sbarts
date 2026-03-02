@@ -1,6 +1,13 @@
 "use client";
 
-import { Context, createContext, ReactNode, useContext, useState } from "react";
+import {
+	Context,
+	createContext,
+	ReactNode,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 import { SellerType } from "../_lib/customTypes";
 
 const seller: SellerType = {
@@ -42,6 +49,29 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 		{ ...seller, id: "seller_004", name: "Colorful Canvas Art" },
 		{ ...seller, id: "seller_005", name: "Artistic Expressions" },
 	]);
+
+	const loadData = async () => {
+		try {
+			const res = await fetch("/api/seller", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ sellerId: "" }),
+			});
+
+			if (!res.ok) return null;
+
+			const json = await res.json();
+			json.data as SellerType;
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	useEffect(() => {
+		loadData();
+	}, []);
 
 	return (
 		<SellerContext.Provider value={sellers}>

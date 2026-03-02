@@ -6,16 +6,39 @@ import {
 	InputField,
 } from "@/components/PurchaseParts";
 import { Lock } from "lucide-react";
-import { ReactElement, useCallback, useRef, useState } from "react";
-import { useSellerContext } from "../_context/SellerContext";
+import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { SellerType } from "../_lib/customTypes";
 
 export default function PortraitPurchase(): ReactElement {
-	const sellers: SellerType[] = useSellerContext();
+	const [sellers, setSellers] = useState<SellerType[]>([]);
 	const [selectedSeller, setSelectedSeller] = useState("seller_001");
 	const seller: SellerType | undefined = sellers.find(
 		(s) => s.id === selectedSeller,
 	);
+
+	const loadData = async () => {
+		try {
+			const res = await fetch("/api/seller", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({}), // no sellerId
+			});
+
+			if (!res.ok) return null;
+
+			const json = await res.json();
+			return json.data as SellerType[];
+		} catch (err) {
+			console.error(err);
+			return null;
+		}
+	};
+
+	useEffect(() => {
+		loadData();
+	}, []);
 
 	// THE MASTER DATA STORE (Does not trigger re-renders on change)
 	const formData = useRef({

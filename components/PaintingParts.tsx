@@ -5,7 +5,7 @@ import { SellerType } from "@/app/_lib/customTypes";
 import { X, ZoomIn } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 export function PaintingImage({ uri, title }: { uri: string; title: string }) {
 	const [isOpen, setIsOpen] = useState(false);
@@ -75,9 +75,33 @@ export function SellerInfo({
 }): ReactElement {
 	const router = useRouter();
 	const sellers: SellerType[] = useSellerContext();
-	const paintingSeller: SellerType | undefined = sellers.find(
-		(seller) => seller.id === sellerId,
-	);
+	const [paintingSeller, setPaintingSeller] = useState<
+		SellerType | undefined
+	>(undefined);
+
+	const loadData = async () => {
+		try {
+			const resArtist = await fetch("/api/seller", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ sellerId: sellerId }),
+			});
+
+			if (!resArtist.ok) return null;
+
+			const jsonArtist = await resArtist.json();
+			setPaintingSeller(jsonArtist.data as SellerType);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	useEffect(() => {
+		loadData();
+	}, []);
+
 	return (
 		<div
 			onClick={() => router.push(`/profile/${sellerId}`)}

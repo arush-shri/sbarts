@@ -5,7 +5,6 @@ import { Image as ImageIcon, Lock } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
-import { useSellerContext } from "../_context/SellerContext";
 import { PaintingType, SellerType } from "../_lib/customTypes";
 
 export default function DigitalPurchase({
@@ -16,26 +15,42 @@ export default function DigitalPurchase({
 	const [painting, setPainting] = useState<PaintingType | undefined>(
 		undefined,
 	);
-	const sellers: SellerType[] = useSellerContext();
-	const paintingSeller: SellerType | undefined = sellers.find(
-		(seller) => seller.id === painting?.sellerId,
-	);
+	const [paintingSeller, setPaintingSeller] = useState<
+		SellerType | undefined
+	>(undefined);
 
 	const loadData = async () => {
-		const res = await fetch("/api/painting", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ id: productId }),
-		});
+		try {
+			const res = await fetch("/api/painting", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ id: productId }),
+			});
 
-		if (!res.ok) return null;
+			if (!res.ok) return null;
 
-		const json = await res.json();
+			const json = await res.json();
 
-		const art: PaintingType = json.data;
-		setPainting(art);
+			const art: PaintingType = json.data;
+			setPainting(art);
+
+			const resArtist = await fetch("/api/seller", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ sellerId: art.sellerId }),
+			});
+
+			if (!resArtist.ok) return null;
+
+			const jsonArtist = await resArtist.json();
+			setPaintingSeller(jsonArtist.data as SellerType);
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	useEffect(() => {

@@ -1,10 +1,9 @@
 "use client";
 
 import { usePaintingContext } from "@/app/_context/PaintingConext";
-import { useSellerContext } from "@/app/_context/SellerContext";
 import { PaintingType, SellerType } from "@/app/_lib/customTypes";
 import Image from "next/image";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 export default function PaintingCard({
 	artData,
@@ -19,10 +18,32 @@ export default function PaintingCard({
 	const painting: PaintingType | undefined = index
 		? paintingsData[index]
 		: artData;
-	const sellers: SellerType[] = useSellerContext();
-	const paintingSeller: SellerType | undefined = sellers.find(
-		(seller) => seller.id === painting?.sellerId,
-	);
+	const [paintingSeller, setPaintingSeller] = useState<
+		SellerType | undefined
+	>(undefined);
+
+	const loadData = async () => {
+		try {
+			const resArtist = await fetch("/api/seller", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ sellerId: painting?.sellerId }),
+			});
+
+			if (!resArtist.ok) return null;
+
+			const jsonArtist = await resArtist.json();
+			setPaintingSeller(jsonArtist.data as SellerType);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	useEffect(() => {
+		if (painting?.sellerId) loadData();
+	}, [painting]);
 
 	if (!painting) return <></>;
 
