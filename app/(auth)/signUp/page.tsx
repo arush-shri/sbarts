@@ -3,6 +3,7 @@
 import {
 	AccountInfo,
 	PhysicalAddress,
+	SellerImageUpload,
 	StripeConnect,
 } from "@/components/AuthPart";
 import { ReactElement, useRef } from "react";
@@ -19,6 +20,7 @@ export default function SellerOnboarding(): ReactElement {
 		password: "",
 		country: "",
 		stripeConnected: false,
+		imageFile: "",
 	});
 
 	const updateField = (key: string, value: string | boolean) => {
@@ -84,6 +86,8 @@ export default function SellerOnboarding(): ReactElement {
 							}}
 							onChange={updateField}
 						/>
+
+						<SellerImageUpload onChange={updateField} />
 
 						<PhysicalAddress
 							initialData={{

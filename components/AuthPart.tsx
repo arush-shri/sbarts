@@ -1,7 +1,7 @@
 // @ts-ignore
 import { getNames } from "country-list";
-import { CreditCard, Eye, EyeOff } from "lucide-react";
-import { memo, useState } from "react";
+import { CreditCard, Eye, EyeOff, ImagePlus } from "lucide-react";
+import { memo, useRef, useState } from "react";
 interface Props {
 	initialData: any;
 	onChange: (key: string, value: string) => void;
@@ -146,6 +146,114 @@ export const PhysicalAddress = memo(({ initialData, onChange }: Props) => {
 		</div>
 	);
 });
+
+export const SellerImageUpload = memo(
+	({ onChange }: { onChange: (k: string, v: string) => void }) => {
+		const inputRef = useRef<HTMLInputElement>(null);
+
+		const [preview, setPreview] = useState<string | null>(null);
+		const [fileName, setFileName] = useState("");
+
+		const handleClick = () => {
+			inputRef.current?.click();
+		};
+
+		const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+			const file = e.target.files?.[0];
+			if (!file) return;
+
+			// ---------- TYPE CHECK ----------
+			const validTypes = ["image/jpeg", "image/png"];
+			if (!validTypes.includes(file.type)) {
+				alert("Only JPG or PNG images are allowed.");
+				return;
+			}
+
+			// ---------- SIZE CHECK (5MB) ----------
+			const maxSize = 5 * 1024 * 1024;
+			if (file.size > maxSize) {
+				alert("Image must be smaller than 5MB.");
+				return;
+			}
+
+			// ---------- DIMENSION CHECK ----------
+			const img = new window.Image();
+			const objectUrl = URL.createObjectURL(file);
+
+			img.onload = () => {
+				if (img.width < 720 || img.height < 720) {
+					alert("Image must be at least 720×720.");
+					URL.revokeObjectURL(objectUrl);
+					return;
+				}
+
+				setPreview(objectUrl);
+				setFileName(file.name);
+
+				// send uri to parent
+				onChange("uploadedFile", objectUrl);
+			};
+
+			img.onerror = () => {
+				alert("Invalid image file.");
+				URL.revokeObjectURL(objectUrl);
+			};
+
+			img.src = objectUrl;
+		};
+
+		return (
+			<>
+				{/* hidden input */}
+				<input
+					ref={inputRef}
+					type="file"
+					accept="image/jpeg,image/png"
+					className="hidden"
+					onChange={handleFileChange}
+				/>
+
+				<div
+					onClick={handleClick}
+					className="p-4 border border-dashed border-[#0000001A] rounded-xl bg-slate-50 cursor-pointer hover:bg-slate-100 transition"
+				>
+					<div className="flex items-center justify-between">
+						<div className="flex items-center gap-3">
+							{/* LEFT SIDE */}
+							{preview ? (
+								<img
+									src={preview}
+									alt="Selected"
+									className="w-12 h-12 rounded-md object-cover"
+								/>
+							) : (
+								<div className="p-2 bg-[#635BFF] rounded-md">
+									<ImagePlus
+										className="text-white"
+										size={20}
+									/>
+								</div>
+							)}
+
+							{/* RIGHT SIDE */}
+							<div>
+								<p className="text-sm font-bold text-[#0F1724]">
+									{preview ? fileName : "Upload Your Picture"}
+								</p>
+
+								{preview && (
+									<p className="text-xs text-[#98A0AB]">
+										Click to change image
+									</p>
+								)}
+							</div>
+						</div>
+					</div>
+				</div>
+			</>
+		);
+	},
+);
 
 export const StripeConnect = memo(
 	({ onChange }: { onChange: (k: string, v: boolean) => void }) => {
