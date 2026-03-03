@@ -50,7 +50,7 @@ export type ExploreButtonProps = {
 
 export type ExploreRequest = {
 	search?: string;
-	category?: string;
+	category?: string[];
 	type?: "digital" | "physical" | "all";
 
 	minPrice?: number;

@@ -272,7 +272,8 @@ export function ExploreSort({
 						<button
 							key={option}
 							onClick={() => {
-								setSelected(option);
+								// setSelected(option);
+								callback(option);
 								setOpen(false);
 							}}
 							className="w-full text-left px-4 py-2 text-sm text-[#0F1724] hover:bg-gray-100"

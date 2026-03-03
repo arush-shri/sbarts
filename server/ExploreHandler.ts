@@ -7,8 +7,8 @@ export async function ExploreHandler(
 	let query: FirebaseFirestore.Query = firebaseDB.collection("paintings");
 
 	// ---------- CATEGORY ----------
-	if (params.category) {
-		query = query.where("category", "==", params.category);
+	if (params.category && params.category.length > 0) {
+		query = query.where("category", "in", params.category.slice(0, 10));
 	}
 
 	// ---------- TYPE ----------

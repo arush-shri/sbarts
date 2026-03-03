@@ -15,28 +15,40 @@ export default function ExplorePage({
 }): ReactElement {
 	const filterRef = useRef<FilterButtonRef>(null);
 	const [items, setItems] = useState<PaintingType[]>([]);
+	const filtersRef = useRef<{
+		search?: string;
+		category?: string;
+		minPrice?: number;
+		maxPrice?: number;
+		type?: string;
+		sort?: string;
+	}>({
+		search: "",
+		category: "",
+		minPrice: undefined,
+		maxPrice: undefined,
+		type: undefined,
+		sort: "Newest",
+	});
 
-	const loadData = async (
-		minPrice?: number,
-		maxPrice?: number,
-		type?: string,
-		sort?: string,
-	) => {
+	const loadData = async () => {
 		const res = await fetch("/api/explore", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				search: keyword,
-				category: category,
-				minPrice: minPrice,
-				maxPrice: maxPrice,
-				type: type,
-				sort: sort,
-			}),
+			body: JSON.stringify(filtersRef.current),
 		});
 
 		const data = await res.json();
 		setItems(data);
+	};
+
+	const updateFilter = (key: string, value: string | string[]) => {
+		if (key === "price" && !Array.isArray(value)) {
+			const range: string[] = value.split(",");
+			filtersRef.current.minPrice = Number(range[0]);
+			filtersRef.current.maxPrice = Number(range[1]);
+		} else filtersRef.current = { ...filtersRef.current, [key]: value };
+		loadData();
 	};
 
 	useEffect(() => {
@@ -61,7 +73,7 @@ export default function ExplorePage({
 
 					<ExploreSort
 						callback={(sortValue) =>
-							console.log("Sort value:", sortValue)
+							updateFilter("sort", sortValue)
 						}
 					/>
 				</div>
@@ -69,7 +81,10 @@ export default function ExplorePage({
 
 			<section className="flex flex-col md:flex-row mb-20">
 				{/* Sidebar Filter - Mobile Responsive */}
-				<ExploreFilterButton ref={filterRef} />
+				<ExploreFilterButton
+					ref={filterRef}
+					onClickCallback={updateFilter}
+				/>
 
 				{/* Art Grid */}
 				<main className="flex-1">
