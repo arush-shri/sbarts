@@ -10,6 +10,7 @@
 		"clean": "rmdir /s /q .next"
 	},
 	"dependencies": {
+		"bcrypt": "^6.0.0",
 		"country-list": "^2.4.1",
 		"firebase-admin": "^13.7.0",
 		"lucide-react": "^0.575.0",

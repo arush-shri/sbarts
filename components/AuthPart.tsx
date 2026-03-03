@@ -148,7 +148,7 @@ export const PhysicalAddress = memo(({ initialData, onChange }: Props) => {
 });
 
 export const SellerImageUpload = memo(
-	({ onChange }: { onChange: (k: string, v: string) => void }) => {
+	({ onChange }: { onChange: (k: string, v: File) => void }) => {
 		const inputRef = useRef<HTMLInputElement>(null);
 
 		const [preview, setPreview] = useState<string | null>(null);
@@ -191,7 +191,7 @@ export const SellerImageUpload = memo(
 				setFileName(file.name);
 
 				// send uri to parent
-				onChange("uploadedFile", objectUrl);
+				onChange("uploadedFile", file);
 			};
 
 			img.onerror = () => {

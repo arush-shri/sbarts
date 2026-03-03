@@ -1,5 +1,5 @@
 import { firebaseDB } from "@/app/_firebase/firebaseDb";
-import { PaintingType } from "@/app/_lib/customTypes";
+import { PaintingType, UpdateBody } from "@/app/_lib/customTypes";
 import { processImage } from "@/server/ArtImageHandler";
 import fs from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
@@ -78,6 +78,64 @@ export async function GET() {
 
 		return NextResponse.json(
 			{ error: "Failed to fetch listings" },
+			{ status: 500 },
+		);
+	}
+}
+
+export async function PUT(req: NextRequest) {
+	try {
+		const body: UpdateBody = await req.json();
+
+		// ---------- VALIDATION ----------
+		if (!body.id) {
+			return NextResponse.json(
+				{ error: "Painting id is required" },
+				{ status: 400 },
+			);
+		}
+
+		const docRef = firebaseDB.collection("paintings").doc(body.id);
+		const docSnap = await docRef.get();
+
+		if (!docSnap.exists) {
+			return NextResponse.json(
+				{ error: "Painting not found" },
+				{ status: 404 },
+			);
+		}
+
+		const existing = docSnap.data() as PaintingType;
+
+		// ---------- PREPARE UPDATE OBJECT ----------
+		const updateData: Partial<PaintingType> = {
+			updatedAt: Date.now(),
+		};
+
+		if (body.title !== undefined) updateData.title = body.title;
+		if (body.category !== undefined) updateData.category = body.category;
+		if (body.description !== undefined)
+			updateData.description = body.description;
+		if (body.price !== undefined) updateData.price = body.price;
+
+		// ---------- HANDLE QUANTITY ----------
+		if (body.quantity !== undefined) {
+			if (existing.isDigital) {
+				updateData.quantityDigital = body.quantity;
+			} else if (existing.isPhysical) {
+				updateData.quantityPhysical = body.quantity;
+			}
+		}
+
+		// ---------- UPDATE FIRESTORE ----------
+		await docRef.update(updateData);
+
+		return NextResponse.json({ success: true }, { status: 200 });
+	} catch (err) {
+		console.error(err);
+
+		return NextResponse.json(
+			{ error: "Failed to update painting" },
 			{ status: 500 },
 		);
 	}

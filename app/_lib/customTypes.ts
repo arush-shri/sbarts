@@ -63,3 +63,12 @@ export type ExploreRequest = {
 		| "Newest"
 		| "Most Popular";
 };
+
+export type UpdateBody = {
+	id?: string;
+	title?: string;
+	category?: string;
+	description?: string;
+	price?: number;
+	quantity?: number;
+};

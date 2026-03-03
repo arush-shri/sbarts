@@ -83,8 +83,56 @@ export default function EditArtwork({
 		editedData.current = { ...editedData.current, [name]: value };
 	};
 
-	const saveChanges = () => {
+	const saveChanges = async () => {
 		console.log("Saving data:", editedData.current);
+		const data = editedData.current;
+
+		// ---------- VALIDATION ----------
+		if (
+			!data.title?.trim() ||
+			!data.category?.trim() ||
+			!data.description?.trim()
+		) {
+			alert("All fields are required.");
+			return;
+		}
+
+		if (!data.price || data.price <= 0) {
+			alert("Price must be greater than 0.");
+			return;
+		}
+
+		if (!data.quantity || data.quantity <= 0) {
+			alert("Quantity must be greater than 0.");
+			return;
+		}
+
+		try {
+			const res = await fetch("/api/listing", {
+				method: "PUT", // update
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					id: itemId,
+					title: data.title,
+					category: data.category,
+					description: data.description,
+					price: data.price,
+					quantity: data.quantity,
+				}),
+			});
+
+			if (!res.ok) {
+				alert("Failed to update painting.");
+				return;
+			}
+
+			alert("Changes saved successfully!");
+		} catch (err) {
+			console.error(err);
+			alert("Something went wrong.");
+		}
 	};
 
 	const loadData = async () => {

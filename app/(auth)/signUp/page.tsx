@@ -20,10 +20,67 @@ export default function SellerOnboarding(): ReactElement {
 		password: "",
 		country: "",
 		stripeConnected: false,
-		imageFile: "",
+		uploadedFile: "",
 	});
 
-	const updateField = (key: string, value: string | boolean) => {
+	const handleSubmit = async () => {
+		const data = formData.current;
+
+		// ---------- VALIDATION ----------
+		if (
+			!data.fullName.trim() ||
+			!data.email.trim() ||
+			!data.street.trim() ||
+			!data.city.trim() ||
+			!data.state.trim() ||
+			!data.zip.trim() ||
+			!data.country.trim() ||
+			!data.password.trim()
+		) {
+			alert("All fields are required.");
+			return;
+		}
+
+		if (data.password.length < 6) {
+			alert("Password must be at least 6 characters.");
+			return;
+		}
+
+		const body = new FormData();
+
+		body.append("fullName", data.fullName);
+		body.append("email", data.email);
+		body.append("street", data.street);
+		body.append("city", data.city);
+		body.append("state", data.state);
+		body.append("zip", data.zip);
+		body.append("country", data.country);
+		body.append("password", data.password);
+		body.append("stripeConnected", String(data.stripeConnected));
+
+		if (data.uploadedFile) {
+			body.append("image", data.uploadedFile);
+		}
+
+		try {
+			const res = await fetch("/api/auth/signUp", {
+				method: "POST",
+				body,
+			});
+
+			if (!res.ok) {
+				alert("Registration failed");
+				return;
+			}
+
+			alert("Seller registered successfully!");
+		} catch (err) {
+			console.error(err);
+			alert("Something went wrong");
+		}
+	};
+
+	const updateField = (key: string, value: string | boolean | File) => {
 		formData.current = { ...formData.current, [key]: value };
 		console.log("Current Form State:", formData.current);
 	};
