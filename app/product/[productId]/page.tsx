@@ -8,33 +8,45 @@ import { useEffect, useState } from "react";
 
 export default function ProductPage() {
 	const { productId } = useParams();
-	const [painting, setPainting] = useState<PaintingType | undefined>(
-		undefined,
+	const [painting, setPainting] = useState<PaintingType | undefined | null>(
+		null,
 	);
 
 	const loadData = async () => {
-		const res = await fetch("/api/painting", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ id: productId }),
-		});
+		try {
+			const res = await fetch("/api/painting", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ id: productId }),
+			});
 
-		if (!res.ok) return null;
+			if (!res.ok) {
+				setPainting(undefined);
+				return null;
+			}
 
-		const json = await res.json();
+			const json = await res.json();
 
-		const art: PaintingType = json.data;
-		setPainting(art);
+			const art: PaintingType = json.data;
+			setPainting(art);
+		} catch (error) {
+			console.log("Error loading");
+			setPainting(undefined);
+		}
 	};
 
 	useEffect(() => {
 		loadData();
 	}, []);
 
-	if (!painting) {
-		notFound(); // Render 404 page if painting not found
+	if (painting === undefined) {
+		notFound();
+	}
+
+	if (painting === null) {
+		return <div>Loading...</div>;
 	}
 
 	const handleShare = async () => {

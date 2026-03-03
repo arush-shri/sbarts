@@ -22,6 +22,8 @@ export default function SellerDashboard({
 
 	if (!artistData) notFound();
 
+	//TO CHANGE seller data from context
+
 	return (
 		<div className="min-h-screen bg-[#F8F9FA] px-5 md:px-20 pt-24 text-[#0F1724]">
 			<div className="flex flex-col lg:flex-row gap-8">

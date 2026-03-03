@@ -12,8 +12,8 @@ export default function DigitalPurchase({
 }: {
 	productId: string;
 }): ReactElement {
-	const [painting, setPainting] = useState<PaintingType | undefined>(
-		undefined,
+	const [painting, setPainting] = useState<PaintingType | undefined | null>(
+		null,
 	);
 	const [paintingSeller, setPaintingSeller] = useState<
 		SellerType | undefined
@@ -29,7 +29,10 @@ export default function DigitalPurchase({
 				body: JSON.stringify({ id: productId }),
 			});
 
-			if (!res.ok) return null;
+			if (!res.ok) {
+				setPainting(undefined);
+				return null;
+			}
 
 			const json = await res.json();
 
@@ -49,7 +52,8 @@ export default function DigitalPurchase({
 			const jsonArtist = await resArtist.json();
 			setPaintingSeller(jsonArtist.data as SellerType);
 		} catch (err) {
-			console.error(err);
+			console.error("Error Loading");
+			setPainting(undefined);
 		}
 	};
 
@@ -57,9 +61,6 @@ export default function DigitalPurchase({
 		loadData();
 	}, []);
 
-	if (!painting || !painting.isDigital) {
-		notFound();
-	}
 	const [selectedLicense, setSelectedLicense] = useState("Commercial");
 
 	// THE MASTER DATA STORE (Does not trigger re-renders on change)
@@ -100,6 +101,14 @@ export default function DigitalPurchase({
 				: 500;
 	const platformFee = 5;
 	const taxes = 12.0;
+
+	if (painting === undefined || !painting?.isDigital) {
+		notFound();
+	}
+
+	if (painting === null) {
+		return <div>Loading...</div>;
+	}
 
 	// Form validation can be added here before allowing checkout
 	return (

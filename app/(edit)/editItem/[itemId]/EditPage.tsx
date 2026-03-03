@@ -65,8 +65,8 @@ export default function EditArtwork({
 }: {
 	itemId: string;
 }): ReactElement {
-	const [painting, setPainting] = useState<PaintingType | undefined>(
-		undefined,
+	const [painting, setPainting] = useState<PaintingType | null | undefined>(
+		null,
 	);
 
 	const editedData = useRef({
@@ -136,36 +136,50 @@ export default function EditArtwork({
 	};
 
 	const loadData = async () => {
-		const res = await fetch("/api/painting", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ id: itemId }),
-		});
+		try {
+			const res = await fetch("/api/painting", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ id: itemId }),
+			});
 
-		if (!res.ok) return null;
+			if (!res.ok) {
+				setPainting(undefined);
+				return null;
+			}
 
-		const json = await res.json();
+			const json = await res.json();
 
-		const art: PaintingType = json.data;
-		editedData.current = {
-			title: art?.title,
-			category: art?.category,
-			description: art?.description,
-			price: art?.price,
-			quantity: art?.isDigital
-				? art?.quantityDigital
-				: art?.quantityPhysical,
-		};
-		setPainting(art);
+			const art: PaintingType = json.data;
+			editedData.current = {
+				title: art?.title,
+				category: art?.category,
+				description: art?.description,
+				price: art?.price,
+				quantity: art?.isDigital
+					? art?.quantityDigital
+					: art?.quantityPhysical,
+			};
+			setPainting(art);
+		} catch (error) {
+			console.log("Error loading");
+			setPainting(undefined);
+		}
 	};
 
 	useEffect(() => {
 		loadData();
 	}, []);
 
-	if (!painting) notFound();
+	if (painting === undefined) {
+		notFound();
+	}
+
+	if (painting === null) {
+		return <div>Loading...</div>;
+	}
 
 	return (
 		<div className="min-h-screen bg-gray-50 px-5 lg:px-20 pt-24">

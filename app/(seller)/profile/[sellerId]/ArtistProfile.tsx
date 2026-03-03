@@ -12,8 +12,8 @@ export default function ArtistProfile({
 }: {
 	sellerId: string;
 }): ReactElement {
-	const [artistData, setArtistData] = useState<SellerType | undefined>(
-		undefined,
+	const [artistData, setArtistData] = useState<SellerType | undefined | null>(
+		null,
 	);
 
 	const loadData = async () => {
@@ -26,12 +26,16 @@ export default function ArtistProfile({
 				body: JSON.stringify({ sellerId }),
 			});
 
-			if (!res.ok) return null;
+			if (!res.ok) {
+				setArtistData(undefined);
+				return null;
+			}
 
 			const json = await res.json();
 			setArtistData(json.data as SellerType);
 		} catch (err) {
-			console.error(err);
+			console.error("Error loading");
+			setArtistData(undefined);
 		}
 	};
 
@@ -39,7 +43,11 @@ export default function ArtistProfile({
 		loadData();
 	}, []);
 
-	if (!artistData) notFound();
+	if (artistData === undefined) notFound();
+
+	if (artistData === null) {
+		return <div>Loading...</div>;
+	}
 
 	return (
 		<div className="px-5 md:px-20 pt-24 bg-[#F8F9FA] min-h-screen flex flex-col md:flex-row gap-8">
