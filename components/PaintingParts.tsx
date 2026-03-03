@@ -1,6 +1,5 @@
 "use client";
 
-import { useSellerContext } from "@/app/_context/SellerContext";
 import { SellerType } from "@/app/_lib/customTypes";
 import { X, ZoomIn } from "lucide-react";
 import Image from "next/image";
@@ -74,7 +73,6 @@ export function SellerInfo({
 	purchases: number;
 }): ReactElement {
 	const router = useRouter();
-	const sellers: SellerType[] = useSellerContext();
 	const [paintingSeller, setPaintingSeller] = useState<
 		SellerType | undefined
 	>(undefined);

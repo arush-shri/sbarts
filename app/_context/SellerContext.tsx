@@ -34,21 +34,11 @@ const seller: SellerType = {
 	itemSold: 10,
 };
 
-const SellerContext: Context<SellerType[]> = createContext<SellerType[]>([]);
+const SellerContext: Context<SellerType | null> =
+	createContext<SellerType | null>(null);
 
 export function SellerProvider({ children }: { children: ReactNode }) {
-	const [sellers, setSellers] = useState<SellerType[]>([
-		seller,
-		{ ...seller, id: "seller_002", name: "Creative Minds Art" },
-		{
-			...seller,
-			id: "seller_003",
-			name: "Vibrant Visions Art",
-			portraitPrice: 199,
-		},
-		{ ...seller, id: "seller_004", name: "Colorful Canvas Art" },
-		{ ...seller, id: "seller_005", name: "Artistic Expressions" },
-	]);
+	const [seller, setSeller] = useState<SellerType | null>(null);
 
 	const loadData = async () => {
 		try {
@@ -63,7 +53,7 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 			if (!res.ok) return null;
 
 			const json = await res.json();
-			json.data as SellerType;
+			setSeller(json.data as SellerType);
 		} catch (err) {
 			console.error(err);
 		}
@@ -71,10 +61,10 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 
 	useEffect(() => {
 		loadData();
-	}, []);
+	});
 
 	return (
-		<SellerContext.Provider value={sellers}>
+		<SellerContext.Provider value={seller}>
 			{children}
 		</SellerContext.Provider>
 	);

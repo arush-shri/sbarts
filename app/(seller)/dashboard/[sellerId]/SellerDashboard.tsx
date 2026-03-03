@@ -14,11 +14,7 @@ export default function SellerDashboard({
 }: {
 	sellerId: string;
 }): ReactElement {
-	const sellers: SellerType[] = useSellerContext();
-
-	const artistData: SellerType | undefined = sellers.find(
-		(seller) => seller.id === sellerId,
-	);
+	const artistData: SellerType = useSellerContext();
 
 	if (!artistData) notFound();
 
