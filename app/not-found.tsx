@@ -43,7 +43,7 @@ export default function NotFound() {
 		<div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 text-center">
 			{/* Large 404 Background Text */}
 			<div className="relative">
-				<h1 className="text-9xl font-black text-[#F6F7FA] leading-none select-none">
+				<h1 className="text-9xl font-black text-[#ebeef4] leading-none select-none">
 					404
 				</h1>
 
