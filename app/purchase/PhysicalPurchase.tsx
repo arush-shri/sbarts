@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/components/Loading";
 import { InputField } from "@/components/PurchaseParts";
 import { Image as ImageIcon, Lock } from "lucide-react";
 import Image from "next/image";
@@ -96,7 +97,7 @@ export default function PhysicalPurchase({
 	}
 
 	if (painting === null) {
-		return <div>Loading...</div>;
+		return <Loading />;
 	}
 
 	// Form validation can be added here before allowing checkout

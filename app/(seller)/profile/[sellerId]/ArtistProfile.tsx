@@ -3,6 +3,7 @@
 import { SellerType } from "@/app/_lib/customTypes";
 import { convertNumToDate } from "@/app/_lib/dataProcessing";
 import ArtworkGrid from "@/components/ArtworkGrid";
+import Loading from "@/components/Loading";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ReactElement, useEffect, useState } from "react";
@@ -46,7 +47,7 @@ export default function ArtistProfile({
 	if (artistData === undefined) notFound();
 
 	if (artistData === null) {
-		return <div>Loading...</div>;
+		return <Loading />;
 	}
 
 	return (

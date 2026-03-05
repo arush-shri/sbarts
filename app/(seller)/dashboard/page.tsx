@@ -13,7 +13,7 @@ export default function Dashboard(): ReactElement {
 
 	if (!sellerId) notFound();
 
-	return <SellerDashboard sellerId={sellerId} />;
+	return <SellerDashboard />;
 }
 
 // Read seller id from context

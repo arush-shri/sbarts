@@ -1,6 +1,7 @@
 "use client";
 
 import { PaintingType } from "@/app/_lib/customTypes";
+import Loading from "@/components/Loading";
 import { PaintingImage, SellerInfo } from "@/components/PaintingParts";
 import { Share2 } from "lucide-react";
 import { notFound, useParams } from "next/navigation";
@@ -46,7 +47,7 @@ export default function ProductPage() {
 	}
 
 	if (painting === null) {
-		return <div>Loading...</div>;
+		return <Loading />;
 	}
 
 	const handleShare = async () => {

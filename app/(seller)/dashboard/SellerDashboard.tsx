@@ -9,11 +9,7 @@ import { Plus } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ReactElement } from "react";
 
-export default function SellerDashboard({
-	sellerId,
-}: {
-	sellerId: string;
-}): ReactElement {
+export default function SellerDashboard(): ReactElement {
 	const artistData: SellerType = useSellerContext();
 
 	if (!artistData) notFound();

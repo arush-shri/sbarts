@@ -36,7 +36,7 @@ const Button: React.FC<ButtonProps> = ({
 	);
 };
 
-export default function NotFound() {
+export default function NotFoundPage() {
 	const router = useRouter();
 
 	return (

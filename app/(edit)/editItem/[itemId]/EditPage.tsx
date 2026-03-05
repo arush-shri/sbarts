@@ -1,6 +1,7 @@
 "use client";
 import { PaintingType } from "@/app/_lib/customTypes";
 import { convertNumToDate } from "@/app/_lib/dataProcessing";
+import Loading from "@/components/Loading";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
@@ -178,7 +179,7 @@ export default function EditArtwork({
 	}
 
 	if (painting === null) {
-		return <div>Loading...</div>;
+		return <Loading />;
 	}
 
 	return (
