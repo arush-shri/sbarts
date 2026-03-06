@@ -62,17 +62,17 @@ export default function Home() {
 					<CategoryCard
 						uri="/images/digCat.jpg"
 						category="Digital Art"
-						path="/explore?category=digitalart"
+						path="/explore?category=Digital Art"
 					/>
 					<CategoryCard
 						uri="/images/paiCat.jpg"
 						category="Paintings"
-						path="/explore?category=paintings"
+						path="/explore?category=Paintings"
 					/>
 					<CategoryCard
 						uri="/images/phoCat.jpg"
 						category="Photography"
-						path="/explore?category=photography"
+						path="/explore?category=Photography"
 					/>
 					<CategoryCard
 						uri="/images/selCat.jpg"

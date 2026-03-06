@@ -15,16 +15,16 @@ export default function ExplorePage({
 }): ReactElement {
 	const filterRef = useRef<FilterButtonRef>(null);
 	const [items, setItems] = useState<PaintingType[]>([]);
-	const filtersRef = useRef<{
+	const filterDataRef = useRef<{
 		search?: string;
-		category?: string;
+		category?: string[];
 		minPrice?: number;
 		maxPrice?: number;
-		type?: string;
+		type?: "digital" | "physical" | "all";
 		sort?: string;
 	}>({
-		search: "",
-		category: "",
+		search: keyword || "",
+		category: [category || ""],
 		minPrice: undefined,
 		maxPrice: undefined,
 		type: undefined,
@@ -35,19 +35,20 @@ export default function ExplorePage({
 		const res = await fetch("/api/explore", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(filtersRef.current),
+			body: JSON.stringify(filterDataRef.current),
 		});
 
-		const data = await res.json();
+		const { data } = await res.json();
 		setItems(data);
 	};
 
 	const updateFilter = (key: string, value: string | string[]) => {
 		if (key === "price" && !Array.isArray(value)) {
 			const range: string[] = value.split(",");
-			filtersRef.current.minPrice = Number(range[0]);
-			filtersRef.current.maxPrice = Number(range[1]);
-		} else filtersRef.current = { ...filtersRef.current, [key]: value };
+			filterDataRef.current.minPrice = Number(range[0]);
+			filterDataRef.current.maxPrice = Number(range[1]);
+		} else
+			filterDataRef.current = { ...filterDataRef.current, [key]: value };
 		loadData();
 	};
 
@@ -82,6 +83,7 @@ export default function ExplorePage({
 			<section className="flex flex-col md:flex-row mb-20">
 				{/* Sidebar Filter - Mobile Responsive */}
 				<ExploreFilterButton
+					filterData={filterDataRef.current}
 					ref={filterRef}
 					onClickCallback={updateFilter}
 				/>
@@ -89,7 +91,7 @@ export default function ExplorePage({
 				{/* Art Grid */}
 				<main className="flex-1">
 					<div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3">
-						{items.map((art, idx) => (
+						{items?.map((art, idx) => (
 							<PaintingCard
 								artData={art}
 								key={art.id}

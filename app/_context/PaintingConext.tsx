@@ -19,8 +19,8 @@ export function PaintingProvider({ children }: { children: ReactNode }) {
 
 	const loadData = async () => {
 		const res = await fetch("/api/listing");
-		const json: PaintingType[] = await res.json();
-		setPaintings(json);
+		const json = await res.json();
+		setPaintings(json.data);
 	};
 
 	useEffect(() => {

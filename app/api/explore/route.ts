@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
 	try {
 		const body: ExploreRequest = await req.json();
-
+		console.log(body);
 		const data: PaintingType[] = await ExploreHandler(body);
 
 		return NextResponse.json({ success: true, data }, { status: 200 });

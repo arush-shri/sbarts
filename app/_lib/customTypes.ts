@@ -38,6 +38,7 @@ export type SellerType = {
 	email: string;
 	totalSale: number;
 	itemSold: number;
+	orderIds: string[];
 };
 
 export type FilterButtonRef = {
@@ -46,6 +47,14 @@ export type FilterButtonRef = {
 
 export type ExploreButtonProps = {
 	onClickCallback?: (key: string, value: string | string[]) => void;
+	filterData: {
+		search?: string;
+		category?: string[];
+		minPrice?: number;
+		maxPrice?: number;
+		type?: "digital" | "physical" | "all";
+		sort?: string;
+	};
 };
 
 export type ExploreRequest = {

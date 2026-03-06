@@ -6,10 +6,13 @@ import { forwardRef, ReactElement, useImperativeHandle, useState } from "react";
 
 export function ExploreCategories({
 	callback,
+	selected,
 }: {
 	callback: (selectedCategories: string[]) => void;
+	selected: string[];
 }): ReactElement {
-	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+	const [selectedCategories, setSelectedCategories] =
+		useState<string[]>(selected);
 
 	const categories: string[] = [
 		"Digital Art",
@@ -55,52 +58,74 @@ export function ExploreCategories({
 export function ExploreTypes({
 	callback,
 }: {
-	callback: (selectedTypes: string[]) => void;
+	callback: (selectedTypes: "digital" | "physical" | "all") => void;
 }): ReactElement {
-	const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+	const [selected, setSelected] = useState({
+		digital: true,
+		physical: true,
+	});
 
-	const types = ["Digital Download", "Physical Item"];
+	const toggleType = (type: "digital" | "physical") => {
+		const updated = {
+			...selected,
+			[type]: !selected[type],
+		};
 
-	const toggleType = (type: string) => {
-		setSelectedTypes((prev) => {
-			const newTypes = prev.includes(type)
-				? prev.filter((t) => t !== type) // uncheck
-				: [...prev, type];
-			callback(newTypes);
-			return newTypes;
-		});
+		setSelected(updated);
+
+		if (updated.digital && updated.physical) {
+			callback("all");
+		} else if (updated.digital) {
+			callback("digital");
+		} else if (updated.physical) {
+			callback("physical");
+		} else {
+			// if both unchecked → fallback to all
+			callback("all");
+			setSelected({ digital: true, physical: true });
+		}
 	};
 
 	return (
 		<div className="flex flex-col gap-3">
-			{types.map((type) => (
-				<label
-					key={type}
-					className="flex items-center gap-3 cursor-pointer group"
-				>
-					<input
-						type="checkbox"
-						checked={selectedTypes.includes(type)}
-						onChange={() => toggleType(type)}
-						className="w-4 h-4 rounded accent-blue-600"
-					/>
+			<label className="flex items-center gap-3 cursor-pointer group">
+				<input
+					type="checkbox"
+					checked={selected.digital}
+					onChange={() => toggleType("digital")}
+					className="w-4 h-4 rounded accent-blue-600"
+				/>
+				<span className="text-sm text-[#98A0AB] group-hover:text-[#0F1724]">
+					Digital Download
+				</span>
+			</label>
 
-					<span className="text-sm text-[#98A0AB] group-hover:text-[#0F1724]">
-						{type}
-					</span>
-				</label>
-			))}
+			<label className="flex items-center gap-3 cursor-pointer group">
+				<input
+					type="checkbox"
+					checked={selected.physical}
+					onChange={() => toggleType("physical")}
+					className="w-4 h-4 rounded accent-blue-600"
+				/>
+				<span className="text-sm text-[#98A0AB] group-hover:text-[#0F1724]">
+					Physical Item
+				</span>
+			</label>
 		</div>
 	);
 }
 
 export function ExplorePriceRange({
 	callback,
+	minSelected,
+	maxSelected,
 }: {
 	callback: (minPrice: number, maxPrice: number) => void;
+	minSelected: string;
+	maxSelected: string;
 }): ReactElement {
-	const [minPrice, setMinPrice] = useState<string>("");
-	const [maxPrice, setMaxPrice] = useState<string>("");
+	const [minPrice, setMinPrice] = useState<string>(minSelected);
+	const [maxPrice, setMaxPrice] = useState<string>(maxSelected);
 
 	return (
 		<div className="flex flex-col gap-3">
@@ -186,11 +211,8 @@ export const ExploreFilterButton = forwardRef<
 						Category
 					</h3>
 					<ExploreCategories
+						selected={props.filterData.category || []}
 						callback={(selectedCategories: string[]) => {
-							console.log(
-								"Selected Categories:",
-								selectedCategories,
-							);
 							props.onClickCallback?.(
 								"category",
 								selectedCategories,
@@ -207,8 +229,7 @@ export const ExploreFilterButton = forwardRef<
 						Type
 					</h3>
 					<ExploreTypes
-						callback={(selectedTypes: string[]) => {
-							console.log("Selected Types:", selectedTypes);
+						callback={(selectedTypes: string) => {
 							props.onClickCallback?.("type", selectedTypes);
 						}}
 					/>
@@ -222,10 +243,13 @@ export const ExploreFilterButton = forwardRef<
 						Price Range
 					</h3>
 					<ExplorePriceRange
+						minSelected={(
+							props.filterData.minPrice || 0
+						).toString()}
+						maxSelected={(
+							props.filterData.maxPrice || 1
+						).toString()}
 						callback={(minPrice, maxPrice) => {
-							console.log(
-								`Selected price range: $${minPrice} - $${maxPrice}`,
-							);
 							props.onClickCallback?.(
 								"price",
 								`${minPrice},${maxPrice}`,
