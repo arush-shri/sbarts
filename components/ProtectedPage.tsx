@@ -11,14 +11,14 @@ export default function ProtectedPage({ children }: { children: ReactNode }) {
 	useEffect(() => {
 		// instant check
 		if (!firebaseClientAuth.currentUser) {
-			router.replace("/seller/signIn");
+			router.replace("/signIn");
 			return;
 		}
 
 		// listen for auth changes
 		const unsubscribe = onAuthStateChanged(firebaseClientAuth, (user) => {
 			if (!user) {
-				router.replace("/seller/signIn");
+				router.replace("/signIn");
 			}
 		});
 
