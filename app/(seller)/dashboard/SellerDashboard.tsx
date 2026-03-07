@@ -1,49 +1,67 @@
+"use client";
+
 import { useSellerContext } from "@/app/_context/SellerContext";
 import { SellerType } from "@/app/_lib/customTypes";
+import Loading from "@/components/Loading";
+import ProtectedPage from "@/components/ProtectedPage";
 import {
 	ListingsTable,
 	SidebarProfile,
 	StatsCards,
 } from "@/components/SellerParts";
 import { Plus } from "lucide-react";
-import { notFound } from "next/navigation";
-import { ReactElement } from "react";
+import { useRouter } from "next/navigation";
+import { ReactElement, useEffect } from "react";
 
 export default function SellerDashboard(): ReactElement {
-	const artistData: SellerType = useSellerContext();
+	const router = useRouter();
+	const {
+		artistData,
+		loading,
+	}: { artistData: SellerType | null; loading: boolean } = useSellerContext();
 
-	if (!artistData) notFound();
+	useEffect(() => {
+		if (!loading && !artistData) {
+			router.replace("/signIn");
+		}
+	}, [artistData, loading]);
+
+	if (!artistData) return <Loading />;
 
 	return (
-		<div className="min-h-screen bg-[#F8F9FA] px-5 md:px-20 pt-24 text-[#0F1724]">
-			<div className="flex flex-col lg:flex-row gap-8">
-				{/* Left Sidebar */}
-				<SidebarProfile artistData={artistData} />
+		<ProtectedPage>
+			<div className="min-h-screen bg-[#F8F9FA] px-5 md:px-20 pt-24 text-[#0F1724]">
+				<div className="flex flex-col lg:flex-row gap-8">
+					{/* Left Sidebar */}
+					<SidebarProfile artistData={artistData} />
 
-				{/* Right Content Area */}
-				<main className="flex-1 space-y-8">
-					<div className="flex justify-between items-center">
-						<h1 className="text-2xl font-bold">Seller Dashboard</h1>
-						<a
-							href="/listing"
-							className="bg-[#007AFF] text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 
+					{/* Right Content Area */}
+					<main className="flex-1 space-y-8">
+						<div className="flex justify-between items-center">
+							<h1 className="text-2xl font-bold">
+								Seller Dashboard
+							</h1>
+							<a
+								href="/listing"
+								className="bg-[#007AFF] text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 
                             hover:bg-blue-600 transition-colors shadow-sm text-sm"
-						>
-							<Plus className="h-auto w-6" /> Add New Listing
-						</a>
-					</div>
+							>
+								<Plus className="h-auto w-6" /> Add New Listing
+							</a>
+						</div>
 
-					<StatsCards
-						totalSale={artistData.totalSale}
-						totalListing={artistData.artWorks.length}
-						itemSold={artistData.itemSold}
-					/>
+						<StatsCards
+							totalSale={artistData.totalSale}
+							totalListing={artistData.artWorks.length}
+							itemSold={artistData.itemSold}
+						/>
 
-					<div className="bg-white rounded-2xl border border-[#0000001A] overflow-hidden">
-						<ListingsTable artworkIds={artistData.artWorks} />
-					</div>
-				</main>
+						<div className="bg-white rounded-2xl border border-[#0000001A] overflow-hidden">
+							<ListingsTable artworkIds={artistData.artWorks} />
+						</div>
+					</main>
+				</div>
 			</div>
-		</div>
+		</ProtectedPage>
 	);
 }

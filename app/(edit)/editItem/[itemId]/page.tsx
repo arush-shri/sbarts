@@ -1,5 +1,6 @@
 "use client";
 
+import ProtectedPage from "@/components/ProtectedPage";
 import { notFound, useParams } from "next/navigation";
 import { ReactElement } from "react";
 import EditArtwork from "./EditPage";
@@ -13,5 +14,9 @@ export default function EditArtPage(): ReactElement {
 
 	if (!itemId) notFound();
 
-	return <EditArtwork itemId={itemId} />;
+	return (
+		<ProtectedPage>
+			<EditArtwork itemId={itemId} />
+		</ProtectedPage>
+	);
 }

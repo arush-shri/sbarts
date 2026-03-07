@@ -1,7 +1,12 @@
+"use client";
+
+import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { PaintingType, SellerType } from "@/app/_lib/customTypes";
 import { convertNumToDate } from "@/app/_lib/dataProcessing";
+import { signOut } from "firebase/auth";
 import { Edit2, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ReactElement, useEffect, useRef, useState } from "react";
 
 export function SidebarProfile({
@@ -9,6 +14,16 @@ export function SidebarProfile({
 }: {
 	artistData: SellerType;
 }): ReactElement {
+	const router = useRouter();
+
+	const handleLogout = async () => {
+		try {
+			await signOut(firebaseClientAuth);
+			router.replace("/signIn");
+		} catch (error) {
+			console.error("Logout error:", error);
+		}
+	};
 	return (
 		<aside className="w-full lg:w-80 bg-white rounded-2xl p-8 border border-[#0000001A] h-fit">
 			<div className="flex flex-col items-center text-center border-b border-[#0000000D] pb-6 mb-6">
@@ -34,6 +49,10 @@ export function SidebarProfile({
 						label: "Joined",
 						value: convertNumToDate(artistData.createdAt),
 					},
+					{
+						label: "Portrait Pricing",
+						value: artistData.portraitPrice,
+					},
 				].map((item) => (
 					<div
 						key={item.label}
@@ -52,6 +71,13 @@ export function SidebarProfile({
                 transition-colors"
 			>
 				Edit Profile
+			</button>
+			<button
+				onClick={handleLogout}
+				className="w-full py-2.5 bg-red-100 rounded-lg text-sm font-bold hover:bg-red-200
+                transition-colors mt-5 text-red-500"
+			>
+				Sign Out
 			</button>
 		</aside>
 	);

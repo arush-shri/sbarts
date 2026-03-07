@@ -1,6 +1,7 @@
+import { firebaseAuth } from "@/app/_firebase/firebaseAuth";
 import { firebaseDB } from "@/app/_firebase/firebaseDb";
+import { SellerType } from "@/app/_lib/customTypes";
 // @ts-ignore
-import bcrypt from "bcrypt";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -14,6 +15,8 @@ export async function POST(req: NextRequest) {
 		const zip = formData.get("zip") as string;
 		const country = formData.get("country") as string;
 		const password = formData.get("password") as string;
+		const selfPortrait = formData.get("selfPortrait") === "true";
+		const portraitPrice = Number(formData.get("portraitPrice") ?? 0);
 		const stripeConnected = formData.get("stripeConnected") === "true";
 
 		if (!email || !password) {
@@ -23,19 +26,20 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
-		// ---------- HASH PASSWORD ----------
-		const hashedPassword = await bcrypt.hash(password, 12);
-
 		// ---------- LET FIRESTORE CREATE ID ----------
-		const docRef = firebaseDB.collection("sellers").doc();
-		const id = docRef.id;
+		const user = await firebaseAuth.createUser({
+			email,
+			password,
+		});
+		const sellerId: string = user.uid;
+		const docRef = firebaseDB.collection("sellers").doc(sellerId);
 
-		await docRef.set({
-			id,
+		const data: SellerType = {
+			id: sellerId,
 			name: fullName,
 			image: "",
-			makeSelfPortrait: false,
-			portraitPrice: 0,
+			makeSelfPortrait: selfPortrait,
+			portraitPrice: portraitPrice,
 			address: {
 				address: street,
 				country,
@@ -46,13 +50,17 @@ export async function POST(req: NextRequest) {
 			createdAt: Date.now(),
 			artWorks: [],
 			email,
-			password: hashedPassword,
 			totalSale: 0,
 			itemSold: 0,
-			stripeConnected,
-		});
+			orderIds: [],
+		};
 
-		return NextResponse.json({ success: true, id }, { status: 200 });
+		await docRef.set(data);
+
+		return NextResponse.json(
+			{ success: true, id: sellerId },
+			{ status: 200 },
+		);
 	} catch (err) {
 		console.error(err);
 		return NextResponse.json(

@@ -1,5 +1,6 @@
 "use client";
 
+import { onAuthStateChanged } from "@firebase/auth";
 import {
 	Context,
 	createContext,
@@ -8,35 +9,65 @@ import {
 	useEffect,
 	useState,
 } from "react";
+import { firebaseClientAuth } from "../_firebase/clientAuth";
 import { SellerType } from "../_lib/customTypes";
 
-const SellerContext: Context<SellerType | null> =
-	createContext<SellerType | null>(null);
+const SellerContext: Context<{
+	artistData: SellerType | null;
+	loading: boolean;
+}> = createContext<{ artistData: SellerType | null; loading: boolean }>({
+	artistData: null,
+	loading: true,
+});
 
 export function SellerProvider({ children }: { children: ReactNode }) {
-	const [seller, setSeller] = useState<SellerType | null>(null);
-
-	const loadData = async () => {
-		try {
-			const res = await fetch("/api/seller", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ sellerId: "" }),
-			});
-
-			if (!res.ok) return null;
-
-			const json = await res.json();
-			setSeller(json.data as SellerType);
-		} catch (err) {
-			console.error(err);
-		}
-	};
+	const [seller, setSeller] = useState<{
+		artistData: SellerType | null;
+		loading: boolean;
+	}>({ artistData: null, loading: true });
 
 	useEffect(() => {
-		loadData();
+		const unsubscribe = onAuthStateChanged(
+			firebaseClientAuth,
+			async (user) => {
+				if (!user) {
+					setSeller({ artistData: null, loading: false });
+					return;
+				}
+
+				const token = await user.getIdToken();
+
+				const res = await fetch("/api/auth/signIn", {
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				});
+
+				const data = await res.json();
+
+				if (data.success) {
+					const res = await fetch("/api/seller", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ sellerId: data.sellerId }),
+					});
+
+					if (!res.ok) return null;
+					const json = await res.json();
+					setSeller({
+						artistData: json.data as SellerType,
+						loading: false,
+					});
+				} else {
+					setSeller({ artistData: null, loading: false });
+				}
+			},
+		);
+
+		return () => unsubscribe();
 	}, []);
 
 	return (
@@ -48,10 +79,5 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 
 export function useSellerContext() {
 	const context = useContext(SellerContext);
-	if (!context) {
-		throw new Error(
-			"useSellerContext must be used within a SellerProvider",
-		);
-	}
 	return context;
 }

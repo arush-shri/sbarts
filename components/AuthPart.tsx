@@ -359,3 +359,58 @@ export const CredentioalsForm = memo(
 		);
 	},
 );
+
+type PropsRow = {
+	selfPortrait: string;
+	portraitPrice: string;
+	updateField: (key: string, value: string) => void;
+};
+
+export function SelfPortraitRow({
+	selfPortrait,
+	portraitPrice,
+	updateField,
+}: PropsRow) {
+	const [isSelfPortrait, setIsSelfPortrait] = useState(
+		selfPortrait === "true",
+	);
+	const [price, setPrice] = useState(portraitPrice);
+
+	const handlePortraitToggle = (checked: boolean) => {
+		setIsSelfPortrait(checked);
+		updateField("selfPortrait", checked ? "true" : "false");
+	};
+
+	const handlePriceChange = (value: string) => {
+		setPrice(value);
+		updateField("portraitPrice", value);
+	};
+
+	return (
+		<div className="flex items-center justify-between gap-4 border border-[#0000001A] rounded-lg px-4 py-3">
+			<div className="flex items-center gap-3">
+				<input
+					type="checkbox"
+					checked={isSelfPortrait}
+					onChange={(e) => handlePortraitToggle(e.target.checked)}
+					className="w-4 h-4 accent-blue-600"
+				/>
+
+				<span className="text-sm font-medium text-[#0F1724]">
+					I create self portraits
+				</span>
+			</div>
+
+			<input
+				type="number"
+				value={price}
+				placeholder="Portrait Price"
+				onChange={(e) => handlePriceChange(e.target.value)}
+				disabled={!isSelfPortrait}
+				min={0}
+				className="w-32 px-3 py-2 border border-[#0000001A] placeholder:text-[#98A0AB] rounded-lg 
+                focus:outline-none focus:ring-1 focus:ring-blue-500 text-[#0F1724]"
+			/>
+		</div>
+	);
+}
