@@ -50,6 +50,15 @@ export default function SellerOnboarding(): ReactElement {
 			return;
 		}
 
+		const nameRegex = /^[A-Za-z _]+$/;
+
+		if (!nameRegex.test(data.fullName)) {
+			alert(
+				"Full name can only contain alphabets, spaces, and underscores.",
+			);
+			return;
+		}
+
 		if (!validateEmail(data.email)) {
 			alert("Please enter a valid email address.");
 			return;

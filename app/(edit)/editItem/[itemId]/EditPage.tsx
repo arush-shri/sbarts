@@ -85,7 +85,6 @@ export default function EditArtwork({
 	};
 
 	const saveChanges = async () => {
-		console.log("Saving data:", editedData.current);
 		const data = editedData.current;
 
 		// ---------- VALIDATION ----------

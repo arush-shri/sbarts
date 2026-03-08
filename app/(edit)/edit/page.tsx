@@ -69,6 +69,40 @@ export default function EditProfile() {
 
 	const handleSave = async () => {
 		try {
+			// ---------- VALIDATION ----------
+
+			if (
+				!profile.fullName ||
+				!profile.country ||
+				!profile.city ||
+				!profile.address ||
+				!profile.postalCode
+			) {
+				alert("All fields are required.");
+				return;
+			}
+
+			// full name alphabets only
+			const nameRegex = /^[A-Za-z _]+$/;
+
+			if (!nameRegex.test(profile.fullName)) {
+				alert(
+					"Full name can only contain alphabets, spaces, and underscores.",
+				);
+				return;
+			}
+
+			// portrait price validation
+			if (
+				profile.selfPortrait &&
+				(!profile.portraitPrice ||
+					isNaN(Number(profile.portraitPrice)) ||
+					Number(profile.portraitPrice) < 0)
+			) {
+				alert("Please enter a valid portrait price.");
+				return;
+			}
+
 			const body = new FormData();
 
 			body.append("id", artistData?.id || "");
