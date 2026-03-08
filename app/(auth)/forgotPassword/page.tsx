@@ -48,6 +48,20 @@ function ResetPasswordForm() {
 	const navToSignIn = () => router.replace("/signIn");
 	const handleSendOtp = async () => {
 		try {
+			// ---------- VALIDATE ----------
+			if (!email || !email.trim()) {
+				alert("Please enter your email.");
+				return;
+			}
+
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+			if (!emailRegex.test(email)) {
+				alert("Please enter a valid email address.");
+				return;
+			}
+
+			// ---------- SEND RESET EMAIL ----------
 			await sendPasswordResetEmail(firebaseClientAuth, email);
 
 			alert("Password reset email sent. Please check your inbox.");
@@ -57,6 +71,8 @@ function ResetPasswordForm() {
 
 			if (error.code === "auth/user-not-found") {
 				alert("No account found with this email.");
+			} else if (error.code === "auth/invalid-email") {
+				alert("Invalid email address.");
 			} else {
 				alert("Failed to send reset email.");
 			}
