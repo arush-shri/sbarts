@@ -4,7 +4,7 @@ import InputBox from "@/components/EnlistPart";
 import ProtectedPage from "@/components/ProtectedPage";
 import ArtworkUpload from "@/components/SellerParts";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 export default function CreateListing() {
 	// Using ref to store form data as requested
@@ -17,10 +17,8 @@ export default function CreateListing() {
 		price: 0,
 		quantity: 1,
 		listingType: "Digital Download",
-		uploadedFile: "",
+		uploadedFile: null,
 	});
-
-	const [activeStep, setActiveStep] = useState("Basic Details");
 
 	const handleInputChange = (name: string, value: string | number | File) => {
 		formData.current = { ...formData.current, [name]: value };
@@ -104,19 +102,9 @@ export default function CreateListing() {
 										className="flex items-center gap-3 text-sm"
 									>
 										<div
-											className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${activeStep === step ? "border-blue-600" : "border-[#98A0AB]"}`}
-										>
-											{activeStep === step && (
-												<div className="w-2 h-2 bg-blue-600 rounded-full" />
-											)}
-										</div>
-										<span
-											className={
-												activeStep === step
-													? "text-[#0F1724] font-medium"
-													: "text-[#98A0AB]"
-											}
-										>
+											className={`w-4 h-4 rounded-full border-2 flex items-center justify-center border-[#98A0AB]`}
+										/>
+										<span className="text-[#0F1724] font-medium">
 											{step}
 										</span>
 									</li>
