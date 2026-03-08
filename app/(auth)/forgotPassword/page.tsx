@@ -1,6 +1,7 @@
 "use client";
 
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
+import { validateEmail } from "@/app/_lib/dataProcessing";
 import AuthPage from "@/components/AuthPage";
 import { sendPasswordResetEmail } from "@firebase/auth";
 import { Mail } from "lucide-react";
@@ -54,9 +55,7 @@ function ResetPasswordForm() {
 				return;
 			}
 
-			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-			if (!emailRegex.test(email)) {
+			if (!validateEmail(email)) {
 				alert("Please enter a valid email address.");
 				return;
 			}

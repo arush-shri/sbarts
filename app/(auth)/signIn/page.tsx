@@ -1,6 +1,7 @@
 "use client";
 
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
+import { validateEmail, validatePassword } from "@/app/_lib/dataProcessing";
 import AuthPage from "@/components/AuthPage";
 import { CredentioalsForm } from "@/components/AuthPart";
 import { signInWithEmailAndPassword } from "@firebase/auth";
@@ -17,24 +18,54 @@ export default function SellerSignIn(): ReactElement {
 
 	const handleClick = async () => {
 		try {
+			const email = formData.current.email?.trim();
+			const password = formData.current.password?.trim();
+
+			// ---------- VALIDATION ----------
+			if (!email || !password) {
+				alert("Email and password are required.");
+				return;
+			}
+
+			if (!validateEmail(email)) {
+				alert("Please enter a valid email address.");
+				return;
+			}
+
+			const passwordError = validatePassword(password);
+
+			if (passwordError) {
+				alert(passwordError);
+				return;
+			}
+
+			// ---------- SIGN IN ----------
 			const userCredential = await signInWithEmailAndPassword(
 				firebaseClientAuth,
-				formData.current.email,
-				formData.current.password,
+				email,
+				password,
 			);
 
 			if (userCredential.user) {
 				router.replace("/dashboard");
 			}
-		} catch (error) {
-			console.log("Error sign in: ", error);
-			alert("Sign in failed");
+		} catch (error: any) {
+			console.log("Error sign in:", error);
+
+			if (error.code === "auth/user-not-found") {
+				alert("No account found with this email.");
+			} else if (error.code === "auth/wrong-password") {
+				alert("Incorrect password.");
+			} else if (error.code === "auth/invalid-email") {
+				alert("Invalid email address.");
+			} else {
+				alert("Sign in failed. Please try again.");
+			}
 		}
 	};
 
 	const updateField = (key: string, value: string | boolean) => {
 		formData.current = { ...formData.current, [key]: value };
-		console.log("Current Form State:", formData.current);
 	};
 
 	return (

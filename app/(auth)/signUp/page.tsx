@@ -1,5 +1,6 @@
 "use client";
 
+import { validateEmail, validatePassword } from "@/app/_lib/dataProcessing";
 import AuthPage from "@/components/AuthPage";
 import {
 	AccountInfo,
@@ -49,18 +50,17 @@ export default function SellerOnboarding(): ReactElement {
 			return;
 		}
 
-		if (
-			data.password.length < 8 ||
-			!/[A-Z]/.test(data.password) ||
-			!/[a-z]/.test(data.password) ||
-			!/[0-9]/.test(data.password) ||
-			!/[!@#$%^&*]/.test(data.password)
-		) {
-			alert(
-				"Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
-			);
+		if (!validateEmail(data.email)) {
+			alert("Please enter a valid email address.");
 			return;
 		}
+
+		const passwordError = validatePassword(data.password);
+		if (passwordError) {
+			alert(passwordError);
+			return;
+		}
+
 		setLoading(true);
 		const body = new FormData();
 
@@ -100,7 +100,6 @@ export default function SellerOnboarding(): ReactElement {
 
 	const updateField = (key: string, value: string | boolean | File) => {
 		formData.current = { ...formData.current, [key]: value };
-		console.log("Current Form State:", formData.current);
 	};
 
 	return (
