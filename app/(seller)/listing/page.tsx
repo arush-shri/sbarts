@@ -3,6 +3,7 @@
 import InputBox from "@/components/EnlistPart";
 import ProtectedPage from "@/components/ProtectedPage";
 import ArtworkUpload from "@/components/SellerParts";
+import { ShowToast } from "@/components/Toaster";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 
@@ -35,17 +36,17 @@ export default function CreateListing() {
 			!data.listingType.trim() ||
 			!data.uploadedFile
 		) {
-			alert("Please fill all required fields.");
+			ShowToast("Please fill all required fields.", 1);
 			return;
 		}
 
 		if (data.price <= 0) {
-			alert("Price must be greater than 0.");
+			ShowToast("Price must be greater than 0.", 1);
 			return;
 		}
 
 		if (data.quantity <= 0) {
-			alert("Quantity must be greater than 0.");
+			ShowToast("Quantity must be greater than 0.", 1);
 			return;
 		}
 
@@ -71,13 +72,13 @@ export default function CreateListing() {
 			});
 
 			if (!res.ok) {
-				alert("Upload failed");
+				ShowToast("Upload failed", 0);
 				return;
 			}
 			router.replace("/dashboard");
 		} catch (err) {
 			console.error(err);
-			alert("Something went wrong");
+			ShowToast("Something went wrong", 0);
 		}
 	};
 

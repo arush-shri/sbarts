@@ -3,6 +3,7 @@
 import { Check, Upload } from "lucide-react";
 import NextImage from "next/image";
 import React, { memo, useRef, useState } from "react";
+import { ShowToast } from "./Toaster";
 
 export const LicenseCard = memo(
 	({
@@ -162,14 +163,14 @@ export const ImageUploadCard = memo(
 			// ---------- TYPE CHECK ----------
 			const validTypes = ["image/jpeg", "image/png"];
 			if (!validTypes.includes(file.type)) {
-				alert("Only JPG or PNG images are allowed.");
+				ShowToast("Only JPG or PNG images are allowed.", 1);
 				return;
 			}
 
 			// ---------- SIZE CHECK ----------
 			const maxSize = 5 * 1024 * 1024;
 			if (file.size > maxSize) {
-				alert("Image must be less than 5MB.");
+				ShowToast("Image must be less than 5MB.", 1);
 				return;
 			}
 
@@ -178,7 +179,7 @@ export const ImageUploadCard = memo(
 
 			img.onload = () => {
 				if (img.width < 1024 || img.height < 1024) {
-					alert("Image must be at least 1024x1024.");
+					ShowToast("Image must be at least 1024x1024.", 1);
 					URL.revokeObjectURL(objectUrl);
 					return;
 				}

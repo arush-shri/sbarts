@@ -8,6 +8,7 @@ import { Edit2, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ReactElement, useEffect, useRef, useState } from "react";
+import { ShowToast } from "./Toaster";
 
 export function SidebarProfile({
 	artistData,
@@ -232,14 +233,14 @@ export default function ArtworkUpload({
 	const validateAndProcess = (file: File) => {
 		// ---------- TYPE ----------
 		if (!["image/jpeg", "image/png"].includes(file.type)) {
-			alert("Only JPEG or PNG images are allowed.");
+			ShowToast("Only JPEG or PNG images are allowed.", 1);
 			return;
 		}
 
 		// ---------- SIZE ----------
 		const maxSize = 50 * 1024 * 1024;
 		if (file.size > maxSize) {
-			alert("Max file size is 50MB.");
+			ShowToast("Max file size is 50MB.", 1);
 			return;
 		}
 
@@ -252,7 +253,7 @@ export default function ArtworkUpload({
 
 			// ---------- MIN HD ----------
 			if (w < 1920 || h < 1080) {
-				alert("Image must be at least 1920×1080.");
+				ShowToast("Image must be at least 1920×1080.", 1);
 				URL.revokeObjectURL(objectUrl);
 				return;
 			}
@@ -266,7 +267,7 @@ export default function ArtworkUpload({
 				Math.abs(ratio - 16 / 9) < 0.02; // 16:9
 
 			if (!allowed) {
-				alert("Allowed ratios: 1:1, 4:3, 16:9.");
+				ShowToast("Allowed ratios: 1:1, 4:3, 16:9.", 1);
 				URL.revokeObjectURL(objectUrl);
 				return;
 			}

@@ -3,6 +3,7 @@
 import { PaintingType } from "@/app/_lib/customTypes";
 import Loading from "@/components/Loading";
 import { PaintingImage, SellerInfo } from "@/components/PaintingParts";
+import { ShowToast } from "@/components/Toaster";
 import { Share2 } from "lucide-react";
 import { notFound, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -63,7 +64,7 @@ export default function ProductPage() {
 			} else {
 				// fallback (copy link)
 				await navigator.clipboard.writeText(window.location.href);
-				alert("Link copied to clipboard!");
+				ShowToast("Link copied to clipboard!", 2);
 			}
 		} catch (err) {
 			console.log("Share cancelled");

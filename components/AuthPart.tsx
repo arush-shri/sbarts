@@ -2,6 +2,7 @@
 import { getNames } from "country-list";
 import { CreditCard, Eye, EyeOff, ImagePlus } from "lucide-react";
 import { memo, useRef, useState } from "react";
+import { ShowToast } from "./Toaster";
 interface Props {
 	initialData: any;
 	onChange: (key: string, value: string) => void;
@@ -165,14 +166,14 @@ export const SellerImageUpload = memo(
 			// ---------- TYPE CHECK ----------
 			const validTypes = ["image/jpeg", "image/png"];
 			if (!validTypes.includes(file.type)) {
-				alert("Only JPG or PNG images are allowed.");
+				ShowToast("Only JPG or PNG images are allowed.", 1);
 				return;
 			}
 
 			// ---------- SIZE CHECK (5MB) ----------
 			const maxSize = 5 * 1024 * 1024;
 			if (file.size > maxSize) {
-				alert("Image must be smaller than 5MB.");
+				ShowToast("Image must be smaller than 5MB.", 1);
 				return;
 			}
 
@@ -182,7 +183,7 @@ export const SellerImageUpload = memo(
 
 			img.onload = () => {
 				if (img.width < 720 || img.height < 720) {
-					alert("Image must be at least 720×720.");
+					ShowToast("Image must be at least 720×720.", 1);
 					URL.revokeObjectURL(objectUrl);
 					return;
 				}
@@ -195,7 +196,7 @@ export const SellerImageUpload = memo(
 			};
 
 			img.onerror = () => {
-				alert("Invalid image file.");
+				ShowToast("Invalid image file.", 2);
 				URL.revokeObjectURL(objectUrl);
 			};
 

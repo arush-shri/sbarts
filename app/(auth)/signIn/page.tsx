@@ -4,6 +4,7 @@ import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { validateEmail, validatePassword } from "@/app/_lib/dataProcessing";
 import AuthPage from "@/components/AuthPage";
 import { CredentioalsForm } from "@/components/AuthPart";
+import { ShowToast } from "@/components/Toaster";
 import { signInWithEmailAndPassword } from "@firebase/auth";
 import { useRouter } from "next/navigation";
 import { ReactElement, useRef } from "react";
@@ -23,19 +24,19 @@ export default function SellerSignIn(): ReactElement {
 
 			// ---------- VALIDATION ----------
 			if (!email || !password) {
-				alert("Email and password are required.");
+				ShowToast("Email and password are required.", 1);
 				return;
 			}
 
 			if (!validateEmail(email)) {
-				alert("Please enter a valid email address.");
+				ShowToast("Please enter a valid email address.", 1);
 				return;
 			}
 
 			const passwordError = validatePassword(password);
 
 			if (passwordError) {
-				alert(passwordError);
+				ShowToast(passwordError, 1);
 				return;
 			}
 
@@ -53,13 +54,13 @@ export default function SellerSignIn(): ReactElement {
 			console.log("Error sign in:", error);
 
 			if (error.code === "auth/user-not-found") {
-				alert("No account found with this email.");
+				ShowToast("No account found with this email.", 0);
 			} else if (error.code === "auth/wrong-password") {
-				alert("Incorrect password.");
+				ShowToast("Incorrect password.", 0);
 			} else if (error.code === "auth/invalid-email") {
-				alert("Invalid email address.");
+				ShowToast("Invalid email address.", 0);
 			} else {
-				alert("Sign in failed. Please try again.");
+				ShowToast("Sign in failed. Please try again.", 0);
 			}
 		}
 	};

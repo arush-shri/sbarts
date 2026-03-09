@@ -3,6 +3,7 @@
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { validateEmail } from "@/app/_lib/dataProcessing";
 import AuthPage from "@/components/AuthPage";
+import { ShowToast } from "@/components/Toaster";
 import { sendPasswordResetEmail } from "@firebase/auth";
 import { Mail } from "lucide-react";
 import Image from "next/image";
@@ -51,29 +52,29 @@ function ResetPasswordForm() {
 		try {
 			// ---------- VALIDATE ----------
 			if (!email || !email.trim()) {
-				alert("Please enter your email.");
+				ShowToast("Please enter your email.", 1);
 				return;
 			}
 
 			if (!validateEmail(email)) {
-				alert("Please enter a valid email address.");
+				ShowToast("Please enter a valid email address.", 1);
 				return;
 			}
 
 			// ---------- SEND RESET EMAIL ----------
 			await sendPasswordResetEmail(firebaseClientAuth, email);
 
-			alert("Password reset email sent. Please check your inbox.");
+			ShowToast("Password reset email sent. Please check your inbox.", 2);
 			navToSignIn();
 		} catch (error: any) {
 			console.error(error);
 
 			if (error.code === "auth/user-not-found") {
-				alert("No account found with this email.");
+				ShowToast("No account found with this email.", 0);
 			} else if (error.code === "auth/invalid-email") {
-				alert("Invalid email address.");
+				ShowToast("Invalid email address.", 0);
 			} else {
-				alert("Failed to send reset email.");
+				ShowToast("Failed to send reset email.", 0);
 			}
 		}
 	};

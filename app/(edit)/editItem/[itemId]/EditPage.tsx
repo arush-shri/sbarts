@@ -2,6 +2,7 @@
 import { PaintingType } from "@/app/_lib/customTypes";
 import { convertNumToDate } from "@/app/_lib/dataProcessing";
 import Loading from "@/components/Loading";
+import { ShowToast } from "@/components/Toaster";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
@@ -93,17 +94,17 @@ export default function EditArtwork({
 			!data.category?.trim() ||
 			!data.description?.trim()
 		) {
-			alert("All fields are required.");
+			ShowToast("All fields are required.", 1);
 			return;
 		}
 
 		if (!data.price || data.price <= 0) {
-			alert("Price must be greater than 0.");
+			ShowToast("Price must be greater than 0.", 1);
 			return;
 		}
 
 		if (!data.quantity || data.quantity <= 0) {
-			alert("Quantity must be greater than 0.");
+			ShowToast("Quantity must be greater than 0.", 1);
 			return;
 		}
 
@@ -124,14 +125,14 @@ export default function EditArtwork({
 			});
 
 			if (!res.ok) {
-				alert("Failed to update painting.");
+				ShowToast("Failed to update painting.", 0);
 				return;
 			}
 
-			alert("Changes saved successfully!");
+			ShowToast("Changes saved successfully!", 0);
 		} catch (err) {
 			console.error(err);
-			alert("Something went wrong.");
+			ShowToast("Something went wrong.", 0);
 		}
 	};
 

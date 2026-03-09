@@ -2,6 +2,7 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { getServerSession } from "@/server/authHandler";
 import type { Metadata } from "next";
+import { Toaster } from "react-hot-toast";
 import { PaintingProvider } from "./_context/PaintingConext";
 import { SellerProvider } from "./_context/SellerContext";
 import { fontInter } from "./_lib/fonts";
@@ -25,6 +26,15 @@ export default async function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${fontInter.className} bg-white`}>
+				<Toaster
+					position="top-center"
+					toastOptions={{
+						duration: 4000,
+						style: {
+							borderRadius: "10px",
+						},
+					}}
+				/>
 				<SellerProvider>
 					<PaintingProvider>
 						<Header />

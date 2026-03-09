@@ -10,6 +10,7 @@ import {
 	StripeConnect,
 } from "@/components/AuthPart";
 import Loading from "@/components/Loading";
+import { ShowToast } from "@/components/Toaster";
 import { useRouter } from "next/navigation";
 import { ReactElement, useRef, useState } from "react";
 
@@ -46,27 +47,28 @@ export default function SellerOnboarding(): ReactElement {
 			!data.country.trim() ||
 			!data.password.trim()
 		) {
-			alert("All fields are required.");
+			ShowToast("All fields are required.", 1);
 			return;
 		}
 
 		const nameRegex = /^[A-Za-z _]+$/;
 
 		if (!nameRegex.test(data.fullName)) {
-			alert(
+			ShowToast(
 				"Full name can only contain alphabets, spaces, and underscores.",
+				1,
 			);
 			return;
 		}
 
 		if (!validateEmail(data.email)) {
-			alert("Please enter a valid email address.");
+			ShowToast("Please enter a valid email address.", 1);
 			return;
 		}
 
 		const passwordError = validatePassword(data.password);
 		if (passwordError) {
-			alert(passwordError);
+			ShowToast(passwordError, 1);
 			return;
 		}
 
@@ -96,14 +98,14 @@ export default function SellerOnboarding(): ReactElement {
 			});
 
 			if (!res.ok) {
-				alert("Registration failed");
+				ShowToast("Registration failed", 0);
 				return;
 			}
 
 			router.replace("/signIn");
 		} catch (err) {
 			console.error(err);
-			alert("Something went wrong");
+			ShowToast("Something went wrong", 0);
 		}
 	};
 

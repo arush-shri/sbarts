@@ -1,6 +1,7 @@
 "use client";
 
 import { useSellerContext } from "@/app/_context/SellerContext";
+import { ShowToast } from "@/components/Toaster";
 // @ts-ignore
 import { getNames } from "country-list";
 import Image from "next/image";
@@ -38,7 +39,7 @@ export default function EditProfile() {
 		const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
 		if (file.size > MAX_SIZE) {
-			alert("Image must be smaller than 5MB.");
+			ShowToast("Image must be smaller than 5MB.", 1);
 			return;
 		}
 
@@ -50,7 +51,7 @@ export default function EditProfile() {
 			const h = img.height;
 
 			if (w < 720 || h < 720) {
-				alert("Image must be at least 720×720 pixels.");
+				ShowToast("Image must be at least 720×720 pixels.", 1);
 				URL.revokeObjectURL(objectUrl);
 				return;
 			}
@@ -78,7 +79,7 @@ export default function EditProfile() {
 				!profile.address ||
 				!profile.postalCode
 			) {
-				alert("All fields are required.");
+				ShowToast("All fields are required.", 1);
 				return;
 			}
 
@@ -86,8 +87,9 @@ export default function EditProfile() {
 			const nameRegex = /^[A-Za-z _]+$/;
 
 			if (!nameRegex.test(profile.fullName)) {
-				alert(
+				ShowToast(
 					"Full name can only contain alphabets, spaces, and underscores.",
+					1,
 				);
 				return;
 			}
@@ -99,7 +101,7 @@ export default function EditProfile() {
 					isNaN(Number(profile.portraitPrice)) ||
 					Number(profile.portraitPrice) < 0)
 			) {
-				alert("Please enter a valid portrait price.");
+				ShowToast("Please enter a valid portrait price.", 1);
 				return;
 			}
 
@@ -125,7 +127,7 @@ export default function EditProfile() {
 
 			if (!res.ok) {
 				const data = await res.json();
-				alert(data.error || "Failed to update profile");
+				ShowToast(data.error || "Failed to update profile", 0);
 				return;
 			}
 
@@ -134,11 +136,11 @@ export default function EditProfile() {
 			if (data.success) {
 				router.replace("/dashboard");
 			} else {
-				alert("Profile update failed");
+				ShowToast("Profile update failed", 0);
 			}
 		} catch (err) {
 			console.error(err);
-			alert("Something went wrong");
+			ShowToast("Something went wrong", 0);
 		}
 	};
 
