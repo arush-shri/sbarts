@@ -41,6 +41,8 @@ export default function Header(): ReactElement {
 	const lastScrollY: RefObject<number> = useRef<number>(0);
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [userLoggedIn, setUser] = useState(getCurrentUser());
+	const router = useRouter();
+	const keyword = useRef("");
 
 	useEffect(() => {
 		const unsub = subscribeAuth(setUser);
@@ -95,6 +97,17 @@ export default function Header(): ReactElement {
 						<Search className="w-6 h-6 text-gray-500" />
 						<input
 							type="text"
+							onChange={(e) => (keyword.current = e.target.value)}
+							onKeyDown={(e) => {
+								if (
+									e.key === "Enter" &&
+									keyword.current.trim()
+								) {
+									router.push(
+										`/explore?keyword=${encodeURIComponent(keyword.current.trim())}`,
+									);
+								}
+							}}
 							placeholder="Search for art, photography..."
 							className="w-full bg-transparent text-md placeholder:text-gray-500 text-black outline-none"
 						/>
