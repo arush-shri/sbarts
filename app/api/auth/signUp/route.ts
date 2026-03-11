@@ -1,5 +1,6 @@
 import { firebaseAuth } from "@/app/_firebase/firebaseAuth";
 import { firebaseDB } from "@/app/_firebase/firebaseDb";
+import { firebaseStorage } from "@/app/_firebase/storage";
 import { SellerType } from "@/app/_lib/customTypes";
 // @ts-ignore
 import { NextRequest, NextResponse } from "next/server";
@@ -19,7 +20,9 @@ export async function POST(req: NextRequest) {
 		const portraitPrice = Number(formData.get("portraitPrice") ?? 0);
 		const stripeConnected = formData.get("stripeConnected") === "true";
 
-		if (!email || !password) {
+		const imageFile = formData.get("image") as File | null;
+
+		if (!email || !password || !imageFile) {
 			return NextResponse.json(
 				{ error: "Missing required fields" },
 				{ status: 400 },
@@ -34,10 +37,29 @@ export async function POST(req: NextRequest) {
 		const sellerId: string = user.uid;
 		const docRef = firebaseDB.collection("sellers").doc(sellerId);
 
+		let imageUrl = "";
+		const bucket = firebaseStorage.bucket();
+
+		// ---------- UPLOAD IMAGE ----------
+		if (imageFile) {
+			const buffer = Buffer.from(await imageFile.arrayBuffer());
+
+			const filePath = `sellers/${sellerId}.jpg`;
+
+			const file = bucket.file(filePath);
+
+			await file.save(buffer, {
+				contentType: imageFile.type,
+				public: true,
+			});
+
+			imageUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(filePath)}?alt=media`;
+		}
+
 		const data: SellerType = {
 			id: sellerId,
 			name: fullName,
-			image: "",
+			image: imageUrl,
 			makeSelfPortrait: selfPortrait,
 			portraitPrice: portraitPrice,
 			address: {

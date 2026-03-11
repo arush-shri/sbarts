@@ -1,9 +1,8 @@
 import { firebaseDB } from "@/app/_firebase/firebaseDb";
+import { firebaseStorage } from "@/app/_firebase/storage";
 import { PaintingType, UpdateBody } from "@/app/_lib/customTypes";
 import { processImage } from "@/server/ArtImageHandler";
-import fs from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
 
 export async function POST(req: NextRequest) {
 	try {
@@ -17,36 +16,76 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
+		// ---------- READ OTHER DATA ----------
+		const title = formData.get("title") as string;
+		const category = formData.get("category") as string;
+		const medium = formData.get("medium") as string;
+		const description = formData.get("description") as string;
+		const price = Number(formData.get("price"));
+		const quantity = Number(formData.get("quantity"));
+		const listingType = formData.get("listingType") as string;
+		const sellerId = formData.get("sellerId") as string;
+
 		const buffer = Buffer.from(await file.arrayBuffer());
 
 		// process images
 		const result = await processImage(buffer);
 
-		// ---------- SAVE LOCALLY ----------
-		const uploadDir = path.join(process.cwd(), "uploads");
+		// ---------- CREATE PAINTING DOC ----------
+		const paintingRef = firebaseDB.collection("paintings").doc();
 
-		// create folder if not exists
-		await fs.mkdir(uploadDir, { recursive: true });
+		// ---------- GENERATE IMAGE ID ----------
+		const imageId = paintingRef.id;
 
-		// file name
-		const baseName = file.name.replace(/\.[^/.]+$/, "");
+		const bucket = firebaseStorage.bucket();
 
-		await fs.writeFile(
-			path.join(uploadDir, `${baseName}-original.jpg`),
-			result.original,
+		// ---------- UPLOAD THUMBNAIL ----------
+		const thumbFile = bucket.file(`paintings/${imageId}-thumbnail.jpg`);
+
+		await thumbFile.save(result.thumbnail, {
+			contentType: "image/jpeg",
+			public: true,
+		});
+
+		// ---------- UPLOAD WATERMARK ----------
+		const watermarkFile = bucket.file(
+			`paintings/${imageId}-watermarked.jpg`,
 		);
 
-		await fs.writeFile(
-			path.join(uploadDir, `${baseName}-thumbnail.jpg`),
-			result.thumbnail,
-		);
+		await watermarkFile.save(result.watermarked, {
+			contentType: "image/jpeg",
+			public: true,
+		});
 
-		await fs.writeFile(
-			path.join(uploadDir, `${baseName}-watermarked.jpg`),
-			result.watermarked,
-		);
+		// ---------- UPLOAD ORIGINAL (PRIVATE) ----------
+		const originalFile = bucket.file(`originals/${imageId}.jpg`);
 
-		// ONLY STATUS 200
+		await originalFile.save(result.original, {
+			contentType: "image/jpeg",
+		});
+
+		await paintingRef.set({
+			id: paintingRef.id,
+			title,
+			description,
+			category,
+			keywords: [title, category, medium],
+			sellerId: sellerId,
+
+			price,
+			isDigital: listingType === "Digital Download",
+			isPhysical: listingType === "Physical Item",
+			quantityDigital: listingType === "Digital Download" ? quantity : 0,
+			quantityPhysical: listingType === "Physical Item" ? quantity : 0,
+
+			images: imageId,
+
+			views: 0,
+			purchases: 0,
+			createdAt: Date.now(),
+			updatedAt: Date.now(),
+		});
+
 		return new NextResponse(null, { status: 200 });
 	} catch (err) {
 		console.error(err);

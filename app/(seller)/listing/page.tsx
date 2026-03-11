@@ -1,5 +1,6 @@
 "use client";
 
+import { useSellerContext } from "@/app/_context/SellerContext";
 import InputBox from "@/components/EnlistPart";
 import ProtectedPage from "@/components/ProtectedPage";
 import ArtworkUpload from "@/components/SellerParts";
@@ -20,6 +21,7 @@ export default function CreateListing() {
 		listingType: "Digital Download",
 		uploadedFile: null,
 	});
+	const { artistData } = useSellerContext();
 
 	const handleInputChange = (name: string, value: string | number | File) => {
 		formData.current = { ...formData.current, [name]: value };
@@ -52,6 +54,7 @@ export default function CreateListing() {
 
 		// ---------- CREATE FORMDATA ----------
 		const body = new FormData();
+		const sellerId = artistData ? artistData.id : "";
 
 		body.append("title", data.title);
 		body.append("category", data.category);
@@ -60,6 +63,7 @@ export default function CreateListing() {
 		body.append("price", String(data.price));
 		body.append("quantity", String(data.quantity));
 		body.append("listingType", data.listingType);
+		body.append("sellerId", sellerId);
 
 		// uploadedFile should be File object ideally
 		body.append("uploadedFile", data.uploadedFile as any);
