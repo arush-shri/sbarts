@@ -38,6 +38,7 @@ export type SellerType = {
 	totalSale: number;
 	itemSold: number;
 	orderIds: string[];
+	stripeConnect: string;
 };
 
 export type FilterButtonRef = {

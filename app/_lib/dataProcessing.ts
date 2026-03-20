@@ -72,7 +72,10 @@ const InitPayment = async (payload: any) => {
 	const res = await fetch("/api/checkout", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ amount: payload.amount }),
+		body: JSON.stringify({
+			amount: payload.amount,
+			accountId: payload.accountId,
+		}),
 	});
 
 	const data = await res.json();

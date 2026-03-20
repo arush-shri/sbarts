@@ -96,9 +96,15 @@ export default function SellerOnboarding(): ReactElement {
 				method: "POST",
 				body,
 			});
+			const data = await res.json();
 
 			if (!res.ok) {
 				ShowToast("Registration failed", 0);
+				return;
+			}
+
+			if (data.onboardingUrl) {
+				window.location.href = data.onboardingUrl;
 				return;
 			}
 

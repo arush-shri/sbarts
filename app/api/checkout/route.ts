@@ -14,11 +14,20 @@ export async function POST(req: Request) {
 					product_data: {
 						name: "Painting Purchase",
 					},
-					unit_amount: body.amount * 100,
+					unit_amount: body.amount * 100, // in paise
 				},
 				quantity: 1,
 			},
 		],
+
+		payment_intent_data: {
+			application_fee_amount: 500,
+
+			transfer_data: {
+				destination: body.accountId,
+			},
+		},
+
 		success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/?session_id={CHECKOUT_SESSION_ID}`,
 		cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/?cancelled=true`,
 	});

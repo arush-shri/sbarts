@@ -1,6 +1,7 @@
 "use client";
 
 import { useSellerContext } from "@/app/_context/SellerContext";
+import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { SellerType } from "@/app/_lib/customTypes";
 import Loading from "@/components/Loading";
 import ProtectedPage from "@/components/ProtectedPage";
@@ -9,6 +10,8 @@ import {
 	SidebarProfile,
 	StatsCards,
 } from "@/components/SellerParts";
+import { ShowToast } from "@/components/Toaster";
+import { signOut } from "firebase/auth";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ReactElement, useEffect } from "react";
@@ -20,9 +23,34 @@ export default function SellerDashboard(): ReactElement {
 		loading,
 	}: { artistData: SellerType | null; loading: boolean } = useSellerContext();
 
+	const verifyStripe = async () => {
+		const res = await fetch(
+			`/api/seller?accountId=${artistData?.stripeConnect}`,
+		);
+		const data = await res.json();
+
+		if (!res.ok) {
+			return false;
+		}
+
+		if (!data.verified) {
+			ShowToast("Complete Stripe onboarding", 1);
+			setTimeout(async () => {
+				window.location.assign(data.onboardingUrl);
+			}, 1200);
+			await signOut(firebaseClientAuth);
+			router.replace("/signIn");
+			return false;
+		}
+
+		return true;
+	};
+
 	useEffect(() => {
 		if (!loading && !artistData) {
 			router.replace("/signIn");
+		} else {
+			verifyStripe();
 		}
 	}, [artistData, loading]);
 

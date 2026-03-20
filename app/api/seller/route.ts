@@ -1,6 +1,9 @@
 import { firebaseDB } from "@/app/_firebase/firebaseDb";
 import { SellerType } from "@/app/_lib/customTypes";
 import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 type RequestBody = {
 	sellerId?: string;
@@ -104,6 +107,48 @@ export async function PUT(req: NextRequest) {
 
 		return NextResponse.json(
 			{ error: "Failed to update seller" },
+			{ status: 500 },
+		);
+	}
+}
+
+export async function GET(req: NextRequest) {
+	try {
+		const { searchParams } = new URL(req.url);
+		const accountId = searchParams.get("accountId");
+
+		if (!accountId) {
+			return NextResponse.json(
+				{ error: "Missing accountId" },
+				{ status: 400 },
+			);
+		}
+
+		const account = await stripe.accounts.retrieve(accountId);
+
+		// ✅ Fully onboarded
+		if (account.charges_enabled && account.payouts_enabled) {
+			return NextResponse.json({
+				verified: true,
+			});
+		}
+
+		// ❌ Not onboarded → create onboarding link
+		const accountLink = await stripe.accountLinks.create({
+			account: accountId,
+			refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/signUp`,
+			return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/signIn`,
+			type: "account_onboarding",
+		});
+
+		return NextResponse.json({
+			verified: false,
+			onboardingUrl: accountLink.url,
+		});
+	} catch (err) {
+		console.error(err);
+		return NextResponse.json(
+			{ error: "Internal server error" },
 			{ status: 500 },
 		);
 	}
