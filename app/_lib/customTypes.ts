@@ -9,8 +9,7 @@ export type PaintingType = {
 	price: number;
 	isDigital: boolean;
 	isPhysical: boolean;
-	quantityDigital: number;
-	quantityPhysical: number;
+	quantity: number;
 
 	images: string; //will be image id in db
 

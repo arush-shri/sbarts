@@ -75,8 +75,7 @@ export async function POST(req: NextRequest) {
 			price,
 			isDigital: listingType === "Digital Download",
 			isPhysical: listingType === "Physical Item",
-			quantityDigital: listingType === "Digital Download" ? quantity : 0,
-			quantityPhysical: listingType === "Physical Item" ? quantity : 0,
+			quantity: quantity,
 
 			images: imageId,
 
@@ -160,9 +159,9 @@ export async function PUT(req: NextRequest) {
 		// ---------- HANDLE QUANTITY ----------
 		if (body.quantity !== undefined) {
 			if (existing.isDigital) {
-				updateData.quantityDigital = body.quantity;
+				updateData.quantity = body.quantity;
 			} else if (existing.isPhysical) {
-				updateData.quantityPhysical = body.quantity;
+				updateData.quantity = body.quantity;
 			}
 		}
 

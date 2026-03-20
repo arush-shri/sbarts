@@ -76,9 +76,7 @@ export default function EditArtwork({
 		category: painting?.category,
 		description: painting?.description,
 		price: painting?.price,
-		quantity: painting?.isDigital
-			? painting?.quantityDigital
-			: painting?.quantityPhysical,
+		quantity: painting?.isDigital ? painting?.quantity : painting?.quantity,
 	});
 
 	const handleUpdate = (name: string, value: string | number) => {
@@ -159,9 +157,7 @@ export default function EditArtwork({
 				category: art?.category,
 				description: art?.description,
 				price: art?.price,
-				quantity: art?.isDigital
-					? art?.quantityDigital
-					: art?.quantityPhysical,
+				quantity: art?.isDigital ? art?.quantity : art?.quantity,
 			};
 			setPainting(art);
 		} catch (error) {

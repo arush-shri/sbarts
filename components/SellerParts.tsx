@@ -155,8 +155,7 @@ export function ListingsTable({
 									${item.price.toFixed(2)}
 								</td>
 								<td className="px-6 py-4 text-sm text-[#98A0AB]">
-									{item.quantityDigital} •{" "}
-									{item.quantityPhysical}
+									{item.quantity} • {item.quantity}
 								</td>
 								<td className="px-6 py-4 text-right">
 									<div className="flex justify-end gap-2">
