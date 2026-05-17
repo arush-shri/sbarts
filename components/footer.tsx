@@ -77,7 +77,7 @@ export default function Footer(): ReactElement {
 						<div className="flex flex-col gap-y-3">
 							{!userLoggedIn && (
 								<a
-									href="/"
+									href="/signIn"
 									className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
 								>
 									Sell Your Art
@@ -85,7 +85,7 @@ export default function Footer(): ReactElement {
 							)}
 							{userLoggedIn && (
 								<a
-									href="/"
+									href="/dashboard"
 									className="text-[#6b7280] text-md hover:text-[#0F1724]"
 								>
 									Seller Dashboard
