@@ -2,7 +2,10 @@
 
 import { usePaintingContext } from "@/app/_context/PaintingConext";
 import { PaintingType, SellerType } from "@/app/_lib/customTypes";
-import { completeOrder } from "@/app/_lib/dataProcessing";
+import {
+	completeOrder,
+	thumbnailUrlGenerator,
+} from "@/app/_lib/dataProcessing";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { ReactElement, useEffect, useState } from "react";
@@ -73,7 +76,7 @@ export default function PaintingCard({
 			className={`flex flex-col w-full ${extraStyle || ""} rounded-lg overflow-hidden cursor-pointer`}
 		>
 			<Image
-				src={painting.images}
+				src={thumbnailUrlGenerator(painting.images)}
 				alt={`${painting.title} image`}
 				width={864}
 				height={1184}

@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 		const bucket = firebaseStorage.bucket();
 
 		// ---------- UPLOAD THUMBNAIL ----------
-		const thumbFile = bucket.file(`paintings/${imageId}-thumbnail.jpg`);
+		const thumbFile = bucket.file(`paintings/${imageId}/thumbnail.jpg`);
 
 		await thumbFile.save(result.thumbnail, {
 			contentType: "image/jpeg",
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 
 		// ---------- UPLOAD WATERMARK ----------
 		const watermarkFile = bucket.file(
-			`paintings/${imageId}-watermarked.jpg`,
+			`paintings/${imageId}/watermarked.jpg`,
 		);
 
 		await watermarkFile.save(result.watermarked, {
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 		});
 
 		// ---------- UPLOAD ORIGINAL (PRIVATE) ----------
-		const originalFile = bucket.file(`originals/${imageId}.jpg`);
+		const originalFile = bucket.file(`originals/${imageId}/artWork.jpg`);
 
 		await originalFile.save(result.original, {
 			contentType: "image/jpeg",

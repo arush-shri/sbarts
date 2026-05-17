@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 		if (imageFile) {
 			const buffer = Buffer.from(await imageFile.arrayBuffer());
 
-			const filePath = `sellers/${sellerId}.jpg`;
+			const filePath = `sellers/${sellerId}/profile.jpg`;
 
 			const file = bucket.file(filePath);
 

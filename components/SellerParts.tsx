@@ -2,7 +2,10 @@
 
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { PaintingType, SellerType } from "@/app/_lib/customTypes";
-import { convertNumToDate } from "@/app/_lib/dataProcessing";
+import {
+	convertNumToDate,
+	thumbnailUrlGenerator,
+} from "@/app/_lib/dataProcessing";
 import { signOut } from "firebase/auth";
 import { Edit2, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -139,7 +142,7 @@ export function ListingsTable({
 							>
 								<td className="px-6 py-4 flex items-center gap-3">
 									<Image
-										src={item.images}
+										src={thumbnailUrlGenerator(item.images)}
 										alt={`${item.title} image`}
 										width={864}
 										height={1184}

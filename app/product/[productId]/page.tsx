@@ -1,6 +1,7 @@
 "use client";
 
 import { PaintingType } from "@/app/_lib/customTypes";
+import { watermarkedUrlGenerator } from "@/app/_lib/dataProcessing";
 import Loading from "@/components/Loading";
 import { PaintingImage, SellerInfo } from "@/components/PaintingParts";
 import { ShowToast } from "@/components/Toaster";
@@ -75,7 +76,10 @@ export default function ProductPage() {
 		<div className="flex w-full px-4 py-8 px-5 lg:px-20 pt-24">
 			<div className="flex flex-col md:flex-row gap-12">
 				{/* Left Column: Image Gallery/Preview */}
-				<PaintingImage uri={painting.images} title={painting.title} />
+				<PaintingImage
+					uri={watermarkedUrlGenerator(painting.images)}
+					title={painting.title}
+				/>
 
 				{/* Right Column: Product Details */}
 				<section className="flex flex-col space-y-8 w-full md:w-2/3">

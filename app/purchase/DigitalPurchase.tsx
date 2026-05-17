@@ -7,6 +7,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { PaintingType, SellerType } from "../_lib/customTypes";
+import { watermarkedUrlGenerator } from "../_lib/dataProcessing";
 
 export default function DigitalPurchase({
 	productId,
@@ -167,7 +168,7 @@ export default function DigitalPurchase({
 							className={`flex flex-col sm:flex-row w-full gap-x-4 items-center cursor-pointer border-t border-b border-[#0000001A] py-5`}
 						>
 							<Image
-								src={painting.images}
+								src={watermarkedUrlGenerator(painting.images)}
 								alt={`${painting.title} image`}
 								width={864}
 								height={1184}
