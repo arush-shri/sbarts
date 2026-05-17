@@ -1,9 +1,22 @@
+"use client";
+
+import { subscribeAuth } from "@/app/_firebase/authState";
+import { getCurrentUser } from "@/app/_firebase/getUser";
 import { Copyright } from "lucide-react";
 import Image from "next/image";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 //TO CHANGE IN PRODUCTION
 export default function Footer(): ReactElement {
+	const [userLoggedIn, setUser] = useState(getCurrentUser());
+
+	useEffect(() => {
+		const unsub = subscribeAuth(setUser);
+		return () => {
+			unsub();
+		};
+	}, []);
+
 	return (
 		<div className="flex flex-col px-5 lg:px-20 bg-[#fbfbfd] w-full py-6 border-t-1 border-[#0000001A] justify-center">
 			<div className="justify-between flex flex-col md:flex-row gap-x-2 gap-y-3">
@@ -62,23 +75,27 @@ export default function Footer(): ReactElement {
 							For Sellers
 						</span>
 						<div className="flex flex-col gap-y-3">
+							{!userLoggedIn && (
+								<a
+									href="/"
+									className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
+								>
+									Sell Your Art
+								</a>
+							)}
+							{userLoggedIn && (
+								<a
+									href="/"
+									className="text-[#6b7280] text-md hover:text-[#0F1724]"
+								>
+									Seller Dashboard
+								</a>
+							)}
 							<a
-								href="/"
-								className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
-							>
-								Sell Your Art
-							</a>
-							<a
-								href="/"
+								href="/guidelines"
 								className="text-[#6b7280] text-md hover:text-[#0F1724]"
 							>
 								Seller Guidelines
-							</a>
-							<a
-								href="/"
-								className="text-[#6b7280] text-md hover:text-[#0F1724]"
-							>
-								Seller Dashboard
 							</a>
 						</div>
 					</div>
