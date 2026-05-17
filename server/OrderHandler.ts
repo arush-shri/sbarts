@@ -50,7 +50,7 @@ export async function handleDigital(data: any, paymentId: string) {
 	// generate signed URL
 	const [url] = await firebaseStorage
 		.bucket()
-		.file(`originals/${data.paintingId}.jpg`)
+		.file(`originals/${data.paintingId}/artWork.jpg`)
 		.getSignedUrl({
 			action: "read",
 			expires: Date.now() + 5 * 60 * 1000,

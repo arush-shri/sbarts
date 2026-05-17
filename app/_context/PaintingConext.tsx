@@ -18,9 +18,15 @@ export function PaintingProvider({ children }: { children: ReactNode }) {
 	const [paintings, setPaintings] = useState<PaintingType[]>([]);
 
 	const loadData = async () => {
-		const res = await fetch("/api/listing");
-		const json = await res.json();
-		setPaintings(json.data);
+		try {
+			const res = await fetch("/api/listing");
+			const json = await res.json();
+
+			setPaintings(Array.isArray(json.data) ? json.data : []);
+		} catch (err) {
+			console.error("Failed to load paintings", err);
+			setPaintings([]);
+		}
 	};
 
 	useEffect(() => {

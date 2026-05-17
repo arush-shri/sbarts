@@ -1,6 +1,7 @@
 import CategoryCard from "@/components/CategoryCard";
 import PaintingCard from "@/components/PaintingCard";
 import Image from "next/image";
+import { Suspense } from "react";
 
 export default function Home() {
 	return (
@@ -90,10 +91,12 @@ export default function Home() {
 					and photography.
 				</span>
 				<div className="flex flex-wrap gap-y-3 w-full mt-10 justify-between">
-					<PaintingCard index={0} extraStyle="sm:w-[20dvw]" />
-					<PaintingCard index={1} extraStyle="sm:w-[20dvw]" />
-					<PaintingCard index={2} extraStyle="sm:w-[20dvw]" />
-					<PaintingCard index={3} extraStyle="sm:w-[20dvw]" />
+					<Suspense fallback={<div></div>}>
+						<PaintingCard index={0} extraStyle="sm:w-[20dvw]" />
+						<PaintingCard index={1} extraStyle="sm:w-[20dvw]" />
+						<PaintingCard index={2} extraStyle="sm:w-[20dvw]" />
+						<PaintingCard index={3} extraStyle="sm:w-[20dvw]" />
+					</Suspense>
 				</div>
 			</section>
 			<section className="flex flex-col sm:flex-row justify-center gap-5 py-14 px-5 lg:px-20 mt-15 md:mt-36 mb-20 bg-[#f4f7ff]">

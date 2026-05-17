@@ -2,6 +2,7 @@ import { Copyright } from "lucide-react";
 import Image from "next/image";
 import { ReactElement } from "react";
 
+//TO CHANGE IN PRODUCTION
 export default function Footer(): ReactElement {
 	return (
 		<div className="flex flex-col px-5 lg:px-20 bg-[#fbfbfd] w-full py-6 border-t-1 border-[#0000001A] justify-center">
@@ -87,22 +88,16 @@ export default function Footer(): ReactElement {
 						</span>
 						<div className="flex flex-col gap-y-3">
 							<a
-								href="/"
+								href="/termsAndConditions"
 								className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
 							>
 								Terms & Conditions
 							</a>
 							<a
-								href="/"
+								href="/privacyPolicy"
 								className="text-[#6b7280] text-md hover:text-[#0F1724]"
 							>
 								Privacy Policy
-							</a>
-							<a
-								href="/"
-								className="text-[#6b7280] text-md hover:text-[#0F1724]"
-							>
-								Cookie Policy
 							</a>
 						</div>
 					</div>

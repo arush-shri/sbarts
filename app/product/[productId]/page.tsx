@@ -7,22 +7,29 @@ import { PaintingImage, SellerInfo } from "@/components/PaintingParts";
 import { ShowToast } from "@/components/Toaster";
 import { Share2 } from "lucide-react";
 import { notFound, useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ProductPage() {
 	const { productId } = useParams();
 	const [painting, setPainting] = useState<PaintingType | undefined | null>(
 		null,
 	);
+	const hasCountedView = useRef(false);
 
 	const loadData = async () => {
 		try {
+			const shouldIncrementView = !hasCountedView.current;
+			hasCountedView.current = true;
+
 			const res = await fetch("/api/painting", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ id: productId }),
+				body: JSON.stringify({
+					id: productId,
+					incrementView: shouldIncrementView,
+				}),
 			});
 
 			if (!res.ok) {
