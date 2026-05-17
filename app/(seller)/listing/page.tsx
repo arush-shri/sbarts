@@ -1,6 +1,7 @@
 "use client";
 
 import { useSellerContext } from "@/app/_context/SellerContext";
+import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import InputBox from "@/components/EnlistPart";
 import ProtectedPage from "@/components/ProtectedPage";
 import ArtworkUpload from "@/components/SellerParts";
@@ -70,8 +71,18 @@ export default function CreateListing() {
 
 		// ---------- SEND ----------
 		try {
+			const token = await firebaseClientAuth.currentUser?.getIdToken();
+
+			if (!token) {
+				ShowToast("Please sign in again.", 0);
+				return;
+			}
+
 			const res = await fetch("/api/listing", {
 				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
 				body,
 			});
 

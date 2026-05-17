@@ -81,12 +81,19 @@ export default function PhysicalPurchase({
 		formData.current = { ...formData.current, [name]: value };
 	}, []);
 
-	const handleCheckout = () => {
-		console.log(
-			"Submitting non-render data from useRef:",
-			formData.current,
-		);
-		// Add your logic here (Stripe, API call, etc.)
+	const handleCheckout = async () => {
+		const res = await fetch("/api/checkout", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				paintingId: productId,
+				orderType: "physical",
+				shippingMethod: selectedShipping,
+			}),
+		});
+
+		const data = await res.json();
+		if (data.url) window.location.href = data.url;
 	};
 
 	const licensePrice: number = painting?.price || 1;

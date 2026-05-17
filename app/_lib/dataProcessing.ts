@@ -171,11 +171,13 @@ export const completeOrder = async (sessionId: string) => {
 };
 
 export function thumbnailUrlGenerator(imageId: string): string {
+	const bucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
 	const imagePath: string = `paintings/${imageId}/thumbnail.jpg`;
-	return `https://firebasestorage.googleapis.com/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}/o/${encodeURIComponent(imagePath)}?alt=media`;
+	return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(imagePath)}?alt=media`;
 }
 
 export function watermarkedUrlGenerator(imageId: string): string {
+	const bucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
 	const imagePath: string = `paintings/${imageId}/watermarked.jpg`;
-	return `https://firebasestorage.googleapis.com/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}/o/${encodeURIComponent(imagePath)}?alt=media`;
+	return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(imagePath)}?alt=media`;
 }

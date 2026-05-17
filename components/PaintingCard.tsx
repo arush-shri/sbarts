@@ -2,14 +2,9 @@
 
 import { usePaintingContext } from "@/app/_context/PaintingConext";
 import { PaintingType, SellerType } from "@/app/_lib/customTypes";
-import {
-	completeOrder,
-	thumbnailUrlGenerator,
-} from "@/app/_lib/dataProcessing";
+import { thumbnailUrlGenerator } from "@/app/_lib/dataProcessing";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import { ReactElement, useEffect, useState } from "react";
-import { ShowToast } from "./Toaster";
 
 export default function PaintingCard({
 	artData,
@@ -21,7 +16,7 @@ export default function PaintingCard({
 	index?: number;
 }): ReactElement {
 	const paintingsData: PaintingType[] = usePaintingContext();
-	const searchParams = useSearchParams();
+	// const searchParams = useSearchParams();
 	const painting: PaintingType | undefined = index
 		? paintingsData[index]
 		: artData;
@@ -52,21 +47,21 @@ export default function PaintingCard({
 		if (painting?.sellerId) loadData();
 	}, [painting]);
 
-	useEffect(() => {
-		const sessionId = searchParams.get("session_id");
-		const cancelled = searchParams.get("cancelled");
+	// useEffect(() => {
+	// 	const sessionId = searchParams.get("session_id");
+	// 	const cancelled = searchParams.get("cancelled");
 
-		if (cancelled) {
-			ShowToast("Payment cancelled ❌", 0);
-			return;
-		}
+	// 	if (cancelled) {
+	// 		ShowToast("Payment cancelled ❌", 0);
+	// 		return;
+	// 	}
 
-		if (!sessionId) return;
+	// 	if (!sessionId) return;
 
-		completeOrder(sessionId);
+	// 	completeOrder(sessionId);
 
-		window.history.replaceState({}, "", "/");
-	}, [searchParams]);
+	// 	window.history.replaceState({}, "", "/");
+	// }, [searchParams]);
 
 	if (!painting) return <></>;
 

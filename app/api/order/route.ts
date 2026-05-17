@@ -8,6 +8,9 @@ import {
 
 export async function POST(req: Request) {
 	try {
+		return new Response("Order creation moved to Stripe webhook", {
+			status: 410,
+		});
 		const formData = await req.formData();
 
 		const data: Record<string, any> = {};

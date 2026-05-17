@@ -1,4 +1,5 @@
 "use client";
+import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { PaintingType } from "@/app/_lib/customTypes";
 import {
 	convertNumToDate,
@@ -110,9 +111,15 @@ export default function EditArtwork({
 		}
 
 		try {
+			const token = await firebaseClientAuth.currentUser?.getIdToken();
+			if (!token) {
+				ShowToast("Please sign in again.", 0);
+				return;
+			}
 			const res = await fetch("/api/listing", {
 				method: "PUT", // update
 				headers: {
+					Authorization: `Bearer ${token}`,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({

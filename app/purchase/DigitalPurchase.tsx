@@ -87,12 +87,19 @@ export default function DigitalPurchase({
 		formData.current.licenseType = type;
 	};
 
-	const handleCheckout = () => {
-		console.log(
-			"Submitting non-render data from useRef:",
-			formData.current,
-		);
-		// Add your logic here (Stripe, API call, etc.)
+	const handleCheckout = async () => {
+		const res = await fetch("/api/checkout", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				paintingId: productId,
+				orderType: "digital",
+				licenseType: selectedLicense,
+			}),
+		});
+
+		const data = await res.json();
+		if (data.url) window.location.href = data.url;
 	};
 
 	const licensePrice: 45 | 150 | 500 =

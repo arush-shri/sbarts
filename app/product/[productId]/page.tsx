@@ -109,9 +109,12 @@ export default function ProductPage() {
 
 					{/* Action Buttons */}
 					<div className="flex items-center gap-3">
-						<button className="flex-1 rounded-lg bg-[#0061f2] py-4 font-bold text-white transition hover:bg-blue-700">
+						<a
+							href={`/purchase?productId=${painting.id}&orderType=${painting.isDigital ? "digital" : "physical"}`}
+							className="flex-1 rounded-lg bg-[#0061f2] py-4 text-center font-bold text-white transition hover:bg-blue-700"
+						>
 							Purchase License
-						</button>
+						</a>
 						<button
 							onClick={handleShare}
 							className="rounded-lg border border-gray-200 p-4 transition hover:bg-gray-100"

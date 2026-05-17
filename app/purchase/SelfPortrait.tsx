@@ -37,7 +37,14 @@ export default function PortraitPurchase(): ReactElement {
 	};
 
 	useEffect(() => {
-		loadData();
+		loadData().then((data) => {
+			if (!data) return;
+			const portraitSellers = data.filter(
+				(seller) => seller.makeSelfPortrait,
+			);
+			setSellers(portraitSellers);
+			setSelectedSeller(portraitSellers[0]?.id ?? "");
+		});
 	}, []);
 
 	// THE MASTER DATA STORE (Does not trigger re-renders on change)
@@ -57,12 +64,20 @@ export default function PortraitPurchase(): ReactElement {
 		formData.current = { ...formData.current, [name]: value };
 	}, []);
 
-	const handleCheckout = () => {
-		console.log(
-			"Submitting non-render data from useRef:",
-			formData.current,
-		);
-		// Add your logic here (Stripe, API call, etc.)
+	const handleCheckout = async () => {
+		if (!seller) return;
+
+		const res = await fetch("/api/checkout", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				orderType: "portrait",
+				sellerId: seller.id,
+			}),
+		});
+
+		const data = await res.json();
+		if (data.url) window.location.assign(data.url);
 	};
 
 	const platformFee = 5;

@@ -1,5 +1,7 @@
 import { firebaseDB } from "@/app/_firebase/firebaseDb";
+import { firebaseStorage } from "@/app/_firebase/storage";
 import { SellerType } from "@/app/_lib/customTypes";
+import { requireFirebaseUser } from "@/server/Auth";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -54,7 +56,10 @@ export async function PUT(req: NextRequest) {
 	try {
 		const formData = await req.formData();
 
-		const id = formData.get("id") as string;
+		// const id = formData.get("id") as string;
+		const decoded = await requireFirebaseUser(req);
+		const id = decoded.uid;
+
 		const fullName = formData.get("fullName") as string;
 		const country = formData.get("country") as string;
 		const city = formData.get("city") as string;
@@ -75,14 +80,27 @@ export async function PUT(req: NextRequest) {
 		let imageUrl: string | undefined;
 
 		// ---------- HANDLE IMAGE ----------
-		if (imageFile) {
+		// if (imageFile) {
+		// 	const buffer = Buffer.from(await imageFile.arrayBuffer());
+
+		// 	// For now just log image size
+		// 	console.log("Uploaded image size:", buffer.length);
+
+		// 	// TODO: upload to firebase storage later
+		// 	// imageUrl = uploadedUrl
+		// }
+
+		if (imageFile && imageFile.size > 0) {
 			const buffer = Buffer.from(await imageFile.arrayBuffer());
+			const filePath = `sellers/${id}/profile.jpg`;
+			const file = firebaseStorage.bucket().file(filePath);
+			// QnA: WILL IT OVERRIDE?
+			await file.save(buffer, {
+				contentType: imageFile.type,
+				public: true,
+			});
 
-			// For now just log image size
-			console.log("Uploaded image size:", buffer.length);
-
-			// TODO: upload to firebase storage later
-			// imageUrl = uploadedUrl
+			imageUrl = `https://firebasestorage.googleapis.com/v0/b/${firebaseStorage.bucket().name}/o/${encodeURIComponent(filePath)}?alt=media`;
 		}
 
 		// ---------- UPDATE FIRESTORE ----------

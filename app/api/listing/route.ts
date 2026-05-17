@@ -2,6 +2,8 @@ import { firebaseDB } from "@/app/_firebase/firebaseDb";
 import { firebaseStorage } from "@/app/_firebase/storage";
 import { PaintingType, UpdateBody } from "@/app/_lib/customTypes";
 import { processImage } from "@/server/ArtImageHandler";
+import { requireFirebaseUser } from "@/server/Auth";
+import { FieldValue } from "firebase-admin/firestore";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -24,7 +26,9 @@ export async function POST(req: NextRequest) {
 		const price = Number(formData.get("price"));
 		const quantity = Number(formData.get("quantity"));
 		const listingType = formData.get("listingType") as string;
-		const sellerId = formData.get("sellerId") as string;
+		// const sellerId = formData.get("sellerId") as string;
+		const decoded = await requireFirebaseUser(req);
+		const sellerId = decoded.uid;
 
 		const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -85,6 +89,13 @@ export async function POST(req: NextRequest) {
 			updatedAt: Date.now(),
 		});
 
+		await firebaseDB
+			.collection("sellers")
+			.doc(sellerId)
+			.update({
+				artWorks: FieldValue.arrayUnion(paintingRef.id),
+				primaryCategories: FieldValue.arrayUnion(category),
+			});
 		return new NextResponse(null, { status: 200 });
 	} catch (err) {
 		console.error(err);
@@ -144,6 +155,11 @@ export async function PUT(req: NextRequest) {
 		}
 
 		const existing = docSnap.data() as PaintingType;
+
+		const decoded = await requireFirebaseUser(req);
+		if (existing.sellerId !== decoded.uid) {
+			return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+		}
 
 		// ---------- PREPARE UPDATE OBJECT ----------
 		const updateData: Partial<PaintingType> = {
