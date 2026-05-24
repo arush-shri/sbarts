@@ -7,9 +7,10 @@ import { useEffect, useState } from "react";
 
 interface Props {
 	artworkIds: string[];
+	filterValue: string;
 }
 
-const ArtworkGrid = ({ artworkIds }: Props) => {
+const ArtworkGrid = ({ artworkIds, filterValue }: Props) => {
 	const ITEMS_PER_PAGE = 6;
 	const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 	const [displayedArtworks, setDisplayedArtworks] = useState<PaintingType[]>(
@@ -22,7 +23,7 @@ const ArtworkGrid = ({ artworkIds }: Props) => {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ ids: artworkIds }),
+			body: JSON.stringify({ ids: artworkIds, filterValue: filterValue }),
 		});
 
 		if (!res.ok) return null;
@@ -35,7 +36,7 @@ const ArtworkGrid = ({ artworkIds }: Props) => {
 
 	useEffect(() => {
 		loadData();
-	}, []);
+	}, [filterValue]);
 
 	const hasMore = visibleCount < artworkIds.length;
 

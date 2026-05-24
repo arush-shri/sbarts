@@ -1,5 +1,5 @@
 import CategoryCard from "@/components/CategoryCard";
-import PaintingCard from "@/components/PaintingCard";
+import FeaturedArtworks from "@/components/FeaturedArtworks";
 import Image from "next/image";
 
 export default function Home() {
@@ -81,21 +81,9 @@ export default function Home() {
 					/>
 				</div>
 			</section>
-			<section className="flex flex-col justify-center px-5 lg:px-20 mt-15 md:mt-36">
-				<span className="font-bold text-[#0F1724] text-3xl">
-					Featured Artwork
-				</span>
-				<span className="text-[#98A0AB] text-lg mt-2 ">
-					Hand-picked selection of exceptional digital art, paintings
-					and photography.
-				</span>
-				<div className="flex flex-wrap gap-y-3 w-full mt-10 justify-between">
-					<PaintingCard index={0} extraStyle="sm:w-[20dvw]" />
-					<PaintingCard index={1} extraStyle="sm:w-[20dvw]" />
-					<PaintingCard index={2} extraStyle="sm:w-[20dvw]" />
-					<PaintingCard index={3} extraStyle="sm:w-[20dvw]" />
-				</div>
-			</section>
+
+			<FeaturedArtworks />
+
 			<section className="flex flex-col sm:flex-row justify-center gap-5 py-14 px-5 lg:px-20 mt-15 md:mt-36 mb-20 bg-[#f4f7ff]">
 				<div className="flex flex-col justify-center items-start gap-y-3 order-2 sm:order-1">
 					<span className="font-bold text-[#0F1724] text-3xl">

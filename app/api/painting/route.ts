@@ -7,6 +7,7 @@ type RequestBody = {
 	id?: string;
 	ids?: string[];
 	incrementView?: boolean;
+	filterValue?: string;
 };
 
 export async function POST(req: NextRequest) {
@@ -65,15 +66,29 @@ export async function POST(req: NextRequest) {
 
 		// ---------- MULTIPLE ----------
 		if (body.ids && body.ids.length > 0) {
-			const promises = body.ids.map((id) =>
-				firebaseDB.collection("paintings").doc(id).get(),
+			// 1. Fetch all documents matching the IDs
+			const querySnapshot = await firebaseDB
+				.collection("paintings")
+				.where("__name__", "in", body.ids)
+				.get();
+
+			// 2. Map the docs to your type
+			let data: PaintingType[] = querySnapshot.docs.map(
+				(doc) => doc.data() as PaintingType,
 			);
 
-			const docs = await Promise.all(promises);
+			// 3. Apply case-insensitive filtering in memory if filterValue is provided
+			if (body.filterValue && body.filterValue.trim() !== "") {
+				const targetCategory = body.filterValue.trim().toLowerCase();
 
-			const data: PaintingType[] = docs
-				.filter((d) => d.exists)
-				.map((d) => d.data() as PaintingType);
+				data = data.filter((painting) => {
+					// Ensure the painting has a category field to prevent runtime errors
+					return (
+						painting.category &&
+						painting.category.toLowerCase() === targetCategory
+					);
+				});
+			}
 
 			return NextResponse.json({ success: true, data }, { status: 200 });
 		}

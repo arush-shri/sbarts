@@ -8,6 +8,7 @@ import {
 import { Lock } from "lucide-react";
 import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { SellerType } from "../_lib/customTypes";
+import { BUYING_ENABLED } from "../_lib/featureFlags";
 
 export default function PortraitPurchase(): ReactElement {
 	const [sellers, setSellers] = useState<SellerType[]>([]);
@@ -65,6 +66,7 @@ export default function PortraitPurchase(): ReactElement {
 	}, []);
 
 	const handleCheckout = async () => {
+		if (!BUYING_ENABLED) return;
 		if (!seller) return;
 
 		const res = await fetch("/api/checkout", {
@@ -258,10 +260,15 @@ export default function PortraitPurchase(): ReactElement {
 					<div className="flex justify-end">
 						<button
 							onClick={handleCheckout}
-							className="flex items-center gap-2 bg-[#0066FF] hover:bg-blue-700 text-white font-bold px-10 py-4 rounded-xl transition-all"
+							disabled={!BUYING_ENABLED}
+							className={`flex items-center gap-2 text-white font-bold px-10 py-4 rounded-xl transition-all ${
+								BUYING_ENABLED
+									? "bg-[#0066FF] hover:bg-blue-700"
+									: "bg-[#94A3B8] cursor-not-allowed"
+							}`}
 						>
 							<Lock size={18} />
-							Secure Checkout
+							{BUYING_ENABLED ? "Secure Checkout" : "Checkout Paused"}
 						</button>
 					</div>
 				</main>

@@ -108,7 +108,10 @@ export function SellerInfo({
 			<div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
 				{/* Fallback for seller avatar */}
 				<Image
-					src={paintingSeller?.image || "/default-avatar.png"}
+					src={
+						`${paintingSeller?.image}&v=${Date.now()}` ||
+						"/images/selCat.jpg"
+					}
 					alt={`${paintingSeller?.name || "Seller"} image`}
 					width={512}
 					height={512}

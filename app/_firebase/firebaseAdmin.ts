@@ -11,5 +11,6 @@ export const firebaseApp: App =
 						"\n",
 					),
 				}),
+				storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 			})
 		: getApps()[0];

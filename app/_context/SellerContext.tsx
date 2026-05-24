@@ -2,7 +2,6 @@
 
 import { onAuthStateChanged } from "@firebase/auth";
 import {
-	Context,
 	createContext,
 	ReactNode,
 	useContext,
@@ -12,12 +11,16 @@ import {
 import { firebaseClientAuth } from "../_firebase/clientAuth";
 import { SellerType } from "../_lib/customTypes";
 
-const SellerContext: Context<{
+interface SellerContextType {
 	artistData: SellerType | null;
 	loading: boolean;
-}> = createContext<{ artistData: SellerType | null; loading: boolean }>({
+	setSellerData: (data: SellerType | null) => void;
+}
+
+const SellerContext = createContext<SellerContextType>({
 	artistData: null,
 	loading: true,
+	setSellerData: () => {},
 });
 
 export function SellerProvider({ children }: { children: ReactNode }) {
@@ -25,6 +28,10 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 		artistData: SellerType | null;
 		loading: boolean;
 	}>({ artistData: null, loading: true });
+
+	const setSellerData = (data: SellerType | null) => {
+		setSeller((prev) => ({ ...prev, artistData: data }));
+	};
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(
@@ -71,7 +78,13 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 	}, []);
 
 	return (
-		<SellerContext.Provider value={seller}>
+		<SellerContext.Provider
+			value={{
+				artistData: seller.artistData,
+				loading: seller.loading,
+				setSellerData,
+			}}
+		>
 			{children}
 		</SellerContext.Provider>
 	);

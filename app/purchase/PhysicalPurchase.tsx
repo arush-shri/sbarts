@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { PaintingType, SellerType } from "../_lib/customTypes";
 import { watermarkedUrlGenerator } from "../_lib/dataProcessing";
+import { BUYING_ENABLED } from "../_lib/featureFlags";
 
 export default function PhysicalPurchase({
 	productId,
@@ -82,6 +83,8 @@ export default function PhysicalPurchase({
 	}, []);
 
 	const handleCheckout = async () => {
+		if (!BUYING_ENABLED) return;
+
 		const res = await fetch("/api/checkout", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
@@ -358,10 +361,15 @@ export default function PhysicalPurchase({
 					<div className="flex justify-end">
 						<button
 							onClick={handleCheckout}
-							className="flex items-center gap-2 bg-[#0066FF] hover:bg-blue-700 text-white font-bold px-10 py-4 rounded-xl transition-all"
+							disabled={!BUYING_ENABLED}
+							className={`flex items-center gap-2 text-white font-bold px-10 py-4 rounded-xl transition-all ${
+								BUYING_ENABLED
+									? "bg-[#0066FF] hover:bg-blue-700"
+									: "bg-[#94A3B8] cursor-not-allowed"
+							}`}
 						>
 							<Lock size={18} />
-							Secure Checkout
+							{BUYING_ENABLED ? "Secure Checkout" : "Checkout Paused"}
 						</button>
 					</div>
 				</main>

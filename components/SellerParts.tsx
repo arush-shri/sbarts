@@ -33,7 +33,11 @@ export function SidebarProfile({
 			<div className="flex flex-col items-center text-center border-b border-[#0000000D] pb-6 mb-6">
 				<div className="w-20 h-20 rounded-full overflow-hidden mb-4 relative ring-4 ring-blue-50">
 					<Image
-						src="/images/selCat.jpg"
+						src={
+							artistData?.image && artistData.image.trim() !== ""
+								? `${artistData.image}&v=${Date.now()}`
+								: "/images/selCat.jpg"
+						}
 						alt="Profile"
 						fill
 						className="object-cover"
@@ -53,10 +57,15 @@ export function SidebarProfile({
 						label: "Joined",
 						value: convertNumToDate(artistData.createdAt),
 					},
-					{
-						label: "Portrait Pricing",
-						value: artistData.portraitPrice,
-					},
+					// Spreads the object into the array only if makeSelfPortrait is true
+					...(artistData.makeSelfPortrait === true
+						? [
+								{
+									label: "Portrait Pricing",
+									value: artistData.portraitPrice,
+								},
+							]
+						: []),
 				].map((item) => (
 					<div
 						key={item.label}
@@ -73,6 +82,7 @@ export function SidebarProfile({
 			<button
 				className="w-full py-2.5 border border-[#0000001A] rounded-lg text-sm font-bold hover:bg-gray-50 
                 transition-colors"
+				onClick={() => router.push("/edit")}
 			>
 				Edit Profile
 			</button>
@@ -95,6 +105,7 @@ export function ListingsTable({
 	const [displayedArtworks, setDisplayedArtworks] = useState<PaintingType[]>(
 		[],
 	);
+	const router = useRouter();
 
 	const loadData = async () => {
 		const res = await fetch("/api/painting", {
@@ -111,6 +122,45 @@ export function ListingsTable({
 
 		const art: PaintingType[] = json.data;
 		setDisplayedArtworks(art);
+	};
+
+	const deleteListing = async (paintingId: string) => {
+		try {
+			const currentUser = firebaseClientAuth.currentUser;
+
+			if (!currentUser) {
+				console.error("No authenticated user found.");
+				return false;
+			}
+
+			// 1. Grab the fresh authorization token from Firebase client
+			const token = await currentUser.getIdToken();
+
+			// 2. Send the delete request appending the ID parameter to the URL query string
+			const res = await fetch(`/api/listing?id=${paintingId}`, {
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (!res.ok) {
+				const errorData = await res.json();
+				ShowToast("Unable to delete listing", 0);
+			}
+
+			setDisplayedArtworks((prev) =>
+				prev.filter((art) => art.id !== paintingId),
+			);
+			ShowToast("Listing deleted successfully", 2);
+		} catch (error) {
+			console.error(
+				"Network or internal error triggered during deletion request:",
+				error,
+			);
+			ShowToast("Unable to delete listing", 0);
+		}
 	};
 
 	useEffect(() => {
@@ -136,47 +186,11 @@ export function ListingsTable({
 					</thead>
 					<tbody className="divide-y divide-[#0000000D]">
 						{displayedArtworks.map((item) => (
-							<tr
+							<ItemRow
 								key={item.id}
-								className="group hover:bg-gray-50 transition-colors"
-							>
-								<td className="px-6 py-4 flex items-center gap-3">
-									<Image
-										src={thumbnailUrlGenerator(item.images)}
-										alt={`${item.title} image`}
-										width={864}
-										height={1184}
-										className="object-cover rounded-lg aspect-square w-10 h-10 bg-slate-200 rounded-lg overflow-hidden flex-shrink-0"
-									/>
-									<div>
-										<p className="font-bold text-sm">
-											{item.title}
-										</p>
-									</div>
-								</td>
-								<td className="px-6 py-4 text-sm font-medium text-[#0F1724]">
-									${item.price.toFixed(2)}
-								</td>
-								<td className="px-6 py-4 text-sm text-[#98A0AB]">
-									{item.quantity} • {item.quantity}
-								</td>
-								<td className="px-6 py-4 text-right">
-									<div className="flex justify-end gap-2">
-										<button
-											className="p-2 hover:bg-white rounded-md border border-transparent 
-                                            hover:border-[#0000001A] text-[#98A0AB] hover:text-[#0F1724] transition-all"
-										>
-											<Edit2 className="h-auto w-4" />
-										</button>
-										<button
-											className="p-2 hover:bg-red-50 rounded-md border border-transparent 
-                                            hover:border-red-100 text-[#98A0AB] hover:text-red-500 transition-all"
-										>
-											<Trash2 className="h-auto w-4" />
-										</button>
-									</div>
-								</td>
-							</tr>
+								item={item}
+								deleteListing={deleteListing}
+							/>
 						))}
 					</tbody>
 				</table>
@@ -356,4 +370,69 @@ export default function ArtworkUpload({
 			</div>
 		</>
 	);
+}
+
+function ItemRow({
+	item,
+	deleteListing,
+}: {
+	item: PaintingType;
+	deleteListing: (paintingId: string) => Promise<false | undefined>;
+}): ReactElement {
+	{
+		const router = useRouter();
+		const [loading, setLoading] = useState(false);
+		return (
+			<tr
+				key={item.id}
+				className="group hover:bg-gray-50 transition-colors"
+			>
+				<td className="px-6 py-4 flex items-center gap-3">
+					<Image
+						src={thumbnailUrlGenerator(item.images)}
+						alt={`${item.title} image`}
+						width={864}
+						height={1184}
+						className="object-cover rounded-lg aspect-square w-10 h-10 bg-slate-200 rounded-lg overflow-hidden flex-shrink-0"
+					/>
+					<div>
+						<p className="font-bold text-sm">{item.title}</p>
+					</div>
+				</td>
+				<td className="px-6 py-4 text-sm font-medium text-[#0F1724]">
+					${item.price.toFixed(2)}
+				</td>
+				<td className="px-6 py-4 text-sm text-[#98A0AB]">
+					{item.quantity}
+				</td>
+				<td className="px-6 py-4 text-right">
+					<div className="flex justify-end gap-2">
+						<button
+							onClick={() => router.push(`/editItem/${item.id}`)}
+							className="p-2 hover:bg-white rounded-md border border-transparent 
+                                            hover:border-[#0000001A] text-[#98A0AB] hover:text-[#0F1724] transition-all"
+						>
+							<Edit2 className="h-auto w-4" />
+						</button>
+						<button
+							onClick={async () => {
+								setLoading(true);
+								await deleteListing(item.id);
+								setLoading(false);
+							}}
+							disabled={loading}
+							className="p-2 hover:bg-red-50 rounded-md border border-transparent 
+                                            hover:border-red-100 text-[#98A0AB] hover:text-red-500 transition-all"
+						>
+							{loading ? (
+								<div className="w-4 h-4 border-2 border-gray-300 border-t-red-500 rounded-full animate-spin" />
+							) : (
+								<Trash2 className="h-auto w-4" />
+							)}
+						</button>
+					</div>
+				</td>
+			</tr>
+		);
+	}
 }

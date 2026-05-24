@@ -1,3 +1,4 @@
+import { BUYING_ENABLED } from "@/app/_lib/featureFlags";
 // @ts-ignore
 import { getNames } from "country-list";
 import { CreditCard, Eye, EyeOff, ImagePlus } from "lucide-react";
@@ -260,6 +261,7 @@ export const StripeConnect = memo(
 	({ onChange }: { onChange: (k: string, v: boolean) => void }) => {
 		const [connected, setConnected] = useState(false);
 
+		if (!BUYING_ENABLED) return null;
 		return (
 			<div className="p-4 border border-dashed border-[#00000033] rounded-xl bg-slate-50">
 				<div className="flex items-center justify-between">
@@ -402,16 +404,25 @@ export function SelfPortraitRow({
 				</span>
 			</div>
 
-			<input
-				type="number"
-				value={price}
-				placeholder="Portrait Price"
-				onChange={(e) => handlePriceChange(e.target.value)}
-				disabled={!isSelfPortrait}
-				min={0}
-				className="w-32 px-3 py-2 border border-[#0000001A] placeholder:text-[#98A0AB] rounded-lg 
-                focus:outline-none focus:ring-1 focus:ring-blue-500 text-[#0F1724]"
-			/>
+			<div
+				className={`relative flex items-center w-36 ${!isSelfPortrait ? "opacity-50" : ""}`}
+			>
+				<span className="absolute left-3 text-sm text-[#98A0AB] pointer-events-none">
+					$
+				</span>
+				<input
+					type="number"
+					value={price}
+					placeholder="0.00"
+					onChange={(e) => handlePriceChange(e.target.value)}
+					disabled={!isSelfPortrait}
+					min={0}
+					step="0.01"
+					className="w-full pl-7 pr-3 py-2 border border-[#0000001A] placeholder:text-[#98A0AB] rounded-lg 
+                    focus:outline-none focus:ring-1 focus:ring-blue-500 text-[#0F1724] text-sm
+                    disabled:bg-gray-50 disabled:cursor-not-allowed"
+				/>
+			</div>
 		</div>
 	);
 }

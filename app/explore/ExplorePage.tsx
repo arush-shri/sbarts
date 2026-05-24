@@ -24,7 +24,7 @@ export default function ExplorePage({
 		sort?: string;
 	}>({
 		search: keyword || "",
-		category: [category || ""],
+		category: category ? [category || ""] : undefined,
 		minPrice: undefined,
 		maxPrice: undefined,
 		type: undefined,
@@ -53,8 +53,13 @@ export default function ExplorePage({
 	};
 
 	useEffect(() => {
+		filterDataRef.current = {
+			...filterDataRef.current,
+			search: keyword || "",
+			category: category ? [category || ""] : undefined,
+		};
 		loadData();
-	}, []);
+	}, [keyword, category]);
 
 	return (
 		<div className="px-5 md:px-20 pt-24">

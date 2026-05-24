@@ -69,6 +69,13 @@ export async function POST(req: Request) {
 			);
 		}
 
+		if (!seller.stripeConnect) {
+			return Response.json(
+				{ error: "Seller payouts are not available yet" },
+				{ status: 400 },
+			);
+		}
+
 		const session = await stripe.checkout.sessions.create({
 			mode: "payment",
 			line_items: [
@@ -112,7 +119,19 @@ export async function POST(req: Request) {
 		.collection("sellers")
 		.doc(painting.sellerId)
 		.get();
+
+	if (!sellerSnap.exists) {
+		return Response.json({ error: "Seller not found" }, { status: 404 });
+	}
+
 	const seller = sellerSnap.data() as SellerType;
+
+	if (!seller.stripeConnect) {
+		return Response.json(
+			{ error: "Seller payouts are not available yet" },
+			{ status: 400 },
+		);
+	}
 
 	const licensePrices = {
 		Personal: 45,

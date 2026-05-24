@@ -2,6 +2,7 @@
 
 import { PaintingType } from "@/app/_lib/customTypes";
 import { watermarkedUrlGenerator } from "@/app/_lib/dataProcessing";
+import { BUYING_ENABLED } from "@/app/_lib/featureFlags";
 import Loading from "@/components/Loading";
 import { PaintingImage, SellerInfo } from "@/components/PaintingParts";
 import { ShowToast } from "@/components/Toaster";
@@ -109,12 +110,22 @@ export default function ProductPage() {
 
 					{/* Action Buttons */}
 					<div className="flex items-center gap-3">
-						<a
-							href={`/purchase?productId=${painting.id}&orderType=${painting.isDigital ? "digital" : "physical"}`}
-							className="flex-1 rounded-lg bg-[#0061f2] py-4 text-center font-bold text-white transition hover:bg-blue-700"
-						>
-							Purchase License
-						</a>
+						{BUYING_ENABLED ? (
+							<a
+								href={`/purchase?productId=${painting.id}&orderType=${painting.isDigital ? "digital" : "physical"}`}
+								className="flex-1 rounded-lg bg-[#0061f2] py-4 text-center font-bold text-white transition hover:bg-blue-700"
+							>
+								Purchase License
+							</a>
+						) : (
+							<button
+								type="button"
+								disabled
+								className="flex-1 rounded-lg bg-[#E5EAF1] py-4 text-center font-bold text-[#64748B] cursor-not-allowed"
+							>
+								Purchasing Paused
+							</button>
+						)}
 						<button
 							onClick={handleShare}
 							className="rounded-lg border border-gray-200 p-4 transition hover:bg-gray-100"
@@ -135,13 +146,13 @@ export default function ProductPage() {
 									: "Physical Item"}
 							</p>
 						</div>
-						{painting.isDigital && (
+						{painting.isDigital && painting.resolution && (
 							<div>
 								<p className="text-xs text-[#98A0AB] uppercase tracking-wider mb-1">
 									Resolution
 								</p>
 								<p className="font-semibold text-[#0F1724] text-md">
-									4500 x 4500 px
+									{painting.resolution}
 								</p>
 							</div>
 						)}

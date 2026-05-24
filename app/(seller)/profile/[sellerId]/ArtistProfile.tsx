@@ -16,6 +16,7 @@ export default function ArtistProfile({
 	const [artistData, setArtistData] = useState<SellerType | undefined | null>(
 		null,
 	);
+	const [filterValue, setFilterValue] = useState<string>("");
 
 	const loadData = async () => {
 		try {
@@ -111,26 +112,49 @@ export default function ArtistProfile({
 
 				{/* Filter Bar */}
 				<div className="flex flex-wrap items-center gap-3 mb-8">
-					<button className="px-5 py-2 bg-[#007AFF] text-white rounded-full text-sm font-semibold shadow-sm">
+					{/* "All" Button */}
+					<button
+						onClick={() => setFilterValue("")}
+						className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors shadow-sm ${
+							filterValue === ""
+								? "bg-[#007AFF] text-white"
+								: "bg-white border border-[#0000001A] text-[#98A0AB] hover:bg-gray-50"
+						}`}
+					>
 						All
 					</button>
+
+					{/* Category Buttons */}
 					{[
-						"Digital art",
+						"Digital Art",
 						"Paintings",
 						"Photography",
-						"Self portrait",
-					].map((cat) => (
-						<button
-							key={cat}
-							className="px-5 py-2 bg-white border border-[#0000001A] text-[#98A0AB] rounded-full text-sm font-medium hover:bg-gray-50"
-						>
-							{cat}
-						</button>
-					))}
+						"Self Portrait",
+					].map((cat) => {
+						// Check if this specific button is the active filter
+						const isActive = filterValue === cat;
+
+						return (
+							<button
+								onClick={() => setFilterValue(cat)}
+								key={cat}
+								className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+									isActive
+										? "bg-[#007AFF] text-white shadow-sm font-semibold"
+										: "bg-white border border-[#0000001A] text-[#98A0AB] hover:bg-gray-50"
+								}`}
+							>
+								{cat}
+							</button>
+						);
+					})}
 				</div>
 
 				{/* Paginated Artwork Component */}
-				<ArtworkGrid artworkIds={artistData.artWorks} />
+				<ArtworkGrid
+					artworkIds={artistData.artWorks}
+					filterValue={filterValue}
+				/>
 			</main>
 		</div>
 	);

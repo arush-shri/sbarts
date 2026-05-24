@@ -5,6 +5,7 @@ import { processImage } from "@/server/ArtImageHandler";
 import { requireFirebaseUser } from "@/server/Auth";
 import { FieldValue } from "firebase-admin/firestore";
 import { NextRequest, NextResponse } from "next/server";
+import sharp from "sharp";
 
 export async function POST(req: NextRequest) {
 	try {
@@ -48,8 +49,8 @@ export async function POST(req: NextRequest) {
 
 		await thumbFile.save(result.thumbnail, {
 			contentType: "image/jpeg",
-			public: true,
 		});
+		await thumbFile.makePublic();
 
 		// ---------- UPLOAD WATERMARK ----------
 		const watermarkFile = bucket.file(
@@ -58,8 +59,8 @@ export async function POST(req: NextRequest) {
 
 		await watermarkFile.save(result.watermarked, {
 			contentType: "image/jpeg",
-			public: true,
 		});
+		await watermarkFile.makePublic();
 
 		// ---------- UPLOAD ORIGINAL (PRIVATE) ----------
 		const originalFile = bucket.file(`originals/${imageId}/artWork.jpg`);
@@ -67,6 +68,11 @@ export async function POST(req: NextRequest) {
 		await originalFile.save(result.original, {
 			contentType: "image/jpeg",
 		});
+		await originalFile.makePrivate();
+
+		const metadata = await sharp(result.original).metadata();
+		const width = metadata.width;
+		const height = metadata.height;
 
 		await paintingRef.set({
 			id: paintingRef.id,
@@ -87,6 +93,7 @@ export async function POST(req: NextRequest) {
 			purchases: 0,
 			createdAt: Date.now(),
 			updatedAt: Date.now(),
+			resolution: `${width}x${height}`,
 		});
 
 		await firebaseDB
@@ -96,7 +103,7 @@ export async function POST(req: NextRequest) {
 				artWorks: FieldValue.arrayUnion(paintingRef.id),
 				primaryCategories: FieldValue.arrayUnion(category),
 			});
-		return new NextResponse(null, { status: 200 });
+		return NextResponse.json({ id: paintingRef.id }, { status: 200 });
 	} catch (err) {
 		console.error(err);
 		return NextResponse.json({ error: "Upload failed" }, { status: 500 });
@@ -190,6 +197,107 @@ export async function PUT(req: NextRequest) {
 
 		return NextResponse.json(
 			{ error: "Failed to update painting" },
+			{ status: 500 },
+		);
+	}
+}
+
+export async function DELETE(req: NextRequest) {
+	try {
+		// 1. Authorize the user using your Bearer Token helper
+		const decoded = await requireFirebaseUser(req);
+		const sellerId = decoded.uid;
+
+		// 2. Extract the painting ID from the query parameters
+		const { searchParams } = new URL(req.url);
+		const paintingId = searchParams.get("id");
+
+		if (!paintingId) {
+			return NextResponse.json(
+				{ error: "Missing listing ID" },
+				{ status: 400 },
+			);
+		}
+
+		// 3. Fetch the painting to verify ownership and grab context
+		const paintingRef = firebaseDB.collection("paintings").doc(paintingId);
+		const paintingDoc = await paintingRef.get();
+
+		if (!paintingDoc.exists) {
+			return NextResponse.json(
+				{ error: "Listing not found" },
+				{ status: 404 },
+			);
+		}
+
+		const paintingData = paintingDoc.data();
+
+		// Security Check: Ensure the person deleting this item is the seller who listed it
+		if (paintingData?.sellerId !== sellerId) {
+			return NextResponse.json(
+				{ error: "Unauthorized to delete this listing" },
+				{ status: 403 },
+			);
+		}
+
+		const category = paintingData.category;
+		const imageId = paintingData.images; // e.g., the folder name / ID string
+
+		const bucket = firebaseStorage.bucket();
+
+		// 4. DELETE STORAGE IMAGES
+		// We delete the exact files created during the upload phase
+		const filesToDelete = [
+			`paintings/${imageId}/thumbnail.jpg`,
+			`paintings/${imageId}/watermarked.jpg`,
+			`originals/${imageId}/artWork.jpg`,
+		];
+
+		// Map them to promises and use ignoreErrors to prevent crashes if a specific file doesn't exist
+		await Promise.all(
+			filesToDelete.map(async (path) => {
+				try {
+					const file = bucket.file(path);
+					const [exists] = await file.exists();
+					if (exists) {
+						await file.delete();
+					}
+				} catch (storageErr) {
+					console.error(
+						`Failed to delete file from storage: ${path}`,
+						storageErr,
+					);
+				}
+			}),
+		);
+
+		// 5. UPDATE SELLER DOCUMENT (Remove references)
+		await firebaseDB
+			.collection("sellers")
+			.doc(sellerId)
+			.update({
+				artWorks: FieldValue.arrayRemove(paintingId),
+				// Note: Removing categories via arrayRemove can be aggressive if they have other items
+				// in the same category, but mirrors your arrayUnion setup.
+				primaryCategories: FieldValue.arrayRemove(category),
+			});
+
+		// 6. DELETE PAINTING DOCUMENT
+		await paintingRef.delete();
+
+		return NextResponse.json({ success: true }, { status: 200 });
+	} catch (err: any) {
+		console.error("Listing deletion failed:", err);
+
+		if (err.message === "Unauthorized") {
+			return NextResponse.json(
+				{ error: "Authentication token invalid" },
+				{ status: 401 },
+			);
+		}
+
+		return NextResponse.json(
+			{ error: "Internal Server Error during deletion" },
 			{ status: 500 },
 		);
 	}

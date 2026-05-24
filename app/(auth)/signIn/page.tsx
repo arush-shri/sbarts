@@ -4,10 +4,11 @@ import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { validateEmail, validatePassword } from "@/app/_lib/dataProcessing";
 import AuthPage from "@/components/AuthPage";
 import { CredentioalsForm } from "@/components/AuthPart";
+import Loading from "@/components/Loading";
 import { ShowToast } from "@/components/Toaster";
 import { signInWithEmailAndPassword } from "@firebase/auth";
 import { useRouter } from "next/navigation";
-import { ReactElement, useRef } from "react";
+import { ReactElement, useRef, useState } from "react";
 
 export default function SellerSignIn(): ReactElement {
 	// Master form state held in a Ref to prevent parent re-renders on every keystroke
@@ -16,9 +17,11 @@ export default function SellerSignIn(): ReactElement {
 		password: "",
 	});
 	const router = useRouter();
+	const [loading, setLoading] = useState(false);
 
 	const handleClick = async () => {
 		try {
+			setLoading(true);
 			const email = formData.current.email?.trim();
 			const password = formData.current.password?.trim();
 
@@ -62,6 +65,8 @@ export default function SellerSignIn(): ReactElement {
 			} else {
 				ShowToast("Sign in failed. Please try again.", 0);
 			}
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -146,6 +151,7 @@ export default function SellerSignIn(): ReactElement {
 					</div>
 				</div>
 			</div>
+			{loading && <Loading />}
 		</AuthPage>
 	);
 }

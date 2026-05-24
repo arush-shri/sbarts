@@ -37,14 +37,33 @@ export async function POST(req: NextRequest) {
 			password,
 		});
 		const sellerId: string = user.uid;
-		const account = await stripe.accounts.create({
-			type: "express",
-			email,
-			capabilities: {
-				card_payments: { requested: true },
-				transfers: { requested: true },
-			},
-		});
+		const stripeOnboardingEnabled =
+			process.env.STRIPE_ONBOARDING_ENABLED === "true";
+
+		let stripeConnect: string | undefined;
+		let onboardingUrl: string | undefined;
+
+		if (stripeOnboardingEnabled) {
+			const account = await stripe.accounts.create({
+				type: "express",
+				email,
+				capabilities: {
+					card_payments: { requested: true },
+					transfers: { requested: true },
+				},
+			});
+
+			stripeConnect = account.id;
+
+			const accountLink = await stripe.accountLinks.create({
+				account: account.id,
+				refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/signUp`,
+				return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/signIn`,
+				type: "account_onboarding",
+			});
+
+			onboardingUrl = accountLink.url;
+		}
 		const docRef = firebaseDB.collection("sellers").doc(sellerId);
 
 		let imageUrl = "";
@@ -60,10 +79,14 @@ export async function POST(req: NextRequest) {
 
 			await file.save(buffer, {
 				contentType: imageFile.type,
-				public: true,
 			});
 
-			imageUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(filePath)}?alt=media`;
+			const [url] = await file.getSignedUrl({
+				action: "read",
+				expires: "03-01-2500",
+			});
+
+			imageUrl = url;
 		}
 
 		const data: SellerType = {
@@ -85,20 +108,17 @@ export async function POST(req: NextRequest) {
 			totalSale: 0,
 			itemSold: 0,
 			orderIds: [],
-			stripeConnect: account.id,
+			...(stripeConnect ? { stripeConnect } : {}),
 		};
 
 		await docRef.set(data);
 
-		const accountLink = await stripe.accountLinks.create({
-			account: account.id,
-			refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/signUp`,
-			return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/signIn`,
-			type: "account_onboarding",
-		});
-
 		return NextResponse.json(
-			{ success: true, id: sellerId, onboardingUrl: accountLink.url },
+			{
+				success: true,
+				id: sellerId,
+				onboardingUrl: onboardingUrl ?? null,
+			},
 			{ status: 200 },
 		);
 	} catch (err) {

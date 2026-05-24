@@ -2,15 +2,19 @@
 
 import { useSellerContext } from "@/app/_context/SellerContext";
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
+import { SellerType } from "@/app/_lib/customTypes";
 import InputBox from "@/components/EnlistPart";
 import ProtectedPage from "@/components/ProtectedPage";
 import ArtworkUpload from "@/components/SellerParts";
 import { ShowToast } from "@/components/Toaster";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function CreateListing() {
 	// Using ref to store form data as requested
+	const [isUploading, setIsUploading] = useState(false);
+	const [uploadStage, setUploadStage] = useState("");
+
 	const router = useRouter();
 	const formData = useRef({
 		title: "",
@@ -22,7 +26,7 @@ export default function CreateListing() {
 		listingType: "Digital Download",
 		uploadedFile: null,
 	});
-	const { artistData } = useSellerContext();
+	const { artistData, setSellerData } = useSellerContext();
 
 	const handleInputChange = (name: string, value: string | number | File) => {
 		formData.current = { ...formData.current, [name]: value };
@@ -54,6 +58,8 @@ export default function CreateListing() {
 		}
 
 		// ---------- CREATE FORMDATA ----------
+		setIsUploading(true);
+		setUploadStage("Preparing files...");
 		const body = new FormData();
 		const sellerId = artistData ? artistData.id : "";
 
@@ -75,8 +81,24 @@ export default function CreateListing() {
 
 			if (!token) {
 				ShowToast("Please sign in again.", 0);
+				setIsUploading(false);
 				return;
 			}
+
+			const stageInterval = setInterval(() => {
+				setUploadStage((prev) => {
+					if (prev === "Preparing files...")
+						return "Uploading high-resolution artwork...";
+					if (prev === "Uploading high-resolution artwork...")
+						return "Processing images & applying watermarks (this takes a moment)...";
+					if (
+						prev ===
+						"Processing images & applying watermarks (this takes a moment)..."
+					)
+						return "Saving listing details...";
+					return prev;
+				});
+			}, 4000);
 
 			const res = await fetch("/api/listing", {
 				method: "POST",
@@ -86,12 +108,24 @@ export default function CreateListing() {
 				body,
 			});
 
+			clearInterval(stageInterval);
+
 			if (!res.ok) {
 				ShowToast("Upload failed", 0);
+				setIsUploading(false);
 				return;
 			}
+			const responseData = await res.json();
+			const newPaintingId = responseData.id;
+			setSellerData({
+				...artistData,
+				artWorks: [...(artistData?.artWorks || []), newPaintingId],
+			} as SellerType);
+			setUploadStage("Success! Redirecting...");
 			router.replace("/dashboard");
+			setIsUploading(false);
 		} catch (err) {
+			setIsUploading(false);
 			console.error(err);
 			ShowToast("Something went wrong", 0);
 		}
@@ -288,6 +322,24 @@ export default function CreateListing() {
 					</main>
 				</div>
 			</div>
+			{isUploading && (
+				<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+					<div className="bg-white p-6 rounded-xl shadow-xl max-w-sm w-full mx-4 text-center">
+						<div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+						<p className="text-sm font-semibold text-gray-900 mb-1">
+							Creating your listing
+						</p>
+						<p className="text-xs text-gray-500 animate-pulse">
+							{uploadStage}
+						</p>
+					</div>
+				</div>
+			)}
+
+			{/* Ensure your submit button checks this state */}
+			<button type="submit" disabled={isUploading}>
+				{isUploading ? "Uploading..." : "Publish Artwork"}
+			</button>
 		</ProtectedPage>
 	);
 }

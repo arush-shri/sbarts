@@ -100,11 +100,13 @@ export default function SellerOnboarding(): ReactElement {
 
 			if (!res.ok) {
 				ShowToast("Registration failed", 0);
+				setLoading(false);
 				return;
 			}
 
+			setLoading(false);
 			if (data.onboardingUrl) {
-				window.location.href = data.onboardingUrl;
+				window.location.assign(data.onboardingUrl);
 				return;
 			}
 
@@ -112,6 +114,7 @@ export default function SellerOnboarding(): ReactElement {
 		} catch (err) {
 			console.error(err);
 			ShowToast("Something went wrong", 0);
+			setLoading(false);
 		}
 	};
 

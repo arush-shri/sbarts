@@ -120,7 +120,7 @@ export const ArtistCard = memo(({ seller, onSelect, isSelected }: any) => {
 		>
 			<div className="h-32 bg-gray-200 relative">
 				<img
-					src={seller.image}
+					src={`${seller.image}&v=${Date.now()}`}
 					alt={seller.name}
 					className="w-full h-full object-cover opacity-80"
 				/>
@@ -131,7 +131,10 @@ export const ArtistCard = memo(({ seller, onSelect, isSelected }: any) => {
 			<div className="p-3 pr-10">
 				<div className="flex items-center gap-2">
 					<div className="w-5 h-5 rounded-full bg-gray-300 overflow-hidden">
-						<img src={seller.image} alt="avatar" />
+						<img
+							src={`${seller.image}&v=${Date.now()}`}
+							alt="avatar"
+						/>
 					</div>
 					<p className="text-sm font-bold text-[#0F1724]">
 						{seller.name}

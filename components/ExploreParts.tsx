@@ -286,7 +286,7 @@ export function ExploreSort({
 					onClick={() => setOpen(!open)}
 					className="flex items-center font-semibold gap-1 text-[#0F1724]"
 				>
-					Relevance <ChevronDown size={16} />
+					{selected} <ChevronDown size={16} />
 				</button>
 			</div>
 
@@ -296,7 +296,7 @@ export function ExploreSort({
 						<button
 							key={option}
 							onClick={() => {
-								// setSelected(option);
+								setSelected(option);
 								callback(option);
 								setOpen(false);
 							}}

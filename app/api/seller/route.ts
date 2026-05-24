@@ -97,10 +97,14 @@ export async function PUT(req: NextRequest) {
 			// QnA: WILL IT OVERRIDE?
 			await file.save(buffer, {
 				contentType: imageFile.type,
-				public: true,
 			});
 
-			imageUrl = `https://firebasestorage.googleapis.com/v0/b/${firebaseStorage.bucket().name}/o/${encodeURIComponent(filePath)}?alt=media`;
+			const [url] = await file.getSignedUrl({
+				action: "read",
+				expires: "03-01-2500",
+			});
+
+			imageUrl = url;
 		}
 
 		// ---------- UPDATE FIRESTORE ----------
@@ -119,7 +123,16 @@ export async function PUT(req: NextRequest) {
 			...(imageUrl && { image: imageUrl }),
 		});
 
-		return NextResponse.json({ success: true }, { status: 200 });
+		const freshSnapshot = await sellerRef.get();
+		const updatedSellerData = {
+			id: freshSnapshot.id,
+			...freshSnapshot.data(),
+		};
+
+		return NextResponse.json(
+			{ success: true, data: updatedSellerData },
+			{ status: 200 },
+		);
 	} catch (err) {
 		console.error("Seller update error:", err);
 

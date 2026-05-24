@@ -1,6 +1,5 @@
 "use client";
 
-import { usePaintingContext } from "@/app/_context/PaintingConext";
 import { PaintingType, SellerType } from "@/app/_lib/customTypes";
 import { thumbnailUrlGenerator } from "@/app/_lib/dataProcessing";
 import Image from "next/image";
@@ -9,17 +8,12 @@ import { ReactElement, useEffect, useState } from "react";
 export default function PaintingCard({
 	artData,
 	extraStyle,
-	index,
 }: {
 	artData?: PaintingType;
 	extraStyle?: string;
-	index?: number;
 }): ReactElement {
-	const paintingsData: PaintingType[] = usePaintingContext();
 	// const searchParams = useSearchParams();
-	const painting: PaintingType | undefined = index
-		? paintingsData[index]
-		: artData;
+	const painting: PaintingType | undefined = artData;
 	const [paintingSeller, setPaintingSeller] = useState<
 		SellerType | undefined
 	>(undefined);

@@ -8,7 +8,7 @@ import {
 import Loading from "@/components/Loading";
 import { ShowToast } from "@/components/Toaster";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
 
 interface InputBoxProps {
@@ -74,6 +74,8 @@ export default function EditArtwork({
 	const [painting, setPainting] = useState<PaintingType | null | undefined>(
 		null,
 	);
+	const [isUploading, setIsUploading] = useState(false);
+	const router = useRouter();
 
 	const editedData = useRef({
 		title: painting?.title,
@@ -111,9 +113,11 @@ export default function EditArtwork({
 		}
 
 		try {
+			setIsUploading(true);
 			const token = await firebaseClientAuth.currentUser?.getIdToken();
 			if (!token) {
 				ShowToast("Please sign in again.", 0);
+				setIsUploading(false);
 				return;
 			}
 			const res = await fetch("/api/listing", {
@@ -131,14 +135,17 @@ export default function EditArtwork({
 					quantity: data.quantity,
 				}),
 			});
+			setIsUploading(false);
 
 			if (!res.ok) {
 				ShowToast("Failed to update painting.", 0);
 				return;
 			}
 
-			ShowToast("Changes saved successfully!", 0);
+			ShowToast("Changes saved successfully!", 2);
+			router.back();
 		} catch (err) {
+			setIsUploading(false);
 			console.error(err);
 			ShowToast("Something went wrong.", 0);
 		}
@@ -256,7 +263,10 @@ export default function EditArtwork({
 					</div>
 
 					<div className="flex flex-row flex-wrap w-full justify-end items-center mt-12 pt-6 border-t border-[#0000001A] gap-4">
-						<button className="px-6 py-2 border border-[#0000001A] rounded-md text-sm font-medium text-[#0F1724] hover:bg-gray-50">
+						<button
+							onClick={() => router.back()}
+							className="px-6 py-2 border border-[#0000001A] rounded-md text-sm font-medium text-[#0F1724] hover:bg-gray-50"
+						>
 							Cancel changes
 						</button>
 						<button
@@ -331,6 +341,16 @@ export default function EditArtwork({
 					</div>
 				</div>
 			</div>
+			{isUploading && (
+				<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+					<div className="bg-white p-6 rounded-xl shadow-xl max-w-sm w-full mx-4 text-center">
+						<div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+						<p className="text-sm font-semibold text-gray-900 mb-1">
+							Updating your listing
+						</p>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
