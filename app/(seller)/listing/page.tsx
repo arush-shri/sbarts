@@ -3,6 +3,7 @@
 import { useSellerContext } from "@/app/_context/SellerContext";
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { SellerType } from "@/app/_lib/customTypes";
+import { validateListing } from "@/app/_lib/validation";
 import InputBox from "@/components/EnlistPart";
 import ProtectedPage from "@/components/ProtectedPage";
 import ArtworkUpload from "@/components/SellerParts";
@@ -35,25 +36,10 @@ export default function CreateListing() {
 	const handleSubmit = async () => {
 		const data = formData.current;
 		// ---------- VALIDATION ----------
-		if (
-			!data.title.trim() ||
-			!data.category.trim() ||
-			!data.medium.trim() ||
-			!data.description.trim() ||
-			!data.listingType.trim() ||
-			!data.uploadedFile
-		) {
-			ShowToast("Please fill all required fields.", 1);
-			return;
-		}
+		const result = validateListing(data, true);
 
-		if (data.price <= 0) {
-			ShowToast("Price must be greater than 0.", 1);
-			return;
-		}
-
-		if (data.quantity <= 0) {
-			ShowToast("Quantity must be greater than 0.", 1);
+		if (!result.valid) {
+			ShowToast(result.message, 1);
 			return;
 		}
 
@@ -214,7 +200,6 @@ export default function CreateListing() {
 										<option>Digital Art</option>
 										<option>Paintings</option>
 										<option>Photography</option>
-										<option>Self Portrait</option>
 									</select>
 								</div>
 								<InputBox

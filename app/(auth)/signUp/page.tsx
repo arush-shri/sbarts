@@ -1,6 +1,6 @@
 "use client";
 
-import { validateEmail, validatePassword } from "@/app/_lib/dataProcessing";
+import { validateSellerSignUp } from "@/app/_lib/validation";
 import AuthPage from "@/components/AuthPage";
 import {
 	AccountInfo,
@@ -37,38 +37,10 @@ export default function SellerOnboarding(): ReactElement {
 		const data = formData.current;
 
 		// ---------- VALIDATION ----------
-		if (
-			!data.fullName.trim() ||
-			!data.email.trim() ||
-			!data.street.trim() ||
-			!data.city.trim() ||
-			!data.state.trim() ||
-			!data.zip.trim() ||
-			!data.country.trim() ||
-			!data.password.trim()
-		) {
-			ShowToast("All fields are required.", 1);
-			return;
-		}
+		const result = validateSellerSignUp(data);
 
-		const nameRegex = /^[A-Za-z _]+$/;
-
-		if (!nameRegex.test(data.fullName)) {
-			ShowToast(
-				"Full name can only contain alphabets, spaces, and underscores.",
-				1,
-			);
-			return;
-		}
-
-		if (!validateEmail(data.email)) {
-			ShowToast("Please enter a valid email address.", 1);
-			return;
-		}
-
-		const passwordError = validatePassword(data.password);
-		if (passwordError) {
-			ShowToast(passwordError, 1);
+		if (!result.valid) {
+			ShowToast(result.message, 1);
 			return;
 		}
 

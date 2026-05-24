@@ -5,10 +5,13 @@ import {
 	ImageUploadCard,
 	InputField,
 } from "@/components/PurchaseParts";
+import { ShowToast } from "@/components/Toaster";
 import { Lock } from "lucide-react";
+import { notFound } from "next/navigation";
 import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { SellerType } from "../_lib/customTypes";
 import { BUYING_ENABLED } from "../_lib/featureFlags";
+import { validateCheckout } from "../_lib/validation";
 
 export default function PortraitPurchase(): ReactElement {
 	const [sellers, setSellers] = useState<SellerType[]>([]);
@@ -61,13 +64,23 @@ export default function PortraitPurchase(): ReactElement {
 	});
 
 	// Callback to allow children to update the ref
-	const handleRefUpdate = useCallback((name: string, value: string) => {
-		formData.current = { ...formData.current, [name]: value };
-	}, []);
+	const handleRefUpdate = useCallback(
+		(name: string, value: string | File) => {
+			formData.current = { ...formData.current, [name]: value };
+		},
+		[],
+	);
 
 	const handleCheckout = async () => {
 		if (!BUYING_ENABLED) return;
 		if (!seller) return;
+
+		const result = validateCheckout(formData.current, "portrait");
+
+		if (!result.valid) {
+			ShowToast(result.message, 1);
+			return;
+		}
 
 		const res = await fetch("/api/checkout", {
 			method: "POST",
@@ -86,6 +99,7 @@ export default function PortraitPurchase(): ReactElement {
 	const taxes = 12.0; // to be calulated based on location, etc.
 
 	// Form validation can be added here before allowing checkout
+	if (!BUYING_ENABLED) notFound();
 	return (
 		<div className="min-h-screen bg-[#FDFDFD] px-5 lg:px-20 pt-27">
 			<div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12">
@@ -131,7 +145,7 @@ export default function PortraitPurchase(): ReactElement {
 				</aside>
 
 				{/* Main Form Content */}
-				<main className="flex flex-col space-y-8 mb-20">
+				<main className="flex flex-col w-full h-auto space-y-8 mb-20">
 					{/* Upload Logic */}
 					<section className="bg-white border border-gray-100 rounded-2xl p-8 space-y-8 shadow-md">
 						<h3 className="text-[#0F1724] text-xl font-bold border-b border-[#0000001A] pb-4">
@@ -268,7 +282,9 @@ export default function PortraitPurchase(): ReactElement {
 							}`}
 						>
 							<Lock size={18} />
-							{BUYING_ENABLED ? "Secure Checkout" : "Checkout Paused"}
+							{BUYING_ENABLED
+								? "Secure Checkout"
+								: "Checkout Paused"}
 						</button>
 					</div>
 				</main>

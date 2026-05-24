@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { ReactElement } from "react";
 import DigitalPurchase from "./DigitalPurchase";
 import PhysicalPurchase from "./PhysicalPurchase";
@@ -20,5 +21,8 @@ export default async function Purchase({
 	const isDigitalPurchase: boolean = params.orderType === "digital";
 	if (isDigitalPurchase) return <DigitalPurchase productId={productId} />;
 
-	return <PhysicalPurchase productId={productId} />;
+	const isPhysicalPurchase: boolean = params.orderType === "physical";
+	if (isPhysicalPurchase) return <PhysicalPurchase productId={productId} />;
+
+	notFound();
 }

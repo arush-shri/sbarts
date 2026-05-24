@@ -1,6 +1,7 @@
 "use client";
 
 import { getCurrentUser, subscribeAuth } from "@/app/_firebase/authState";
+import { validateRequiredText } from "@/app/_lib/validation";
 import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -69,6 +70,26 @@ export default function Header(): ReactElement {
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
 
+	const handleSearch = () => {
+		if (!keyword.current.trim()) return;
+
+		const result = validateRequiredText(
+			keyword.current,
+			"Search",
+			"search",
+			2,
+			80,
+		);
+
+		if (!result.valid) return;
+
+		setMobileOpen(false);
+
+		router.push(
+			`/explore?keyword=${encodeURIComponent(result.value as string)}`,
+		);
+	};
+
 	return (
 		<div
 			className={`fixed top-0 left-0 w-full z-50 transition-transform duration-300 text-md ${
@@ -95,20 +116,20 @@ export default function Header(): ReactElement {
 					<div className="hidden sm:flex items-center gap-3 w-1/2 lg:w-1/3 rounded-xl bg-[#f4f7ff] px-5 py-2.5">
 						<Search className="w-6 h-6 text-gray-500" />
 						<input
-							type="text"
+							type="search"
+							inputMode="search"
+							enterKeyHint="search"
+							placeholder="Search for art, photography..."
 							onChange={(e) => (keyword.current = e.target.value)}
 							onKeyDown={(e) => {
 								if (
 									e.key === "Enter" &&
 									keyword.current.trim()
 								) {
-									router.push(
-										`/explore?keyword=${encodeURIComponent(keyword.current.trim())}`,
-									);
+									handleSearch();
 								}
 							}}
-							placeholder="Search for art, photography..."
-							className="w-full bg-transparent text-md placeholder:text-gray-500 text-black outline-none"
+							className="w-full bg-transparent text-base placeholder:text-gray-500 text-gray-700 outline-none"
 						/>
 					</div>
 					<div className="hidden lg:flex flex-row gap-x-5 items-center">
@@ -175,12 +196,29 @@ export default function Header(): ReactElement {
 			{mobileOpen && (
 				<div className="lg:hidden flex flex-col gap-4 px-6 py-4 bg-[#fbfbfd] w-full rounded-b-xl">
 					<div className="flex w-full items-center gap-3 rounded-xl bg-[#f4f7ff] px-5 py-3">
-						<Search className="w-6 h-6 text-gray-500" />
 						<input
-							type="text"
+							type="search"
+							inputMode="search"
+							enterKeyHint="search"
 							placeholder="Search for art, photography..."
-							className="w-full bg-transparent text-md placeholder:text-gray-500 text-gray-700 outline-none"
+							onChange={(e) => (keyword.current = e.target.value)}
+							onKeyDown={(e) => {
+								if (
+									e.key === "Enter" &&
+									keyword.current.trim()
+								) {
+									handleSearch();
+								}
+							}}
+							className="w-full bg-transparent text-base placeholder:text-gray-500 text-gray-700 outline-none"
 						/>
+						<button
+							type="button"
+							onClick={handleSearch}
+							className="shrink-0 rounded-lg bg-[#0061f2] px-2 py-2 text-sm font-semibold text-white"
+						>
+							<Search className="w-5 h-5 text-white" />
+						</button>
 					</div>
 					<Link
 						href="/explore"

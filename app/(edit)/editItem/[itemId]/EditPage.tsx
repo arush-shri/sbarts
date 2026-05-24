@@ -5,6 +5,7 @@ import {
 	convertNumToDate,
 	thumbnailUrlGenerator,
 } from "@/app/_lib/dataProcessing";
+import { validateListing } from "@/app/_lib/validation";
 import Loading from "@/components/Loading";
 import { ShowToast } from "@/components/Toaster";
 import Image from "next/image";
@@ -52,14 +53,7 @@ const InputBox: React.FC<InputBoxProps> = ({
 					name={name}
 					defaultValue={defaultValue}
 					className={baseStyles}
-					onChange={(e) =>
-						onChange(
-							name,
-							type === "number"
-								? Number(e.target.value)
-								: e.target.value,
-						)
-					}
+					onChange={(e) => onChange(name, e.target.value)}
 				/>
 			)}
 		</div>
@@ -93,22 +87,20 @@ export default function EditArtwork({
 		const data = editedData.current;
 
 		// ---------- VALIDATION ----------
-		if (
-			!data.title?.trim() ||
-			!data.category?.trim() ||
-			!data.description?.trim()
-		) {
-			ShowToast("All fields are required.", 1);
-			return;
-		}
+		const result = validateListing(
+			{
+				...data,
+				medium: "Existing",
+				listingType: painting?.isDigital
+					? "Digital Download"
+					: "Physical Item",
+				uploadedFile: "existing",
+			},
+			false,
+		);
 
-		if (!data.price || data.price <= 0) {
-			ShowToast("Price must be greater than 0.", 1);
-			return;
-		}
-
-		if (!data.quantity || data.quantity <= 0) {
-			ShowToast("Quantity must be greater than 0.", 1);
+		if (!result.valid) {
+			ShowToast(result.message, 1);
 			return;
 		}
 

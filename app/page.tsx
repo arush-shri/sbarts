@@ -74,11 +74,11 @@ export default function Home() {
 						category="Photography"
 						path="/explore?category=Photography"
 					/>
-					<CategoryCard
+					{/* <CategoryCard
 						uri="/images/selCat.jpg"
 						category="Self Portrait"
 						path="/purchase?orderType=portrait"
-					/>
+					/> */}
 				</div>
 			</section>
 

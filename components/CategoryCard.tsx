@@ -13,7 +13,7 @@ export default function CategoryCard({
 	return (
 		<a
 			href={path}
-			className="sm:w-[20dvw] rounded-lg overflow-hidden relative group cursor-pointer"
+			className="sm:w-[27dvw] rounded-lg overflow-hidden relative group cursor-pointer"
 		>
 			<Image
 				src={uri}

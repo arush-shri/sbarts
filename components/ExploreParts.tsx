@@ -1,8 +1,10 @@
 "use client";
 
 import { ExploreButtonProps, FilterButtonRef } from "@/app/_lib/customTypes";
+import { validateExploreFilters } from "@/app/_lib/validation";
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { forwardRef, ReactElement, useImperativeHandle, useState } from "react";
+import { ShowToast } from "./Toaster";
 
 export function ExploreCategories({
 	callback,
@@ -14,12 +16,7 @@ export function ExploreCategories({
 	const [selectedCategories, setSelectedCategories] =
 		useState<string[]>(selected);
 
-	const categories: string[] = [
-		"Digital Art",
-		"Paintings",
-		"Photography",
-		"Self Portrait",
-	];
+	const categories: string[] = ["Digital Art", "Paintings", "Photography"];
 
 	const toggleCategory = (cat: string) => {
 		setSelectedCategories((prev) => {
@@ -127,6 +124,20 @@ export function ExplorePriceRange({
 	const [minPrice, setMinPrice] = useState<string>(minSelected);
 	const [maxPrice, setMaxPrice] = useState<string>(maxSelected);
 
+	const validateAndApply = () => {
+		const result = validateExploreFilters({
+			minPrice,
+			maxPrice,
+		});
+
+		if (!result.valid) {
+			ShowToast(result.message, 1);
+			return;
+		}
+
+		callback(Number(minPrice), Number(maxPrice));
+	};
+
 	return (
 		<div className="flex flex-col gap-3">
 			<div className="flex items-center gap-2">
@@ -152,7 +163,7 @@ export function ExplorePriceRange({
 			</div>
 
 			<button
-				onClick={() => callback(Number(minPrice), Number(maxPrice))}
+				onClick={validateAndApply}
 				className="w-full py-2 border border-[#98A0AB] rounded-lg text-sm font-medium hover:bg-gray-50 transition text-[#0F1724]"
 			>
 				Apply

@@ -2,6 +2,7 @@
 
 import { useSellerContext } from "@/app/_context/SellerContext";
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
+import { validateImageFile, validateProfile } from "@/app/_lib/validation";
 import ProtectedPage from "@/components/ProtectedPage";
 import { ShowToast } from "@/components/Toaster";
 // @ts-ignore
@@ -38,11 +39,16 @@ export default function EditProfile() {
 		setProfile((prev) => ({ ...prev, [key]: val }));
 	};
 
-	const handleImageChange = (file: globalThis.File) => {
-		const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+	const handleImageChange = async (file: globalThis.File) => {
+		const result = await validateImageFile(file, {
+			label: "Profile picture",
+			maxMb: 5,
+			minWidth: 720,
+			minHeight: 720,
+		});
 
-		if (file.size > MAX_SIZE) {
-			ShowToast("Image must be smaller than 5MB.", 1);
+		if (!result.valid) {
+			ShowToast(result.message, 1);
 			return;
 		}
 
@@ -50,15 +56,6 @@ export default function EditProfile() {
 		const objectUrl = URL.createObjectURL(file as Blob);
 
 		img.onload = () => {
-			const w = img.width;
-			const h = img.height;
-
-			if (w < 720 || h < 720) {
-				ShowToast("Image must be at least 720×720 pixels.", 1);
-				URL.revokeObjectURL(objectUrl);
-				return;
-			}
-
 			// Save image preview
 			updateField("image", objectUrl);
 			updateField("imageFile", file);
@@ -75,36 +72,10 @@ export default function EditProfile() {
 		try {
 			// ---------- VALIDATION ----------
 
-			if (
-				!profile.fullName ||
-				!profile.country ||
-				!profile.city ||
-				!profile.address ||
-				!profile.postalCode
-			) {
-				ShowToast("All fields are required.", 1);
-				return;
-			}
+			const result = validateProfile(profile);
 
-			// full name alphabets only
-			const nameRegex = /^[A-Za-z _]+$/;
-
-			if (!nameRegex.test(profile.fullName)) {
-				ShowToast(
-					"Full name can only contain alphabets, spaces, and underscores.",
-					1,
-				);
-				return;
-			}
-
-			// portrait price validation
-			if (
-				profile.selfPortrait &&
-				(!profile.portraitPrice ||
-					isNaN(Number(profile.portraitPrice)) ||
-					Number(profile.portraitPrice) < 0)
-			) {
-				ShowToast("Please enter a valid portrait price.", 1);
+			if (!result.valid) {
+				ShowToast(result.message, 1);
 				return;
 			}
 

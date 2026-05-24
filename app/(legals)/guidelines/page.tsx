@@ -372,10 +372,7 @@ const SellerGuidelinesPage: React.FC = () => {
 								SBArts Seller Support
 							</p>
 							<p className="mt-2 text-[#6b7280]">
-								Email: support@exampleartmarketplace.com
-							</p>
-							<p className="text-[#6b7280]">
-								Legal: legal@exampleartmarketplace.com
+								Email: contact@msbart.com
 							</p>
 						</div>
 					</GuidelineSection>

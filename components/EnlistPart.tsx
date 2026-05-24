@@ -37,14 +37,7 @@ const InputBox: React.FC<InputBoxProps> = ({
 					name={name}
 					placeholder={placeholder}
 					className={baseStyles}
-					onChange={(e) =>
-						onChange(
-							name,
-							type === "number"
-								? Number(e.target.value)
-								: e.target.value,
-						)
-					}
+					onChange={(e) => onChange(name, e.target.value)}
 				/>
 			)}
 		</div>

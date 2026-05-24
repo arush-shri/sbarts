@@ -1,5 +1,6 @@
 "use client";
 
+import { validateImageFile } from "@/app/_lib/validation";
 import { Check, Upload } from "lucide-react";
 import NextImage from "next/image";
 import React, { memo, useRef, useState } from "react";
@@ -149,7 +150,11 @@ export const ArtistCard = memo(({ seller, onSelect, isSelected }: any) => {
 });
 
 export const ImageUploadCard = memo(
-	({ callback }: { callback: (name: string, value: string) => void }) => {
+	({
+		callback,
+	}: {
+		callback: (name: string, value: string | File) => void;
+	}) => {
 		const inputRef = useRef<HTMLInputElement>(null);
 
 		const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -159,21 +164,22 @@ export const ImageUploadCard = memo(
 			inputRef.current?.click();
 		};
 
-		const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const handleFileChange = async (
+			e: React.ChangeEvent<HTMLInputElement>,
+		) => {
 			const file = e.target.files?.[0];
 			if (!file) return;
 
 			// ---------- TYPE CHECK ----------
-			const validTypes = ["image/jpeg", "image/png"];
-			if (!validTypes.includes(file.type)) {
-				ShowToast("Only JPG or PNG images are allowed.", 1);
-				return;
-			}
+			const result = await validateImageFile(file, {
+				label: "Image",
+				maxMb: 10,
+				minWidth: 1920,
+				minHeight: 1080,
+			});
 
-			// ---------- SIZE CHECK ----------
-			const maxSize = 5 * 1024 * 1024;
-			if (file.size > maxSize) {
-				ShowToast("Image must be less than 5MB.", 1);
+			if (!result.valid) {
+				ShowToast(result.message, 1);
 				return;
 			}
 
@@ -181,17 +187,11 @@ export const ImageUploadCard = memo(
 			const objectUrl = URL.createObjectURL(file);
 
 			img.onload = () => {
-				if (img.width < 1024 || img.height < 1024) {
-					ShowToast("Image must be at least 1024x1024.", 1);
-					URL.revokeObjectURL(objectUrl);
-					return;
-				}
-
 				// set preview + filename
 				setPreviewUrl(objectUrl);
 				setFileName(file.name);
 
-				callback("uploadedFile", objectUrl);
+				callback("uploadedFile", file);
 			};
 
 			img.src = objectUrl;

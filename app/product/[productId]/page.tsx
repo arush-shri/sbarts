@@ -115,7 +115,7 @@ export default function ProductPage() {
 								href={`/purchase?productId=${painting.id}&orderType=${painting.isDigital ? "digital" : "physical"}`}
 								className="flex-1 rounded-lg bg-[#0061f2] py-4 text-center font-bold text-white transition hover:bg-blue-700"
 							>
-								Purchase License
+								Purchase
 							</a>
 						) : (
 							<button

@@ -85,7 +85,7 @@ export default function Footer(): ReactElement {
 							{userLoggedIn && (
 								<a
 									href="/dashboard"
-									className="text-[#6b7280] text-md hover:text-[#0F1724]"
+									className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
 								>
 									Seller Dashboard
 								</a>

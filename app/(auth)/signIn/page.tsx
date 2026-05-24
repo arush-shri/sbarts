@@ -1,7 +1,7 @@
 "use client";
 
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
-import { validateEmail, validatePassword } from "@/app/_lib/dataProcessing";
+import { validateSignIn } from "@/app/_lib/validation";
 import AuthPage from "@/components/AuthPage";
 import { CredentioalsForm } from "@/components/AuthPart";
 import Loading from "@/components/Loading";
@@ -26,20 +26,10 @@ export default function SellerSignIn(): ReactElement {
 			const password = formData.current.password?.trim();
 
 			// ---------- VALIDATION ----------
-			if (!email || !password) {
-				ShowToast("Email and password are required.", 1);
-				return;
-			}
+			const result = validateSignIn(formData.current);
 
-			if (!validateEmail(email)) {
-				ShowToast("Please enter a valid email address.", 1);
-				return;
-			}
-
-			const passwordError = validatePassword(password);
-
-			if (passwordError) {
-				ShowToast(passwordError, 1);
+			if (!result.valid) {
+				ShowToast(result.message, 1);
 				return;
 			}
 

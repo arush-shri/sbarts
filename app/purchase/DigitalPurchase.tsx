@@ -2,6 +2,7 @@
 
 import Loading from "@/components/Loading";
 import { InputField, LicenseCard } from "@/components/PurchaseParts";
+import { ShowToast } from "@/components/Toaster";
 import { Image as ImageIcon, Lock } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -9,6 +10,7 @@ import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { PaintingType, SellerType } from "../_lib/customTypes";
 import { watermarkedUrlGenerator } from "../_lib/dataProcessing";
 import { BUYING_ENABLED } from "../_lib/featureFlags";
+import { validateCheckout } from "../_lib/validation";
 
 export default function DigitalPurchase({
 	productId,
@@ -90,6 +92,19 @@ export default function DigitalPurchase({
 
 	const handleCheckout = async () => {
 		if (!BUYING_ENABLED) return;
+
+		const result = validateCheckout(
+			{
+				...formData.current,
+				licenseType: selectedLicense,
+			},
+			"digital",
+		);
+
+		if (!result.valid) {
+			ShowToast(result.message, 1);
+			return;
+		}
 
 		const res = await fetch("/api/checkout", {
 			method: "POST",
@@ -349,7 +364,9 @@ export default function DigitalPurchase({
 							}`}
 						>
 							<Lock size={18} />
-							{BUYING_ENABLED ? "Secure Checkout" : "Checkout Paused"}
+							{BUYING_ENABLED
+								? "Secure Checkout"
+								: "Checkout Paused"}
 						</button>
 					</div>
 				</main>

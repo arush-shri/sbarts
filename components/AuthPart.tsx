@@ -1,4 +1,5 @@
 import { BUYING_ENABLED } from "@/app/_lib/featureFlags";
+import { validateImageFile } from "@/app/_lib/validation";
 // @ts-ignore
 import { getNames } from "country-list";
 import { CreditCard, Eye, EyeOff, ImagePlus } from "lucide-react";
@@ -160,21 +161,23 @@ export const SellerImageUpload = memo(
 			inputRef.current?.click();
 		};
 
-		const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const handleFileChange = async (
+			e: React.ChangeEvent<HTMLInputElement>,
+		) => {
 			const file = e.target.files?.[0];
 			if (!file) return;
 
 			// ---------- TYPE CHECK ----------
-			const validTypes = ["image/jpeg", "image/png"];
-			if (!validTypes.includes(file.type)) {
-				ShowToast("Only JPG or PNG images are allowed.", 1);
-				return;
-			}
+			const result = await validateImageFile(file, {
+				types: ["image/jpeg", "image/png"],
+				maxMb: 5,
+				minHeight: 720,
+				minWidth: 720,
+				label: "Profile picture",
+			});
 
-			// ---------- SIZE CHECK (5MB) ----------
-			const maxSize = 5 * 1024 * 1024;
-			if (file.size > maxSize) {
-				ShowToast("Image must be smaller than 5MB.", 1);
+			if (!result.valid) {
+				ShowToast(result.message, 1);
 				return;
 			}
 
@@ -183,12 +186,6 @@ export const SellerImageUpload = memo(
 			const objectUrl = URL.createObjectURL(file);
 
 			img.onload = () => {
-				if (img.width < 720 || img.height < 720) {
-					ShowToast("Image must be at least 720×720.", 1);
-					URL.revokeObjectURL(objectUrl);
-					return;
-				}
-
 				setPreview(objectUrl);
 				setFileName(file.name);
 

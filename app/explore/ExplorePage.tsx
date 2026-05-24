@@ -5,6 +5,7 @@ import PaintingCard from "@/components/PaintingCard";
 import { SlidersHorizontal } from "lucide-react";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { FilterButtonRef, PaintingType } from "../_lib/customTypes";
+import { validateExploreFilters } from "../_lib/validation";
 
 export default function ExplorePage({
 	category,
@@ -32,6 +33,11 @@ export default function ExplorePage({
 	});
 
 	const loadData = async () => {
+		const result = validateExploreFilters(filterDataRef.current);
+
+		if (!result.valid) {
+			return;
+		}
 		const res = await fetch("/api/explore", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },

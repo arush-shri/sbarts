@@ -6,6 +6,7 @@ import {
 	convertNumToDate,
 	thumbnailUrlGenerator,
 } from "@/app/_lib/dataProcessing";
+import { validateImageFile } from "@/app/_lib/validation";
 import { signOut } from "firebase/auth";
 import { Edit2, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -246,17 +247,16 @@ export default function ArtworkUpload({
 		inputRef.current?.click();
 	};
 
-	const validateAndProcess = (file: File) => {
-		// ---------- TYPE ----------
-		if (!["image/jpeg", "image/png"].includes(file.type)) {
-			ShowToast("Only JPEG or PNG images are allowed.", 1);
-			return;
-		}
+	const validateAndProcess = async (file: File) => {
+		const result = await validateImageFile(file, {
+			label: "Artwork image",
+			maxMb: 50,
+			minWidth: 1920,
+			minHeight: 1080,
+		});
 
-		// ---------- SIZE ----------
-		const maxSize = 50 * 1024 * 1024;
-		if (file.size > maxSize) {
-			ShowToast("Max file size is 50MB.", 1);
+		if (!result.valid) {
+			ShowToast(result.message, 1);
 			return;
 		}
 
@@ -264,30 +264,6 @@ export default function ArtworkUpload({
 		const objectUrl = URL.createObjectURL(file);
 
 		img.onload = () => {
-			const w = img.width;
-			const h = img.height;
-
-			// ---------- MIN HD ----------
-			if (w < 1920 || h < 1080) {
-				ShowToast("Image must be at least 1920×1080.", 1);
-				URL.revokeObjectURL(objectUrl);
-				return;
-			}
-
-			// ---------- ASPECT RATIO ----------
-			const ratio = w / h;
-
-			const allowed =
-				Math.abs(ratio - 1) < 0.02 || // 1:1
-				Math.abs(ratio - 4 / 3) < 0.02 || // 4:3
-				Math.abs(ratio - 16 / 9) < 0.02; // 16:9
-
-			if (!allowed) {
-				ShowToast("Allowed ratios: 1:1, 4:3, 16:9.", 1);
-				URL.revokeObjectURL(objectUrl);
-				return;
-			}
-
 			setPreview(objectUrl);
 			setFileName(file.name);
 

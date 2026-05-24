@@ -91,7 +91,7 @@ const PrivacyPolicyPage: React.FC = () => {
 
 					<div className="mt-8 flex flex-wrap gap-3 text-sm text-[#6b7280]">
 						<span className="rounded-lg border border-[#0000001A] bg-white px-4 py-2">
-							Last Updated: May 17, 2026
+							Last Updated: May 24, 2026
 						</span>
 						<span className="rounded-lg border border-[#0000001A] bg-white px-4 py-2">
 							Worldwide Marketplace Platform
@@ -406,13 +406,7 @@ const PrivacyPolicyPage: React.FC = () => {
 								SBArts
 							</p>
 							<p className="mt-2 text-[#6b7280]">
-								Privacy Email: privacy@exampleartmarketplace.com
-							</p>
-							<p className="text-[#6b7280]">
-								Support Email: support@exampleartmarketplace.com
-							</p>
-							<p className="text-[#6b7280]">
-								Address: 123 Marketplace Avenue, Global City
+								Email: contact@msbart.com
 							</p>
 						</div>
 					</PolicySection>
@@ -427,7 +421,7 @@ const PrivacyPolicyPage: React.FC = () => {
 							global marketplace.
 						</p>
 						<div className="mt-6 text-sm text-[#98A0AB]">
-							Last Updated: May 17, 2026
+							Last Updated: May 24, 2026
 						</div>
 					</div>
 				</main>

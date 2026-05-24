@@ -127,9 +127,9 @@ export default function ArtistProfile({
 					{/* Category Buttons */}
 					{[
 						"Digital Art",
-						"Paintings",
+						"Painting",
 						"Photography",
-						"Self Portrait",
+						// "Self Portrait",
 					].map((cat) => {
 						// Check if this specific button is the active filter
 						const isActive = filterValue === cat;

@@ -1,7 +1,7 @@
 "use client";
 
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
-import { validateEmail } from "@/app/_lib/dataProcessing";
+import { validateEmail } from "@/app/_lib/validation";
 import AuthPage from "@/components/AuthPage";
 import { ShowToast } from "@/components/Toaster";
 import { sendPasswordResetEmail } from "@firebase/auth";
@@ -51,13 +51,10 @@ function ResetPasswordForm() {
 	const handleSendOtp = async () => {
 		try {
 			// ---------- VALIDATE ----------
-			if (!email || !email.trim()) {
-				ShowToast("Please enter your email.", 1);
-				return;
-			}
+			const result = validateEmail(email);
 
-			if (!validateEmail(email)) {
-				ShowToast("Please enter a valid email address.", 1);
+			if (!result.valid) {
+				ShowToast(result.message, 1);
 				return;
 			}
 
