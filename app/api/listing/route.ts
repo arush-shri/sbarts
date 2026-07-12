@@ -1,5 +1,6 @@
 import { firebaseDB } from "@/app/_firebase/firebaseDb";
 import { firebaseStorage } from "@/app/_firebase/storage";
+import { isArtCategory } from "@/app/_lib/artCategories";
 import { PaintingType, UpdateBody } from "@/app/_lib/customTypes";
 import { processImage } from "@/server/ArtImageHandler";
 import { requireFirebaseUser } from "@/server/Auth";
@@ -30,6 +31,13 @@ export async function POST(req: NextRequest) {
 		// const sellerId = formData.get("sellerId") as string;
 		const decoded = await requireFirebaseUser(req);
 		const sellerId = decoded.uid;
+
+		if (!isArtCategory(category)) {
+			return NextResponse.json(
+				{ error: "Please select a valid artwork category" },
+				{ status: 400 },
+			);
+		}
 
 		const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -174,7 +182,15 @@ export async function PUT(req: NextRequest) {
 		};
 
 		if (body.title !== undefined) updateData.title = body.title;
-		if (body.category !== undefined) updateData.category = body.category;
+		if (body.category !== undefined) {
+			if (!isArtCategory(body.category)) {
+				return NextResponse.json(
+					{ error: "Please select a valid artwork category" },
+					{ status: 400 },
+				);
+			}
+			updateData.category = body.category;
+		}
 		if (body.description !== undefined)
 			updateData.description = body.description;
 		if (body.price !== undefined) updateData.price = body.price;

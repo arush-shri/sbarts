@@ -1,4 +1,5 @@
 import { firebaseDB } from "@/app/_firebase/firebaseDb";
+import { isArtCategory } from "@/app/_lib/artCategories";
 import { PaintingType } from "@/app/_lib/customTypes";
 import { FieldValue } from "firebase-admin/firestore";
 import { NextRequest, NextResponse } from "next/server";
@@ -79,13 +80,20 @@ export async function POST(req: NextRequest) {
 
 			// 3. Apply case-insensitive filtering in memory if filterValue is provided
 			if (body.filterValue && body.filterValue.trim() !== "") {
-				const targetCategory = body.filterValue.trim().toLowerCase();
+				const targetCategory = body.filterValue.trim();
+				if (!isArtCategory(targetCategory)) {
+					return NextResponse.json(
+						{ success: true, data: [] },
+						{ status: 200 },
+					);
+				}
 
 				data = data.filter((painting) => {
 					// Ensure the painting has a category field to prevent runtime errors
 					return (
 						painting.category &&
-						painting.category.toLowerCase() === targetCategory
+						painting.category.toLowerCase() ===
+							targetCategory.toLowerCase()
 					);
 				});
 			}

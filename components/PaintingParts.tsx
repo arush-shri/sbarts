@@ -102,7 +102,7 @@ export function SellerInfo({
 
 	const sellerImage = paintingSeller?.image
 		? `${paintingSeller.image}&v=${Date.now()}`
-		: "/images/selCat.jpg";
+		: "/images/portrait.png";
 
 	return (
 		<div

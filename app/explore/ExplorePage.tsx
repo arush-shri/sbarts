@@ -1,117 +1,147 @@
 "use client";
 
-import { ExploreFilterButton, ExploreSort } from "@/components/ExploreParts";
+import { ART_CATEGORIES } from "@/app/_lib/artCategories";
+import { PaintingType } from "@/app/_lib/customTypes";
 import PaintingCard from "@/components/PaintingCard";
-import { SlidersHorizontal } from "lucide-react";
-import { ReactElement, useEffect, useRef, useState } from "react";
-import { FilterButtonRef, PaintingType } from "../_lib/customTypes";
-import { validateExploreFilters } from "../_lib/validation";
+import {
+	FormEvent,
+	ReactElement,
+	useCallback,
+	useEffect,
+	useState,
+} from "react";
+
+const categories = ["All", ...ART_CATEGORIES];
+
+const categoryIdToName: Record<string, string> = {
+	hope: "Hope & Dignity",
+	portrait: "Portrait",
+	wildlife: "Wildlife",
+	"high-altitude": "High Altitude",
+	design: "Design",
+};
 
 export default function ExplorePage({
 	category,
 	keyword,
+	title = "Marketplace",
 }: {
 	category?: string;
 	keyword?: string;
+	title?: string;
 }): ReactElement {
-	const filterRef = useRef<FilterButtonRef>(null);
 	const [items, setItems] = useState<PaintingType[]>([]);
-	const filterDataRef = useRef<{
-		search?: string;
-		category?: string[];
-		minPrice?: number;
-		maxPrice?: number;
-		type?: "digital" | "physical" | "all";
-		sort?: string;
-	}>({
-		search: keyword || "",
-		category: category ? [category || ""] : undefined,
-		minPrice: undefined,
-		maxPrice: undefined,
-		type: undefined,
-		sort: "Newest",
-	});
+	const [selectedCategory, setSelectedCategory] = useState(category || "All");
+	const [search, setSearch] = useState(keyword || "");
+	const [loading, setLoading] = useState(true);
 
-	const loadData = async () => {
-		const result = validateExploreFilters(filterDataRef.current);
+	const loadData = useCallback(
+		async (nextCategory: string, nextSearch: string) => {
+			setLoading(true);
+			try {
+				const body = {
+					search: nextSearch.trim() || undefined,
+					category:
+						nextCategory && nextCategory !== "All"
+							? [nextCategory]
+							: undefined,
+					sort: "Newest",
+				};
 
-		if (!result.valid) {
-			return;
-		}
-		const res = await fetch("/api/explore", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(filterDataRef.current),
-		});
+				const res = await fetch("/api/explore", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(body),
+				});
 
-		const { data } = await res.json();
-		setItems(data);
-	};
-
-	const updateFilter = (key: string, value: string | string[]) => {
-		if (key === "price" && !Array.isArray(value)) {
-			const range: string[] = value.split(",");
-			filterDataRef.current.minPrice = Number(range[0]);
-			filterDataRef.current.maxPrice = Number(range[1]);
-		} else
-			filterDataRef.current = { ...filterDataRef.current, [key]: value };
-		loadData();
-	};
+				const json = await res.json();
+				setItems(Array.isArray(json.data) ? json.data : []);
+			} catch (error) {
+				console.error(error);
+				setItems([]);
+			} finally {
+				setLoading(false);
+			}
+		},
+		[],
+	);
 
 	useEffect(() => {
-		filterDataRef.current = {
-			...filterDataRef.current,
-			search: keyword || "",
-			category: category ? [category || ""] : undefined,
-		};
-		loadData();
-	}, [keyword, category]);
+		const mappedCategory =
+			category && categoryIdToName[category]
+				? categoryIdToName[category]
+				: category || "All";
+		const nextSearch = keyword || "";
+		setSelectedCategory(mappedCategory);
+		setSearch(nextSearch);
+		loadData(mappedCategory, nextSearch);
+	}, [category, keyword, loadData]);
+
+	const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		loadData(selectedCategory, search);
+	};
+
+	const handleCategory = (nextCategory: string) => {
+		setSelectedCategory(nextCategory);
+		loadData(nextCategory, search);
+	};
 
 	return (
-		<div className="px-5 md:px-20 pt-24">
-			<section className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-				<div className="flex w-full items-center justify-between md:justify-end gap-4">
-					{/* Mobile Filter Toggle Button */}
-					<button
-						onClick={() => filterRef.current?.trigger()}
-						className="md:hidden flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50 transition"
-					>
-						<SlidersHorizontal className="w-4 h-auto text-[#0F1724]" />
-
-						<span className="font-medium text-sm text-[#0F1724]">
-							Filters
-						</span>
-					</button>
-
-					<ExploreSort
-						callback={(sortValue) =>
-							updateFilter("sort", sortValue)
-						}
-					/>
+		<main className="bg-[#f7f1e6] text-[#182033]">
+			<section className="bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.2),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] py-20 text-white">
+				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
+					<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
+						Collect SB Arts
+					</div>
+					<h1 className="mt-2 font-serif text-5xl leading-tight text-[#d6ad58] md:text-7xl">
+						{title}
+					</h1>
+					<p className="mt-4 max-w-3xl text-lg text-white/75">
+						Original artwork, limited-edition prints, and selected
+						design pieces presented in a gallery-style catalogue.
+					</p>
 				</div>
 			</section>
 
-			<section className="flex flex-col md:flex-row mb-20">
-				{/* Sidebar Filter - Mobile Responsive */}
-				<ExploreFilterButton
-					filterData={filterDataRef.current}
-					ref={filterRef}
-					onClickCallback={updateFilter}
-				/>
-
-				{/* Art Grid */}
-				<main className="flex-1">
-					<div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3">
-						{items?.map((art, idx) => (
-							<PaintingCard
-								artData={art}
-								key={art.id}
-								extraStyle=""
-							/>
-						))}
+			<section className="py-16 min-h-[calc(100vh-200px)]">
+				<div className="mx-auto w-[min(1180px,calc(100%-40px))] h-full flex flex-col">
+					<div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+						<div className="flex flex-wrap gap-2">
+							{categories.map((item) => (
+								<button
+									key={item}
+									type="button"
+									onClick={() => handleCategory(item)}
+									className={`border px-4 py-2 text-sm font-bold uppercase tracking-[.06em] transition ${
+										selectedCategory === item
+											? "border-[#061a3d] bg-[#061a3d] text-white"
+											: "border-[#061a3d]/15 bg-white text-[#061a3d] hover:border-[#d6ad58]"
+									}`}
+								>
+									{item}
+								</button>
+							))}
+						</div>
 					</div>
-				</main>
+
+					{loading ? (
+						<div className="py-16 text-center text-[#6a7280] flex-1 flex items-center justify-center">
+							Loading artwork...
+						</div>
+					) : items.length ? (
+						<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 flex-1">
+							{items.map((art) => (
+								<PaintingCard key={art.id} artData={art} />
+							))}
+						</div>
+					) : (
+						<div className="border border-[#061a3d]/12 bg-white p-10 text-center text-[#6a7280] flex-1 flex items-center justify-center">
+							No artwork found for this selection.
+						</div>
+					)}
+				</div>
 			</section>
-		</div>
+		</main>
 	);
 }

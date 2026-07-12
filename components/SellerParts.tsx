@@ -37,7 +37,7 @@ export function SidebarProfile({
 						src={
 							artistData?.image && artistData.image.trim() !== ""
 								? `${artistData.image}&v=${Date.now()}`
-								: "/images/selCat.jpg"
+								: "/images/portrait.png"
 						}
 						alt="Profile"
 						fill

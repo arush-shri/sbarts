@@ -58,7 +58,7 @@ export default function ArtistProfile({
 				<div className="flex flex-col items-center text-center mb-6">
 					<div className="w-24 h-24 rounded-full overflow-hidden mb-4 relative">
 						<Image
-							src="/images/phoCat.jpg"
+							src="/images/portrait.png"
 							alt="Amelia Park"
 							fill
 							className="object-cover"

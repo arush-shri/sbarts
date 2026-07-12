@@ -6,17 +6,17 @@ export const ShowToast = (message: string, type: 0 | 1 | 2) => {
 		0: {
 			bg: "#7f1d1d",
 			color: "#fecaca",
-			icon: "⚠️",
+			icon: "!",
 		},
 		1: {
 			bg: "#1e3a8a",
 			color: "#bfdbfe",
-			icon: "ℹ️",
+			icon: "i",
 		},
 		2: {
 			bg: "#065f46",
 			color: "#a7f3d0",
-			icon: "✓",
+			icon: "OK",
 		},
 	};
 
@@ -25,15 +25,15 @@ export const ShowToast = (message: string, type: 0 | 1 | 2) => {
 	toast(
 		(t) => (
 			<div className="flex items-center gap-4">
-				<span>{s.icon}</span>
-
+				<span className="font-bold">{s.icon}</span>
 				<span>{message}</span>
-
 				<button
+					type="button"
 					onClick={() => toast.dismiss(t.id)}
-					className="text-sm cursor-pointer"
+					className="cursor-pointer text-sm"
+					aria-label="Dismiss notification"
 				>
-					<X />
+					<X className="h-4 w-4" />
 				</button>
 			</div>
 		),

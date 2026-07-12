@@ -160,7 +160,7 @@ export default function EditProfile() {
 								<Image
 									src={
 										`${profile.image}&v=${Date.now()}` ||
-										"/images/phoCat.jpg"
+										"/images/portrait.png"
 									}
 									alt="Artist Picture"
 									width={1024}

@@ -1,13 +1,9 @@
+import { ART_CATEGORIES } from "./artCategories";
+
 export type ValidationResult<T = unknown> =
 	| { valid: true; value?: T }
 	| { valid: false; field?: string; message: string };
 
-const ART_CATEGORIES = [
-	"Digital Art",
-	"Paintings",
-	"Photography",
-	"Self Portrait",
-] as const;
 const LISTING_TYPES = ["Digital Download", "Physical Item"] as const;
 const LICENSE_TYPES = ["Personal", "Commercial", "Extended"] as const;
 const SHIPPING_METHODS = ["standard", "express"] as const;

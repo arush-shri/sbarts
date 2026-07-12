@@ -1,17 +1,15 @@
 import Footer from "@/components/footer";
 import Header from "@/components/header";
-import { getServerSession } from "@/server/authHandler";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import { PaintingProvider } from "./_context/PaintingConext";
-import { SellerProvider } from "./_context/SellerContext";
 import { fontInter } from "./_lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
 	title: "SB Arts",
 	description:
-		"Buy & sell your art with SB Arts, the premier online marketplace for artists and collectors. Discover unique pieces, connect with talented creators, and experience a vibrant community of art enthusiasts. Whether you're an artist looking to showcase your work or a collector seeking one-of-a-kind treasures, SB Arts is your destination for all things art. Join us today and explore the world of creativity at your fingertips.",
+		"SB Arts presents artwork for hope, dignity, and freedom through a gallery-style catalogue and simple inquiry experience.",
 };
 
 export default async function RootLayout({
@@ -19,13 +17,9 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const session: boolean = await getServerSession();
-
-	const isLoggedIn = !!session;
-
 	return (
 		<html lang="en">
-			<body className={`${fontInter.className} bg-white`}>
+			<body className={`${fontInter.className} bg-[#f7f1e6]`}>
 				<Toaster
 					position="top-center"
 					toastOptions={{
@@ -35,13 +29,11 @@ export default async function RootLayout({
 						},
 					}}
 				/>
-				<SellerProvider>
-					<PaintingProvider>
-						<Header />
-						{children}
-						<Footer />
-					</PaintingProvider>
-				</SellerProvider>
+				<PaintingProvider>
+					<Header />
+					{children}
+					<Footer />
+				</PaintingProvider>
 			</body>
 		</html>
 	);

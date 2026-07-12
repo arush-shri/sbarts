@@ -1,269 +1,104 @@
 "use client";
 
-import { getCurrentUser, subscribeAuth } from "@/app/_firebase/authState";
-import { validateRequiredText } from "@/app/_lib/validation";
-import { Search } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ReactElement, RefObject, useEffect, useRef, useState } from "react";
+import { FormEvent, ReactElement, useState } from "react";
 
-function CategoriesLink() {
-	const pathname = usePathname();
-	const router = useRouter();
-
-	const handleClick = (e: React.MouseEvent) => {
-		// If already on homepage → scroll manually
-		if (pathname === "/") {
-			e.preventDefault();
-
-			document
-				.getElementById("categories")
-				?.scrollIntoView({ behavior: "smooth" });
-		}
-		// otherwise allow normal navigation
-	};
-
-	return (
-		<Link
-			href="/#categories"
-			onClick={handleClick}
-			className="cursor-pointer transition-all hover:-translate-y-1 duration-200 ease-in-out 
-      hover:text-[#0F1724] text-[#98A0AB] font-medium text-md"
-		>
-			Categories
-		</Link>
-	);
-}
+const navItems = [
+	{ href: "/", label: "Home" },
+	{ href: "/gallery", label: "Gallery" },
+	{ href: "/marketplace", label: "Marketplace" },
+	{ href: "/competition", label: "Competition" },
+	{ href: "/about", label: "About" },
+	{ href: "/contact", label: "Contact" },
+];
 
 export default function Header(): ReactElement {
-	const [show, setShow] = useState(true);
-	const lastScrollY: RefObject<number> = useRef<number>(0);
-	const [mobileOpen, setMobileOpen] = useState(false);
-	const [userLoggedIn, setUser] = useState(getCurrentUser());
+	const pathname = usePathname();
 	const router = useRouter();
-	const keyword = useRef("");
+	const [mobileOpen, setMobileOpen] = useState(false);
+	const [keyword, setKeyword] = useState("");
 
-	useEffect(() => {
-		const unsub = subscribeAuth(setUser);
-		return () => {
-			unsub();
-		};
-	}, []);
-
-	useEffect(() => {
-		const handleScroll = () => {
-			const currentScrollY = window.scrollY;
-
-			if (currentScrollY > lastScrollY.current) {
-				// scrolling down
-				setShow(false);
-			} else {
-				// scrolling up
-				setShow(true);
-			}
-
-			lastScrollY.current = currentScrollY;
-		};
-
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
-
-	const handleSearch = () => {
-		if (!keyword.current.trim()) return;
-
-		const result = validateRequiredText(
-			keyword.current,
-			"Search",
-			"search",
-			2,
-			80,
-		);
-
-		if (!result.valid) return;
-
+	const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const value = keyword.trim();
+		if (!value) return;
 		setMobileOpen(false);
-
-		router.push(
-			`/explore?keyword=${encodeURIComponent(result.value as string)}`,
-		);
+		router.push(`/marketplace?keyword=${encodeURIComponent(value)}`);
 	};
 
 	return (
-		<div
-			className={`fixed top-0 left-0 w-full z-50 transition-transform duration-300 text-md ${
-				show ? "translate-y-0" : "-translate-y-full"
-			}`}
-		>
-			<div className="flex flex-col px-6 lg:px-20 py-2 items-center bg-[#fbfbfd] border-b-1 border-[#0000001A]">
-				<div className="flex flex-row justify-between items-center w-full">
-					<Link
-						href="/"
-						className="flex flex-row gap-x-2 cursor-pointer items-center h-13"
-					>
-						<Image
-							src="/images/icon.png"
-							alt="My logo"
-							width={500}
-							height={500}
-							className="h-full w-auto object-contain"
-						/>
-						<span className="text-[#0F1724] font-bold text-xl sm:text-2xl">
-							SBArts
+		<header className="sticky top-0 z-50 border-b border-[#d6ad58]/40 bg-[#061a3d]/95 backdrop-blur">
+			<div className="mx-auto flex min-h-[78px] w-[min(1180px,calc(100%-40px))] items-center justify-between gap-5">
+				<Link href="/" className="flex items-center gap-3 text-white">
+					<Image
+						src="/images/logo.svg"
+						alt="SB Arts logo"
+						width={58}
+						height={58}
+						className="h-[58px] w-[58px] rounded-xl object-contain"
+						priority
+					/>
+					<div>
+						<strong className="block font-serif text-2xl font-bold tracking-[.08em] text-[#d6ad58]">
+							SB ARTS
+						</strong>
+						<span className="block text-[10px] uppercase tracking-[.13em] text-[#ece7dd]">
+							Art for Hope, Dignity & Freedom
 						</span>
-					</Link>
-					<div className="hidden sm:flex items-center gap-3 w-1/2 lg:w-1/3 rounded-xl bg-[#f4f7ff] px-5 py-2.5">
-						<Search className="w-6 h-6 text-gray-500" />
-						<input
-							type="search"
-							inputMode="search"
-							enterKeyHint="search"
-							placeholder="Search for art, photography..."
-							onChange={(e) => (keyword.current = e.target.value)}
-							onKeyDown={(e) => {
-								if (
-									e.key === "Enter" &&
-									keyword.current.trim()
-								) {
-									handleSearch();
-								}
-							}}
-							className="w-full bg-transparent text-base placeholder:text-gray-500 text-gray-700 outline-none"
-						/>
 					</div>
-					<div className="hidden lg:flex flex-row gap-x-5 items-center">
-						<Link
-							href="/explore"
-							className="cursor-pointer transition-all hover:-translate-y-1 duration-200 ease-in-out 
-                            hover:text-[#0F1724] text-[#98A0AB] font-medium text-md"
-						>
-							Explore
-						</Link>
-						<CategoriesLink />
-						<div className="h-9 w-px bg-[#0000001A]" />
-						{userLoggedIn && (
-							<a
-								href="/dashboard"
-								className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 font-medium hover:bg-gray-100 
-                                transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
-							>
-								Dashboard
-							</a>
-						)}
-						{!userLoggedIn && (
-							<>
-								<a
-									href="/signIn"
-									className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 font-medium hover:bg-gray-100 
-                                    transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
-								>
-									Sign In
-								</a>
-								<a
-									href="/signUp"
-									className="px-4 py-2 rounded-lg bg-[#0061f2] text-white font-semibold hover:bg-blue-700 
-                                    transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
-								>
-									Join Now
-								</a>
-							</>
-						)}
-					</div>
+				</Link>
 
-					<button
-						onClick={() => setMobileOpen(!mobileOpen)}
-						className="lg:hidden relative w-8 h-8 flex flex-col justify-center items-center group"
-					>
-						<span
-							className={`absolute h-0.5 w-6 bg-[#0F1724] transition-all duration-300 ${
-								mobileOpen ? "rotate-45" : "-translate-y-2"
+				<nav className="hidden items-center gap-5 text-sm text-white lg:flex">
+					{navItems.map((item) => (
+						<Link
+							key={item.href}
+							href={item.href}
+							className={`transition hover:text-[#d6ad58] ${
+								pathname === item.href ? "text-[#d6ad58]" : ""
 							}`}
-						/>
-						<span
-							className={`absolute h-0.5 w-6 bg-[#0F1724] transition-all duration-300 ${
-								mobileOpen ? "opacity-0" : "opacity-100"
-							}`}
-						/>
-						<span
-							className={`absolute h-0.5 w-6 bg-[#0F1724] transition-all duration-300 ${
-								mobileOpen ? "-rotate-45" : "translate-y-2"
-							}`}
-						/>
-					</button>
-				</div>
+						>
+							{item.label}
+						</Link>
+					))}
+				</nav>
+
+				<button
+					type="button"
+					onClick={() => setMobileOpen((value) => !value)}
+					className="grid h-10 w-10 place-items-center text-white lg:hidden"
+					aria-label="Open menu"
+				>
+					{mobileOpen ? (
+						<X className="h-6 w-6" />
+					) : (
+						<Menu className="h-6 w-6" />
+					)}
+				</button>
 			</div>
+
 			{mobileOpen && (
-				<div className="lg:hidden flex flex-col gap-4 px-6 py-4 bg-[#fbfbfd] w-full rounded-b-xl">
-					<div className="flex w-full items-center gap-3 rounded-xl bg-[#f4f7ff] px-5 py-3">
-						<input
-							type="search"
-							inputMode="search"
-							enterKeyHint="search"
-							placeholder="Search for art, photography..."
-							onChange={(e) => (keyword.current = e.target.value)}
-							onKeyDown={(e) => {
-								if (
-									e.key === "Enter" &&
-									keyword.current.trim()
-								) {
-									handleSearch();
+				<div className="border-t border-[#d6ad58]/30 bg-[#061a3d] px-5 py-5 lg:hidden">
+					<nav className="flex flex-col gap-4 text-sm text-white">
+						{navItems.map((item) => (
+							<Link
+								key={item.href}
+								href={item.href}
+								onClick={() => setMobileOpen(false)}
+								className={
+									pathname === item.href
+										? "text-[#d6ad58]"
+										: ""
 								}
-							}}
-							className="w-full bg-transparent text-base placeholder:text-gray-500 text-gray-700 outline-none"
-						/>
-						<button
-							type="button"
-							onClick={handleSearch}
-							className="shrink-0 rounded-lg bg-[#0061f2] px-2 py-2 text-sm font-semibold text-white"
-						>
-							<Search className="w-5 h-5 text-white" />
-						</button>
-					</div>
-					<Link
-						href="/explore"
-						className="cursor-pointer transition-all hover:-translate-y-1 duration-200 ease-in-out 
-                        hover:text-[#0F1724] text-[#98A0AB] font-medium text-md"
-					>
-						Explore
-					</Link>
-					<Link
-						href="/#categories"
-						className="cursor-pointer transition-all hover:-translate-y-1 duration-200 ease-in-out 
-                        hover:text-[#0F1724] text-[#98A0AB] font-medium text-md"
-					>
-						Categories
-					</Link>
-					<div className="h-px w-full bg-[#0000001A]" />
-					{userLoggedIn && (
-						<a
-							href="/dashboard"
-							className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-[#0F1724] font-medium hover:bg-gray-100 
-                        transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
-						>
-							Dashboard
-						</a>
-					)}
-					{!userLoggedIn && (
-						<>
-							<a
-								href="/signIn"
-								className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-[#0F1724] font-medium hover:bg-gray-100 
-                        transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
 							>
-								Sign In
-							</a>
-							<a
-								href="/signUp"
-								className="px-4 py-2 rounded-lg bg-[#0061f2] text-white font-semibold hover:bg-blue-700 
-                        transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
-							>
-								Join Now
-							</a>
-						</>
-					)}
+								{item.label}
+							</Link>
+						))}
+					</nav>
 				</div>
 			)}
-		</div>
+		</header>
 	);
 }

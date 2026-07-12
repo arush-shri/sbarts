@@ -1,4 +1,5 @@
 import { firebaseDB } from "@/app/_firebase/firebaseDb";
+import { isArtCategory } from "@/app/_lib/artCategories";
 import { ExploreRequest, PaintingType } from "@/app/_lib/customTypes";
 
 export async function ExploreHandler(
@@ -9,7 +10,9 @@ export async function ExploreHandler(
 
 		// ---------- CATEGORY ----------
 		if (params.category && params.category.length > 0) {
-			query = query.where("category", "in", params.category.slice(0, 10));
+			const categories = params.category.filter(isArtCategory);
+			if (categories.length === 0) return [];
+			query = query.where("category", "in", categories.slice(0, 10));
 		}
 
 		// ---------- TYPE ----------

@@ -2,6 +2,7 @@
 
 import { useSellerContext } from "@/app/_context/SellerContext";
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
+import { ART_CATEGORIES } from "@/app/_lib/artCategories";
 import { SellerType } from "@/app/_lib/customTypes";
 import { validateListing } from "@/app/_lib/validation";
 import InputBox from "@/components/EnlistPart";
@@ -19,7 +20,7 @@ export default function CreateListing() {
 	const router = useRouter();
 	const formData = useRef({
 		title: "",
-		category: "Digital Art",
+		category: ART_CATEGORIES[0],
 		medium: "",
 		description: "",
 		price: 0,
@@ -197,9 +198,11 @@ export default function CreateListing() {
 											)
 										}
 									>
-										<option>Digital Art</option>
-										<option>Paintings</option>
-										<option>Photography</option>
+										{ART_CATEGORIES.map((category) => (
+											<option key={category}>
+												{category}
+											</option>
+										))}
 									</select>
 								</div>
 								<InputBox

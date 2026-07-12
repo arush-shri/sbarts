@@ -1,130 +1,34 @@
-"use client";
+import Link from "next/link";
+import { ReactElement } from "react";
 
-import { getCurrentUser, subscribeAuth } from "@/app/_firebase/authState";
-import { Copyright } from "lucide-react";
-import Image from "next/image";
-import { ReactElement, useEffect, useState } from "react";
-
-//TO CHANGE IN PRODUCTION
 export default function Footer(): ReactElement {
-	const [userLoggedIn, setUser] = useState(getCurrentUser());
-
-	useEffect(() => {
-		const unsub = subscribeAuth(setUser);
-		return () => {
-			unsub();
-		};
-	}, []);
-
 	return (
-		<div className="flex flex-col px-5 lg:px-20 bg-[#fbfbfd] w-full py-6 border-t-1 border-[#0000001A] justify-center">
-			<div className="justify-between flex flex-col md:flex-row gap-x-2 gap-y-3">
-				<section className="flex flex-col md:max-w-2/5">
-					<div className="flex flex-row gap-x-2 items-center h-13">
-						<Image
-							src="/images/icon.png"
-							alt="My logo"
-							width={500}
-							height={500}
-							className="h-full w-auto object-contain"
-						/>
-						<span className="text-[#0F1724] font-bold text-xl sm:text-2xl">
-							SBArts
-						</span>
+		<footer className="bg-[#031126] py-9 text-white/70">
+			<div className="mx-auto flex w-[min(1180px,calc(100%-40px))] flex-col gap-5 md:flex-row md:items-center md:justify-between">
+				<div>
+					<div className="font-serif text-xl font-bold text-[#d6ad58]">
+						SB Arts
 					</div>
-					<span className="text-[#6b7280] pt-5 text-md ">
-						The world's most accessible marketplace for buying and
-						selling unique digital and physical art.
-					</span>
-				</section>
-				<section className="flex flex-wrap md:flex-row justify-between gap-3 w-full md:w-1/2">
-					<div className="flex flex-col">
-						<span className="text-[#0F1724] font-semibold text-lg md:text-xl">
-							Marketplace
-						</span>
-						<div className="flex flex-col gap-y-3">
-							<a
-								href="/"
-								className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
-							>
-								All Art
-							</a>
-							<a
-								href="/"
-								className="text-[#6b7280] text-md hover:text-[#0F1724]"
-							>
-								Digital Art
-							</a>
-							<a
-								href="/"
-								className="text-[#6b7280] text-md hover:text-[#0F1724]"
-							>
-								Painting
-							</a>
-							<a
-								href="/"
-								className="text-[#6b7280] text-md hover:text-[#0F1724]"
-							>
-								Photography
-							</a>
-						</div>
-					</div>
-					<div className="flex flex-col">
-						<span className="text-[#0F1724] font-semibold text-lg md:text-xl">
-							For Sellers
-						</span>
-						<div className="flex flex-col gap-y-3">
-							{!userLoggedIn && (
-								<a
-									href="/signIn"
-									className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
-								>
-									Sell Your Art
-								</a>
-							)}
-							{userLoggedIn && (
-								<a
-									href="/dashboard"
-									className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
-								>
-									Seller Dashboard
-								</a>
-							)}
-							<a
-								href="/guidelines"
-								className="text-[#6b7280] text-md hover:text-[#0F1724]"
-							>
-								Seller Guidelines
-							</a>
-						</div>
-					</div>
-					<div className="flex flex-col">
-						<span className="text-[#0F1724] font-semibold text-lg md:text-xl">
-							Legal
-						</span>
-						<div className="flex flex-col gap-y-3">
-							<a
-								href="/termsAndConditions"
-								className="text-[#6b7280] pt-3 text-md hover:text-[#0F1724]"
-							>
-								Terms & Conditions
-							</a>
-							<a
-								href="/privacyPolicy"
-								className="text-[#6b7280] text-md hover:text-[#0F1724]"
-							>
-								Privacy Policy
-							</a>
-						</div>
-					</div>
-				</section>
+					<p className="mt-2 text-sm">
+						Art for Hope, Dignity & Freedom
+					</p>
+				</div>
+				<nav className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+					<Link href="/gallery" className="hover:text-[#d6ad58]">
+						Gallery
+					</Link>
+					<Link href="/marketplace" className="hover:text-[#d6ad58]">
+						Marketplace
+					</Link>
+					<Link href="/competition" className="hover:text-[#d6ad58]">
+						Competition
+					</Link>
+					<Link href="/contact" className="hover:text-[#d6ad58]">
+						Contact
+					</Link>
+				</nav>
+				<div className="text-sm">msbart.com</div>
 			</div>
-			<div className="flex flex-row gap-x-2 items-center self-center mt-6">
-				<Copyright className="w-4 text-[#6b7280]" />
-				<span className="text-[#6b7280] text-sm">
-					2026 SBArts. All Rights Reserved.
-				</span>
-			</div>
-		</div>
+		</footer>
 	);
 }

@@ -1,116 +1,143 @@
-import CategoryCard from "@/components/CategoryCard";
+import { ART_CATEGORIES } from "@/app/_lib/artCategories";
 import FeaturedArtworks from "@/components/FeaturedArtworks";
+import HomeHero from "@/components/HomeHero";
 import Image from "next/image";
+import Link from "next/link";
+
+const collections = [
+	{
+		id: "hope",
+		title: ART_CATEGORIES[0],
+		image: "/images/hope.png",
+		className: "from-[#d6ad58] to-[#0c2a62]",
+	},
+	{
+		id: "portrait",
+		title: ART_CATEGORIES[1],
+		image: "/images/portrait.png",
+		className: "from-[#b9a190] to-[#463029]",
+	},
+	{
+		id: "wildlife",
+		title: ART_CATEGORIES[2],
+		image: "/images/wildlife.png",
+		className: "from-[#304b36] to-[#b39250]",
+	},
+	{
+		id: "high-altitude",
+		title: ART_CATEGORIES[3],
+		image: "/images/altitude.png",
+		className: "from-[#a4bfd8] to-[#112957]",
+	},
+	{
+		id: "design",
+		title: ART_CATEGORIES[4],
+		image: "/images/design.png",
+		className: "from-[#0f2e67] to-[#d6ad58]",
+	},
+];
 
 export default function Home() {
 	return (
-		<div className="flex flex-col bg-white">
-			<section className="flex flex-col md:flex-row items-center justify-between px-5 lg:px-20 gap-x-7">
-				<div className="flex w-full md:w-1/2 flex-col justify-start pt-14 md:pt-28 order-2 md:order-1">
-					<span className="font-bold text-[#0F1724] text-4xl md:text-5xl">
-						Discover & Collect Extraordinary Art
-					</span>
-					<span className="text-[#98A0AB] text-xl pt-4 md:pt-3">
-						The premier marketplace for digital art, paintings,
-						photography, and portraits. Connect with creators
-						worldwide.
-					</span>
+		<main className="bg-[#f7f1e6] text-[#182033]">
+			<HomeHero />
 
-					<div className="flex flex-row w-full gap-x-3 pt-9 md:pt-13 items-center">
-						<a
-							href="/explore"
-							className="px-4 py-2 rounded-lg bg-[#0061f2] text-white font-semibold hover:bg-blue-700 
-                            transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
+			<section className="relative z-10 -mt-10">
+				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
+					<div className="grid items-center gap-6 border border-[#d6ad58] bg-[#061a3d] p-7 text-white shadow-[0_18px_50px_rgba(6,26,61,.15)] md:grid-cols-[auto_1fr_auto]">
+						<div className="grid h-24 w-24 place-items-center rounded-full border-2 border-[#d6ad58] font-serif text-3xl font-bold text-[#d6ad58]">
+							SB
+						</div>
+						<div>
+							<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
+								Entries Now Open
+							</div>
+							<h2 className="mt-1 font-serif text-3xl leading-tight">
+								SB Arts International Juried Competition
+							</h2>
+							<p className="mt-1 text-white/75">
+								Arts for Hope, Dignity & Freedom, for high
+								school students worldwide.
+							</p>
+						</div>
+						<Link
+							href="/competition"
+							className="inline-flex items-center justify-center bg-[#d6ad58] px-6 py-4 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 						>
-							Start Exploring
-						</a>
-						<a
-							href="/signUp"
-							className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 font-medium hover:bg-gray-100 
-                            transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
-						>
-							Sell Your Art
-						</a>
+							Learn More
+						</Link>
 					</div>
 				</div>
-				<div
-					className="flex w-full md:w-1/2 flex-col justify-center items-center 
-                    md:items-end pt-23 order-1 md:order-2"
-				>
-					<Image
-						className="rounded-full md:rounded-xl w-full aspect-square md:aspect-auto object-cover"
-						src="/images/bgHome.jpg"
-						alt="My pic"
-						width={1184}
-						height={864}
-						priority
-					/>
+			</section>
+
+			<section className="py-20">
+				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
+					<div className="mx-auto mb-9 max-w-3xl text-center">
+						<div className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
+							Explore the Gallery
+						</div>
+						<h2 className="mt-2 font-serif text-4xl leading-tight text-[#061a3d] md:text-5xl">
+							Five Collections
+						</h2>
+						<p className="mt-3 text-[#6a7280]">
+							Distinct bodies of work connected by observation,
+							empathy, craft, and meaning.
+						</p>
+					</div>
+
+					<div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+						{collections.map((collection) => (
+							<Link
+								key={collection.id}
+								href={`/marketplace?category=${collection.id}`}
+							>
+								<article className="border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.12)] cursor-pointer transition duration-300 hover:scale-105 origin-center h-full">
+									<div
+										className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${collection.className}`}
+									>
+										<Image
+											src={collection.image}
+											alt={collection.title}
+											fill
+											className="object-cover"
+										/>
+									</div>
+									<div className="p-5 text-center">
+										<h3 className="font-serif text-xl font-medium text-[#061a3d]">
+											{collection.title}
+										</h3>
+									</div>
+								</article>
+							</Link>
+						))}
+					</div>
 				</div>
 			</section>
-			<section
-				id="categories"
-				className="flex flex-col justify-center px-5 lg:px-20 mt-15 md:mt-36"
-			>
-				<span className="font-bold text-[#0F1724] text-3xl">
-					Browse by Category
-				</span>
-				<span className="text-[#98A0AB] text-lg mt-2 ">
-					Explore our curated collection of digital art, paintings,
-					photography, and portraits.
-				</span>
-				<div className="flex flex-wrap gap-y-3 w-full mt-10 justify-between">
-					<CategoryCard
-						uri="/images/digCat.jpg"
-						category="Digital Art"
-						path="/explore?category=Digital Art"
-					/>
-					<CategoryCard
-						uri="/images/paiCat.jpg"
-						category="Paintings"
-						path="/explore?category=Paintings"
-					/>
-					<CategoryCard
-						uri="/images/phoCat.jpg"
-						category="Photography"
-						path="/explore?category=Photography"
-					/>
-					{/* <CategoryCard
-						uri="/images/selCat.jpg"
-						category="Self Portrait"
-						path="/purchase?orderType=portrait"
-					/> */}
+
+			<section className="bg-[#061a3d] py-20 text-white">
+				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] border-y border-[#d6ad58]/40 sm:grid-cols-2 lg:grid-cols-4">
+					{[
+						["40+", "Original Artworks"],
+						["10+", "Exhibitions & Awards"],
+						["5", "Gallery Collections"],
+						["1", "Global Mission"],
+					].map(([value, label]) => (
+						<div
+							key={label}
+							className="border-b border-[#d6ad58]/40 p-8 text-center last:border-b-0 sm:border-r sm:last:border-r-0 lg:border-b-0"
+						>
+							<strong className="block font-serif text-5xl font-medium text-[#d6ad58]">
+								{value}
+							</strong>
+							<span className="mt-2 block text-xs uppercase tracking-[.12em] text-white/70">
+								{label}
+							</span>
+						</div>
+					))}
 				</div>
 			</section>
 
 			<FeaturedArtworks />
-
-			<section className="flex flex-col sm:flex-row justify-center gap-5 py-14 px-5 lg:px-20 mt-15 md:mt-36 mb-20 bg-[#f4f7ff]">
-				<div className="flex flex-col justify-center items-start gap-y-3 order-2 sm:order-1">
-					<span className="font-bold text-[#0F1724] text-3xl">
-						Ready to sell your art?
-					</span>
-					<span className="text-[#98A0AB] text-lg mt-2 ">
-						Join thousands of artists selling digital and physical
-						artworks. Simple setup, secure payments, and a global
-						audience.
-					</span>
-					<a
-						href="/signUp"
-						className="px-4 py-2 rounded-lg bg-[#0061f2] text-white font-medium hover:bg-blue-700 
-                            transition-all hover:-translate-y-1 duration-200 ease-in-out text-md"
-					>
-						Create Seller Account
-					</a>
-				</div>
-				<Image
-					className="rounded-lg w-full sm:w-1/3 aspect-4/2 sm:aspect-4/3 object-cover self-center sm:self-center order-1 sm:order-2"
-					src="/images/phoCat.jpg"
-					alt="My pic"
-					width={1184}
-					height={864}
-					priority
-				/>
-			</section>
-		</div>
+		</main>
 	);
 }

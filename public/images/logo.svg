@@ -1,0 +1,13 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">SB Arts Logo</title>
+  <desc id="desc">Intertwined gold SB monogram on a navy background</desc>
+  <rect width="240" height="240" rx="28" fill="#061a3d"/>
+  <circle cx="120" cy="120" r="94" fill="none" stroke="#d6ad58" stroke-width="2"/>
+  <text x="120" y="128" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="92" font-weight="700" fill="#d6ad58" letter-spacing="-20">SB</text>
+  <text x="120" y="177" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="24" fill="#d6ad58" letter-spacing="7">ARTS</text>
+</svg>
