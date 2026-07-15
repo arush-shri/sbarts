@@ -94,3 +94,7 @@ export type CompetitionEntry = {
 	createdAt: number;
 	updatedAt: number;
 };
+
+export interface CompetitionManagerRef {
+	open: (toOpen: boolean) => void;
+}

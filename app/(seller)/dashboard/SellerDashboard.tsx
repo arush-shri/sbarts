@@ -1,19 +1,23 @@
 "use client";
 
 import { useSellerContext } from "@/app/_context/SellerContext";
-import { SellerType } from "@/app/_lib/customTypes";
+import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
+import { CompetitionManagerRef, SellerType } from "@/app/_lib/customTypes";
 import Loading from "@/components/Loading";
 import ProtectedPage from "@/components/ProtectedPage";
 import {
+	CompetitionButton,
 	CompetitionManager,
 	ListingsTable,
-	SidebarProfile,
 } from "@/components/SellerParts";
+import { signOut } from "@firebase/auth";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useRef } from "react";
 
 export default function SellerDashboard(): ReactElement {
 	const router = useRouter();
+	const managerRef = useRef<CompetitionManagerRef>(null);
 	const {
 		artistData,
 		loading,
@@ -29,6 +33,15 @@ export default function SellerDashboard(): ReactElement {
 		if (!artistData) return;
 	}, [artistData]);
 
+	const handleLogout = async () => {
+		try {
+			await signOut(firebaseClientAuth);
+			router.replace("/signIn");
+		} catch (error) {
+			console.error("Logout error:", error);
+		}
+	};
+
 	if (!artistData) return <Loading />;
 
 	return (
@@ -36,12 +49,26 @@ export default function SellerDashboard(): ReactElement {
 			<div className="min-h-screen bg-[#f7f1e6] px-5 py-8 md:px-10 lg:px-20 lg:py-10 text-[#182033]">
 				<div className="mx-auto flex max-w-7xl flex-col gap-8">
 					<div className="flex justify-end">
-						<SidebarProfile artistData={artistData} />
+						<div className="flex flex-col gap-3 lg:flex-row">
+							<button
+								onClick={() => router.push("/listing")}
+								className="inline-flex items-center justify-center gap-2 rounded-full bg-[#d6ad58] px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
+							>
+								<Plus className="h-auto w-5" /> Add New Listing
+							</button>
+							<CompetitionButton managerRef={managerRef} />
+							<button
+								onClick={handleLogout}
+								className="rounded-full border border-[#061a3d]/15 bg-white px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:border-[#d6ad58] hover:text-[#d6ad58]"
+							>
+								Sign Out
+							</button>
+						</div>
 					</div>
 
 					<main className="flex-1 space-y-8">
-						<div className="rounded-[28px] border border-[#061a3d]/12 bg-[radial-gradient(circle_at_top_left,rgba(214,173,88,.16),transparent_40%),white] p-6 shadow-[0_20px_60px_rgba(6,26,61,.08)]">
-							<CompetitionManager />
+						<div className="overflow-hidden rounded-[28px] border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">
+							<CompetitionManager ref={managerRef} />
 						</div>
 
 						<div className="overflow-hidden rounded-[28px] border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">

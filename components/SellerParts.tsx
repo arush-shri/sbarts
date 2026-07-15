@@ -1,48 +1,22 @@
 "use client";
 
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
-import { PaintingType, SellerType } from "@/app/_lib/customTypes";
+import { CompetitionManagerRef, PaintingType } from "@/app/_lib/customTypes";
 import { convertNumToDate, imageUrlGenerator } from "@/app/_lib/dataProcessing";
 import { validateImageFile } from "@/app/_lib/validation";
-import { signOut } from "firebase/auth";
-import { Edit2, Plus, Trash2, X } from "lucide-react";
+import { Edit2, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import {
+	forwardRef,
+	ReactElement,
+	RefObject,
+	useEffect,
+	useImperativeHandle,
+	useRef,
+	useState,
+} from "react";
 import { ShowToast } from "./Toaster";
-
-export function SidebarProfile({
-	artistData,
-}: {
-	artistData: SellerType;
-}): ReactElement {
-	const router = useRouter();
-
-	const handleLogout = async () => {
-		try {
-			await signOut(firebaseClientAuth);
-			router.replace("/signIn");
-		} catch (error) {
-			console.error("Logout error:", error);
-		}
-	};
-	return (
-		<div className="flex flex-col gap-3 lg:flex-row">
-			<a
-				href="/listing"
-				className="inline-flex items-center justify-center gap-2 rounded-full bg-[#d6ad58] px-5 py-2.5 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
-			>
-				<Plus className="h-auto w-5" /> Add New Listing
-			</a>
-			<button
-				onClick={handleLogout}
-				className="rounded-full border border-[#061a3d]/15 bg-white px-5 py-2.5 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:border-[#d6ad58] hover:text-[#d6ad58]"
-			>
-				Sign Out
-			</button>
-		</div>
-	);
-}
 
 export function ListingsTable({
 	artworkIds,
@@ -198,44 +172,36 @@ export function StatsCards({
 	);
 }
 
-export function CompetitionManager(): ReactElement {
-	const [competitions, setCompetitions] = useState<any[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [editingId, setEditingId] = useState<string | null>(null);
-	const [form, setForm] = useState({
-		title: "",
-		entriesOpen: "",
-		finalDeadline: "",
-		winnersAnnouncement: "",
-		exhibitionOpen: "",
-		status: "registration open",
-	});
+export function CompetitionButton({
+	managerRef,
+}: {
+	managerRef: RefObject<CompetitionManagerRef | null>;
+}): ReactElement {
+	const [open, setOpen] = useState(false);
 
-	const loadCompetitions = async () => {
-		try {
-			const currentUser = firebaseClientAuth.currentUser;
-			if (!currentUser) return;
+	const handleForm = () => {
+		const nextOpen = !open;
 
-			const token = await currentUser.getIdToken();
-			const res = await fetch("/api/competition/seller", {
-				headers: { Authorization: `Bearer ${token}` },
-			});
-			if (!res.ok) return;
-			const json = await res.json();
-			setCompetitions(json.data || []);
-		} catch (error) {
-			console.error(error);
-		} finally {
-			setLoading(false);
-		}
+		setOpen(nextOpen);
+		managerRef.current?.open(nextOpen);
 	};
+	return (
+		<button
+			type="button"
+			onClick={handleForm}
+			className="inline-flex items-center justify-center gap-2 rounded-full bg-[#d6ad58] px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
+		>
+			<Plus className="h-auto w-5" /> New Competition
+		</button>
+	);
+}
 
-	useEffect(() => {
-		loadCompetitions();
-	}, []);
-
-	const resetForm = () => {
-		setForm({
+export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
+	(props, ref): ReactElement => {
+		const [competitions, setCompetitions] = useState<any[]>([]);
+		const [loading, setLoading] = useState(true);
+		const [editingId, setEditingId] = useState<string | null>(null);
+		const [form, setForm] = useState({
 			title: "",
 			entriesOpen: "",
 			finalDeadline: "",
@@ -243,277 +209,354 @@ export function CompetitionManager(): ReactElement {
 			exhibitionOpen: "",
 			status: "registration open",
 		});
-		setEditingId(null);
-	};
+		const [openForm, setOpenForm] = useState<boolean>(false);
 
-	const handleSubmit = async (event: React.FormEvent) => {
-		event.preventDefault();
+		const loadCompetitions = async () => {
+			try {
+				const currentUser = firebaseClientAuth.currentUser;
+				if (!currentUser) return;
 
-		try {
-			const currentUser = firebaseClientAuth.currentUser;
-			if (!currentUser) {
-				ShowToast("Please sign in again to manage competitions", 1);
-				return;
+				const token = await currentUser.getIdToken();
+				const res = await fetch("/api/competition/seller", {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+				if (!res.ok) return;
+				const json = await res.json();
+				setCompetitions(json.data || []);
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setLoading(false);
 			}
+		};
 
-			if (!isValidFutureDate(form.entriesOpen)) {
-				alert("Entries Open must be a valid future date.");
-				return;
-			}
-
-			if (!isValidFutureDate(form.finalDeadline)) {
-				alert("Final Deadline must be a valid future date.");
-				return;
-			}
-
-			if (!isValidFutureDate(form.winnersAnnouncement)) {
-				alert("Winners Announcement must be a valid future date.");
-				return;
-			}
-
-			if (!isValidFutureDate(form.exhibitionOpen)) {
-				alert("Exhibition Open must be a valid future date.");
-				return;
-			}
-
-			const token = await currentUser.getIdToken();
-			const payload = {
-				...form,
-			};
-
-			const res = await fetch("/api/competition/seller", {
-				method: editingId ? "PUT" : "POST",
-				headers: {
-					Authorization: `Bearer ${token}`,
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(
-					editingId ? { ...payload, id: editingId } : payload,
-				),
-			});
-
-			const json = await res.json();
-			if (!res.ok) {
-				ShowToast(json.error || "Unable to save competition", 1);
-				return;
-			}
-
-			ShowToast(
-				editingId ? "Competition updated" : "Competition created",
-				2,
-			);
-			resetForm();
+		useEffect(() => {
 			loadCompetitions();
-		} catch (error) {
-			console.error(error);
-			ShowToast("Unable to save competition", 1);
-		}
-	};
+		}, []);
 
-	const startEdit = (competition: any) => {
-		setEditingId(competition.id);
-		setForm({
-			title: competition.title || "",
-			entriesOpen: String(competition.entriesOpen || ""),
-			finalDeadline: String(competition.finalDeadline || ""),
-			winnersAnnouncement: String(competition.winnersAnnouncement || ""),
-			exhibitionOpen: String(competition.exhibitionOpen || ""),
-			status: competition.status || "registration open",
-		});
-	};
+		const resetForm = () => {
+			setOpenForm(false);
+			setForm({
+				title: "",
+				entriesOpen: "",
+				finalDeadline: "",
+				winnersAnnouncement: "",
+				exhibitionOpen: "",
+				status: "registration open",
+			});
+			setEditingId(null);
+		};
 
-	const isValidFutureDate = (dateStr: string) => {
-		const match = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+		const handleSubmit = async (event: React.FormEvent) => {
+			event.preventDefault();
 
-		if (!match) return false;
+			try {
+				const currentUser = firebaseClientAuth.currentUser;
+				if (!currentUser) {
+					ShowToast("Please sign in again to manage competitions", 1);
+					return;
+				}
 
-		const [, day, month, year] = match;
+				if (!isValidFutureDate(form.entriesOpen)) {
+					alert("Entries Open must be a valid future date.");
+					return;
+				}
 
-		const date = new Date(Number(year), Number(month) - 1, Number(day));
+				if (!isValidFutureDate(form.finalDeadline)) {
+					alert("Final Deadline must be a valid future date.");
+					return;
+				}
 
-		// Ensure date wasn't auto-corrected (e.g. 31/02/2026)
-		if (
-			date.getFullYear() !== Number(year) ||
-			date.getMonth() !== Number(month) - 1 ||
-			date.getDate() !== Number(day)
-		) {
-			return false;
-		}
+				if (!isValidFutureDate(form.winnersAnnouncement)) {
+					alert("Winners Announcement must be a valid future date.");
+					return;
+				}
 
-		// Compare only dates, not time
-		const today = new Date();
-		today.setHours(0, 0, 0, 0);
+				if (!isValidFutureDate(form.exhibitionOpen)) {
+					alert("Exhibition Open must be a valid future date.");
+					return;
+				}
 
-		return date >= today;
-	};
+				const token = await currentUser.getIdToken();
+				const payload = {
+					...form,
+				};
 
-	return (
-		<div className="rounded-[28px] border border-[#061a3d]/12 bg-white p-6 shadow-[0_18px_50px_rgba(6,26,61,.08)]">
-			<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-				<div>
-					<h3 className="font-serif text-2xl text-[#061a3d]">
-						Competition Management
-					</h3>
-					<p className="mt-1 text-sm text-[#6a7280]">
-						Create new competitions or update timelines, titles, and
-						status.
-					</p>
+				const res = await fetch("/api/competition/seller", {
+					method: editingId ? "PUT" : "POST",
+					headers: {
+						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(
+						editingId ? { ...payload, id: editingId } : payload,
+					),
+				});
+
+				const json = await res.json();
+				if (!res.ok) {
+					ShowToast(json.error || "Unable to save competition", 1);
+					return;
+				}
+
+				ShowToast(
+					editingId ? "Competition updated" : "Competition created",
+					2,
+				);
+				resetForm();
+				loadCompetitions();
+			} catch (error) {
+				console.error(error);
+				ShowToast("Unable to save competition", 1);
+			}
+		};
+
+		const startEdit = (competition: any) => {
+			setEditingId(competition.id);
+			setForm({
+				title: competition.title || "",
+				entriesOpen: String(competition.entriesOpen || ""),
+				finalDeadline: String(competition.finalDeadline || ""),
+				winnersAnnouncement: String(
+					competition.winnersAnnouncement || "",
+				),
+				exhibitionOpen: String(competition.exhibitionOpen || ""),
+				status: competition.status || "registration open",
+			});
+			setOpenForm(true);
+		};
+
+		const isValidFutureDate = (dateStr: string) => {
+			const match = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+			if (!match) return false;
+
+			const [, day, month, year] = match;
+
+			const date = new Date(Number(year), Number(month) - 1, Number(day));
+
+			// Ensure date wasn't auto-corrected (e.g. 31/02/2026)
+			if (
+				date.getFullYear() !== Number(year) ||
+				date.getMonth() !== Number(month) - 1 ||
+				date.getDate() !== Number(day)
+			) {
+				return false;
+			}
+
+			// Compare only dates, not time
+			const today = new Date();
+			today.setHours(0, 0, 0, 0);
+
+			return date >= today;
+		};
+
+		useImperativeHandle(ref, () => ({
+			open(toOpen: boolean) {
+				setEditingId(null);
+				setForm({
+					title: "",
+					entriesOpen: "",
+					finalDeadline: "",
+					winnersAnnouncement: "",
+					exhibitionOpen: "",
+					status: "registration open",
+				});
+				setOpenForm(toOpen);
+			},
+		}));
+
+		return (
+			<div className="rounded-[28px] border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.08)]">
+				<div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
+					<div>
+						<h3 className="font-serif text-2xl text-[#061a3d]">
+							Competition{""}
+							{openForm
+								? editingId
+									? " Management"
+									: " Creation"
+								: "s"}
+						</h3>
+
+						<p className="mt-1 text-sm text-[#6a7280]">
+							{openForm
+								? editingId
+									? "Update timelines, titles, and status of competition."
+									: "Create new competition"
+								: "All competitions you've created so far."}
+						</p>
+					</div>
 				</div>
-				<button
-					type="button"
-					onClick={resetForm}
-					className="inline-flex items-center gap-2 rounded-full bg-[#d6ad58] px-4 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
-				>
-					{editingId ? (
-						<X className="h-4 w-4" />
-					) : (
-						<Plus className="h-4 w-4" />
-					)}
-					{editingId ? "Cancel Edit" : "New Competition"}
-				</button>
-			</div>
 
-			<form
-				onSubmit={handleSubmit}
-				className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3"
-			>
-				<input
-					required
-					value={form.title}
-					onChange={(event) =>
-						setForm({ ...form, title: event.target.value })
-					}
-					placeholder="Competition title"
-					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
-				/>
-				<input
-					type="text"
-					required
-					value={form.entriesOpen}
-					onChange={(event) =>
-						setForm({ ...form, entriesOpen: event.target.value })
-					}
-					placeholder="Entries Open (DD/MM/YYYY)"
-					pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
-				/>
-
-				<input
-					type="text"
-					required
-					value={form.finalDeadline}
-					onChange={(event) =>
-						setForm({ ...form, finalDeadline: event.target.value })
-					}
-					placeholder="Final Deadline (DD/MM/YYYY)"
-					pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
-				/>
-
-				<input
-					type="text"
-					required
-					value={form.winnersAnnouncement}
-					onChange={(event) =>
-						setForm({
-							...form,
-							winnersAnnouncement: event.target.value,
-						})
-					}
-					placeholder="Winners Announcement (DD/MM/YYYY)"
-					pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
-				/>
-
-				<input
-					type="text"
-					required
-					value={form.exhibitionOpen}
-					onChange={(event) =>
-						setForm({ ...form, exhibitionOpen: event.target.value })
-					}
-					placeholder="Exhibition Open (DD/MM/YYYY)"
-					pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
-				/>
-				<select
-					value={form.status}
-					onChange={(event) =>
-						setForm({ ...form, status: event.target.value })
-					}
-					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
-				>
-					<option value="registration open">Registration open</option>
-					<option value="registration closed">
-						Registration closed
-					</option>
-					<option value="winner announced">Winner announced</option>
-					<option value="exhibition open">Exhibition open</option>
-				</select>
-				<div className="md:col-span-2 xl:col-span-3">
-					<button
-						type="submit"
-						className="rounded-full bg-[#061a3d] px-4 py-2 text-sm font-bold uppercase tracking-[.06em] text-white transition hover:bg-[#0b2b63]"
+				{openForm && (
+					<form
+						onSubmit={handleSubmit}
+						className="mb-4 px-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3"
 					>
-						{editingId ? "Save Changes" : "Create Competition"}
-					</button>
-				</div>
-			</form>
+						<input
+							required
+							value={form.title}
+							onChange={(event) =>
+								setForm({ ...form, title: event.target.value })
+							}
+							placeholder="Competition title"
+							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+						/>
+						<input
+							type="text"
+							required
+							value={form.entriesOpen}
+							onChange={(event) =>
+								setForm({
+									...form,
+									entriesOpen: event.target.value,
+								})
+							}
+							placeholder="Entries Open (DD/MM/YYYY)"
+							pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
+							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+						/>
 
-			<div className="mt-8 overflow-x-auto">
-				{loading ? (
-					<div className="py-6 text-sm text-[#64748B]">
-						Loading competitions...
-					</div>
-				) : competitions.length === 0 ? (
-					<div className="py-6 text-sm text-[#64748B]">
-						No competitions created yet.
-					</div>
-				) : (
-					<table className="w-full border-collapse text-left text-sm">
-						<thead>
-							<tr className="border-y border-[#061a3d]/10 bg-[#f7f1e6] text-[11px] font-bold uppercase tracking-[.18em] text-[#b88d39]">
-								<th className="px-4 py-3">Title</th>
-								<th className="px-4 py-3">Status</th>
-								<th className="px-4 py-3">Dates</th>
-								<th className="px-4 py-3 text-right">
-									Actions
-								</th>
-							</tr>
-						</thead>
-						<tbody className="divide-y divide-[#0000000D]">
-							{competitions.map((competition) => (
-								<tr key={competition.id}>
-									<td className="px-4 py-3 font-semibold">
-										{competition.title}
-									</td>
-									<td className="px-4 py-3">
-										{competition.status}
-									</td>
-									<td className="px-4 py-3 text-[#64748B]">
-										{competition.entriesOpen} →{" "}
-										{competition.exhibitionOpen}
-									</td>
-									<td className="px-4 py-3 text-right">
-										<button
-											type="button"
-											onClick={() =>
-												startEdit(competition)
-											}
-											className="inline-flex items-center gap-2 rounded-lg border border-[#0000001A] px-3 py-2 text-sm font-semibold transition hover:bg-gray-50"
-										>
-											<Edit2 className="h-4 w-4" /> Edit
-										</button>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+						<input
+							type="text"
+							required
+							value={form.finalDeadline}
+							onChange={(event) =>
+								setForm({
+									...form,
+									finalDeadline: event.target.value,
+								})
+							}
+							placeholder="Final Deadline (DD/MM/YYYY)"
+							pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
+							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+						/>
+
+						<input
+							type="text"
+							required
+							value={form.winnersAnnouncement}
+							onChange={(event) =>
+								setForm({
+									...form,
+									winnersAnnouncement: event.target.value,
+								})
+							}
+							placeholder="Winners Announcement (DD/MM/YYYY)"
+							pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
+							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+						/>
+
+						<input
+							type="text"
+							required
+							value={form.exhibitionOpen}
+							onChange={(event) =>
+								setForm({
+									...form,
+									exhibitionOpen: event.target.value,
+								})
+							}
+							placeholder="Exhibition Open (DD/MM/YYYY)"
+							pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
+							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+						/>
+						<select
+							value={form.status}
+							onChange={(event) =>
+								setForm({ ...form, status: event.target.value })
+							}
+							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+						>
+							<option value="registration open">
+								Registration open
+							</option>
+							<option value="registration closed">
+								Registration closed
+							</option>
+							<option value="winner announced">
+								Winner announced
+							</option>
+							<option value="exhibition open">
+								Exhibition open
+							</option>
+						</select>
+						<div className="md:col-span-2 xl:col-span-3">
+							<button
+								type="submit"
+								className="rounded-full bg-[#061a3d] px-5 py-2 text-sm font-bold uppercase tracking-[.06em] text-white transition hover:bg-[#0b2b63] cursor-pointer"
+							>
+								{editingId ? "Save Changes" : "Create"}
+							</button>
+							<button
+								onClick={resetForm}
+								type="button"
+								className="rounded-full ml-3 border-1 border-[#061a3d] px-5 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] cursor-pointer"
+							>
+								Cancel
+							</button>
+						</div>
+					</form>
 				)}
+
+				<div className="overflow-x-auto">
+					{loading ? (
+						<div className="p-6 text-sm text-[#64748B]">
+							Loading competitions...
+						</div>
+					) : competitions.length === 0 ? (
+						<div className="p-6 text-sm text-[#64748B]">
+							No competitions created yet.
+						</div>
+					) : (
+						<table className="w-full border-collapse text-left text-sm">
+							<thead>
+								<tr className="border-y border-[#061a3d]/10 bg-[#f7f1e6] text-[11px] font-bold uppercase tracking-[.18em] text-[#b88d39]">
+									<th className="px-6 py-3">Title</th>
+									<th className="px-6 py-3">Status</th>
+									<th className="px-6 py-3">Dates</th>
+									<th className="px-6 py-3 text-right">
+										Actions
+									</th>
+								</tr>
+							</thead>
+							<tbody className="divide-y divide-[#0000000D]">
+								{competitions.map((competition) => (
+									<tr
+										key={competition.id}
+										className="transition-colors hover:bg-[#fdfaf4]"
+									>
+										<td className="px-6 py-3 font-semibold">
+											{competition.title}
+										</td>
+										<td className="px-6 py-3">
+											{competition.status}
+										</td>
+										<td className="px-6 py-3 text-[#64748B]">
+											{competition.entriesOpen} →{" "}
+											{competition.exhibitionOpen}
+										</td>
+										<td className="px-6 py-3 text-right">
+											<button
+												onClick={() => {
+													startEdit(competition);
+												}}
+												className="rounded-full border border-transparent p-2 text-[#6a7280] transition-all hover:border-[#061a3d]/15 hover:bg-white hover:text-[#061a3d]"
+											>
+												<Edit2 className="h-auto w-4" />
+											</button>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					)}
+				</div>
 			</div>
-		</div>
-	);
-}
+		);
+	},
+);
 
 export default function ArtworkUpload({
 	callback,
