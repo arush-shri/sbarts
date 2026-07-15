@@ -6,38 +6,31 @@ import AuthPage from "@/components/AuthPage";
 import { ShowToast } from "@/components/Toaster";
 import { sendPasswordResetEmail } from "@firebase/auth";
 import { Mail } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ReactElement, useState } from "react";
 
 export default function ResetPasswordPage(): ReactElement {
 	return (
-		<div className="flex min-h-screen bg-white text-[#0F1724] px-5 md:px-20 gap-10">
-			{/* Left Section: Information and Illustration */}
-			<div className="hidden lg:flex w-1/2 flex-col justify-center px-8 bg-[#F8F9FA]">
-				<div className="">
-					<h1 className="text-4xl font-bold mb-4">
-						Reset your password
-					</h1>
-					<p className="text-[#98A0AB] text-md w-2/3">
-						Securely update your password in three quick steps:
-						confirm email, verify OTP, and set a new password.
-					</p>
+		<div className="min-h-screen bg-[#f7f1e6] text-[#182033]">
+			<div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col lg:flex-row">
+				<section className="relative flex w-full items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.18),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] px-6 py-16 text-white lg:min-h-screen lg:w-[44%] lg:px-10 lg:py-0">
+					<div className="max-w-md">
+						<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
+							SB Arts
+						</div>
+						<h1 className="mt-4 font-serif text-4xl leading-tight text-[#d6ad58] sm:text-5xl">
+							Reset your password
+						</h1>
+						<p className="mt-4 text-lg text-white/80">
+							Securely update your password in a few quick steps
+							and return to your seller workspace.
+						</p>
+					</div>
+				</section>
 
-					<Image
-						src="/images/passlock.jpg"
-						alt="Secure reset illustration"
-						width={1184}
-						height={864}
-						className="object-contain w-full h-full"
-						priority
-					/>
+				<div className="flex w-full flex-1 items-center justify-center bg-[#f7f1e6] px-5 py-12 md:px-10 lg:px-14">
+					<ResetPasswordForm />
 				</div>
-			</div>
-
-			{/* Right Section: Interactive Form Component */}
-			<div className="w-full lg:w-1/2 flex items-center justify-center pt-0 md:pt-24">
-				<ResetPasswordForm />
 			</div>
 		</div>
 	);
@@ -78,29 +71,28 @@ function ResetPasswordForm() {
 
 	return (
 		<AuthPage>
-			<div className="w-full border border-[#0000001A] rounded-2xl px-6 py-4 shadow-sm">
-				<h2 className="text-2xl font-bold mb-2">Forgot password</h2>
-				<p className="text-[#98A0AB] text-sm mb-8">
-					Enter your email, verify the one-time code, and choose a new
-					password for your account.
+			<div className="w-full max-w-md rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.12)]">
+				<h2 className="font-serif text-3xl text-[#061a3d]">
+					Forgot password
+				</h2>
+				<p className="mt-3 text-sm leading-6 text-[#6a7280]">
+					Enter your email and we will send you a secure reset link
+					for your account.
 				</p>
 
-				<div className="space-y-8">
-					{/* Step 1: Email */}
-					<section
-						className={`transition-opacity duration-300 opacity-100`}
-					>
-						<div className="flex justify-between items-center mb-2">
-							<label className="text-xs font-semibold text-[#98A0AB] uppercase tracking-wider">
+				<div className="mt-8 space-y-6">
+					<section className="opacity-100 transition-opacity duration-300">
+						<div className="mb-2 flex items-center justify-between">
+							<label className="text-xs font-semibold uppercase tracking-[.16em] text-[#061a3d]">
 								Confirm your email
 							</label>
-							<span className="flex items-center gap-1 text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-bold uppercase">
+							<span className="rounded-full bg-[#f7f1e6] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.12em] text-[#b88d39]">
 								Account email
 							</span>
 						</div>
 						<div className="relative">
 							<Mail
-								className="absolute left-3 top-1/2 -translate-y-1/2 text-[#98A0AB]"
+								className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6a7280]"
 								size={18}
 							/>
 							<input
@@ -108,16 +100,15 @@ function ResetPasswordForm() {
 								placeholder="you@example.com"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
-								className="w-full pl-10 pr-4 py-3 border border-[#0000001A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+								className="w-full rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] py-3 pl-10 pr-4 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20"
 							/>
 						</div>
-						<p className="text-[11px] text-[#98A0AB] mt-2 italic">
-							We'll send a mail to reset you password to this
-							email address.
+						<p className="mt-2 text-[11px] uppercase tracking-[.16em] text-[#6a7280]">
+							We will send a reset message to this address.
 						</p>
 						<button
 							onClick={handleSendOtp}
-							className="w-full mt-4 bg-[#007AFF] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition-colors"
+							className="mt-4 w-full rounded-full bg-[#d6ad58] px-4 py-3 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 						>
 							Reset Password
 						</button>
@@ -125,11 +116,11 @@ function ResetPasswordForm() {
 				</div>
 
 				<div className="mt-8 text-center">
-					<button className="text-sm text-[#0F1724] transition-colors">
+					<button className="text-sm text-[#182033] transition-colors">
 						Remembered your password?{" "}
 						<span
 							onClick={navToSignIn}
-							className="text-[#007AFF] font-semibold cursor-pointer hover:underline underline-offset-2"
+							className="cursor-pointer font-semibold text-[#061a3d] underline-offset-2 transition hover:text-[#d6ad58]"
 						>
 							Back to sign in
 						</span>

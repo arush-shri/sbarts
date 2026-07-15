@@ -153,8 +153,6 @@ export async function validateImageFile(
 	options: {
 		label: string;
 		maxMb: number;
-		minWidth?: number;
-		minHeight?: number;
 		types?: string[];
 	},
 ) {
@@ -166,38 +164,6 @@ export async function validateImageFile(
 		return fail(
 			`${options.label} must be smaller than ${options.maxMb}MB.`,
 		);
-
-	if (
-		typeof window !== "undefined" &&
-		options.minWidth &&
-		options.minHeight
-	) {
-		const url = URL.createObjectURL(file);
-		const result = await new Promise<ValidationResult>((resolve) => {
-			const img = new window.Image();
-			img.onload = () => {
-				URL.revokeObjectURL(url);
-				if (
-					img.width < options.minWidth! ||
-					img.height < options.minHeight!
-				) {
-					resolve(
-						fail(
-							`${options.label} must be at least ${options.minWidth}x${options.minHeight}.`,
-						),
-					);
-					return;
-				}
-				resolve(pass(file));
-			};
-			img.onerror = () => {
-				URL.revokeObjectURL(url);
-				resolve(fail(`${options.label} is not a valid image.`));
-			};
-			img.src = url;
-		});
-		return result;
-	}
 
 	return pass(file);
 }

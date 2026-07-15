@@ -188,16 +188,15 @@ export default function EditArtwork({
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50 px-5 lg:px-20 pt-24">
-			<div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-				{/* Left Column: Editable Details */}
-				<div className="lg:col-span-2 bg-white rounded-xl border border-[#0000001A] p-8">
-					<div className="flex justify-between items-start mb-6">
+		<div className="min-h-screen bg-[#f7f1e6] px-5 py-8 lg:px-20 lg:py-10">
+			<div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-3">
+				<div className="rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.08)] lg:col-span-2">
+					<div className="mb-6 flex items-start justify-between">
 						<div>
-							<h1 className="text-xl font-bold text-[#0F1724]">
+							<h1 className="font-serif text-3xl text-[#061a3d]">
 								Edit artwork details
 							</h1>
-							<p className="text-[#98A0AB] text-xs mt-1">
+							<p className="mt-2 text-sm text-[#6a7280]">
 								Update the information shown on your artwork
 								page.
 							</p>
@@ -227,43 +226,18 @@ export default function EditArtwork({
 								onChange={handleUpdate}
 							/>
 						</div>
-
-						<div>
-							<InputBox
-								label="Price (USD)"
-								name="price"
-								type="number"
-								defaultValue={editedData.current.price}
-								onChange={handleUpdate}
-							/>
-							<p className="text-[10px] text-[#98A0AB] mt-1">
-								Price shown to buyers.
-							</p>
-						</div>
-
-						<div>
-							<InputBox
-								label="Stock / Quantity"
-								name="quantity"
-								defaultValue={editedData.current.quantity}
-								onChange={handleUpdate}
-							/>
-							<p className="text-[10px] text-[#98A0AB] mt-1">
-								For physical items, enter a specific quantity.
-							</p>
-						</div>
 					</div>
 
-					<div className="flex flex-row flex-wrap w-full justify-end items-center mt-12 pt-6 border-t border-[#0000001A] gap-4">
+					<div className="mt-12 flex w-full flex-wrap items-center justify-end gap-4 border-t border-[#061a3d]/10 pt-6">
 						<button
 							onClick={() => router.back()}
-							className="px-6 py-2 border border-[#0000001A] rounded-md text-sm font-medium text-[#0F1724] hover:bg-gray-50"
+							className="rounded-full border border-[#061a3d]/15 px-6 py-2 text-sm font-semibold text-[#061a3d] transition hover:border-[#d6ad58] hover:text-[#d6ad58]"
 						>
 							Cancel changes
 						</button>
 						<button
 							onClick={saveChanges}
-							className="px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+							className="rounded-full bg-[#d6ad58] px-6 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 						>
 							Save changes
 						</button>
@@ -273,8 +247,8 @@ export default function EditArtwork({
 				{/* Right Column: Previews */}
 				<div className="space-y-6">
 					{/* Current Preview */}
-					<div className="bg-white rounded-xl border border-[#0000001A] p-4">
-						<h3 className="text-xs font-bold text-[#0F1724] mb-3">
+					<div className="rounded-[24px] border border-[#061a3d]/12 bg-white p-4 shadow-[0_18px_40px_rgba(6,26,61,.08)]">
+						<h3 className="mb-3 text-xs font-bold uppercase tracking-[.16em] text-[#b88d39]">
 							Current preview
 						</h3>
 						<div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-gray-200">
@@ -294,8 +268,8 @@ export default function EditArtwork({
 					</div>
 
 					{/* Listing Summary */}
-					<div className="bg-white rounded-xl border border-[#0000001A] p-6">
-						<h3 className="text-xs font-bold text-[#0F1724] mb-4">
+					<div className="rounded-[24px] border border-[#061a3d]/12 bg-white p-6 shadow-[0_18px_40px_rgba(6,26,61,.08)]">
+						<h3 className="mb-4 text-xs font-bold uppercase tracking-[.16em] text-[#b88d39]">
 							Listing summary
 						</h3>
 						<div className="space-y-3">

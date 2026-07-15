@@ -120,61 +120,20 @@ export default function CreateListing() {
 
 	return (
 		<ProtectedPage>
-			<div className="flex min-h-screen px-5 lg:px-20 pt-24 flex justify-center">
-				<div className="w-full flex flex-col md:flex-row gap-8">
-					{/* Sidebar Checklist */}
-					<aside className="md:w-64 flex flex-col gap-6">
-						<div className="border border-[#0000001A] bg-white rounded-xl p-6">
-							<h3 className="font-bold text-[#0F1724] mb-4">
-								Listing Checklist
-							</h3>
-							<ul className="space-y-4">
-								{[
-									"Basic Details",
-									"Media Upload",
-									"Pricing & Inventory",
-								].map((step) => (
-									<li
-										key={step}
-										className="flex items-center gap-3 text-sm"
-									>
-										<div
-											className={`w-4 h-4 rounded-full border-2 flex items-center justify-center border-[#98A0AB]`}
-										/>
-										<span className="text-[#0F1724] font-medium">
-											{step}
-										</span>
-									</li>
-								))}
-							</ul>
-							<div className="mt-8 pt-6 border-t border-[#0000001A]">
-								<p className="text-xs text-[#98A0AB] mb-2">
-									Need help?
-								</p>
-								<a
-									href="#"
-									className="text-sm text-blue-600 font-medium hover:underline"
-								>
-									Read Seller Guidelines →
-								</a>
-							</div>
-						</div>
-					</aside>
-
-					{/* Main Form Area */}
-					<main className="flex-1 flex flex-col gap-6 mb-10">
-						<header>
-							<h1 className="text-2xl font-bold text-[#0F1724]">
+			<div className="min-h-screen bg-[#f7f1e6] px-5 py-8 lg:px-20 lg:py-10">
+				<div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
+					<main className="mb-10 flex flex-1 flex-col gap-6">
+						<header className="rounded-[28px] border border-[#061a3d]/12 bg-[radial-gradient(circle_at_top_left,rgba(214,173,88,.16),transparent_40%),white] p-8 shadow-[0_20px_60px_rgba(6,26,61,.08)]">
+							<h1 className="font-serif text-3xl text-[#061a3d]">
 								Create New Listing
 							</h1>
-							<p className="text-[#98A0AB] text-sm">
+							<p className="mt-2 text-sm text-[#6a7280]">
 								Add details about your artwork to start selling.
 							</p>
 						</header>
 
-						{/* Basic Information Section */}
-						<section className="border border-[#0000001A] bg-white rounded-xl p-8 space-y-6">
-							<h2 className="font-bold text-[#0F1724] border-b border-[#0000001A] pb-4">
+						<section className="space-y-6 rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.08)]">
+							<h2 className="border-b border-[#061a3d]/10 pb-4 font-serif text-2xl text-[#061a3d]">
 								Basic Information
 							</h2>
 							<InputBox
@@ -185,25 +144,35 @@ export default function CreateListing() {
 							/>
 
 							<div className="grid sm:grid-cols-2 gap-4">
-								<div className="flex flex-col gap-2">
+								<div className="flex flex-col gap-2 w-full">
 									<label className="text-sm font-semibold text-[#0F1724]">
 										Category
 									</label>
-									<select
-										className="w-full p-3 rounded-md bg-[#00000006] text-[#98A0AB] outline-none"
-										onChange={(e) =>
-											handleInputChange(
-												"category",
-												e.target.value,
-											)
-										}
-									>
-										{ART_CATEGORIES.map((category) => (
-											<option key={category}>
-												{category}
-											</option>
-										))}
-									</select>
+
+									<div className="relative">
+										<select
+											onChange={(e) =>
+												handleInputChange(
+													"category",
+													e.target.value,
+												)
+											}
+											className="w-full appearance-none rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-4 py-3 pr-12 text-[#182033] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20 cursor-pointer"
+										>
+											{ART_CATEGORIES.map((category) => (
+												<option
+													key={category}
+													value={category}
+												>
+													{category}
+												</option>
+											))}
+										</select>
+
+										<div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#6a7280]">
+											▼
+										</div>
+									</div>
 								</div>
 								<InputBox
 									label="Medium / Style"
@@ -223,8 +192,8 @@ export default function CreateListing() {
 						</section>
 
 						{/* Media Upload Section */}
-						<section className="border border-[#0000001A] bg-white rounded-xl p-8 space-y-6">
-							<h2 className="font-bold text-[#0F1724] border-b border-[#0000001A] pb-4">
+						<section className="space-y-6 rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.08)]">
+							<h2 className="border-b border-[#061a3d]/10 pb-4 font-serif text-2xl text-[#061a3d]">
 								Media Upload
 							</h2>
 							<label className="text-sm font-semibold text-[#0F1724]">
@@ -234,7 +203,7 @@ export default function CreateListing() {
 						</section>
 
 						{/* Pricing & Inventory */}
-						<section className="border border-[#0000001A] bg-white rounded-xl p-8 space-y-6">
+						{/* <section className="border border-[#0000001A] bg-white rounded-xl p-8 space-y-6">
 							<h2 className="font-bold text-[#0F1724] border-b border-[#0000001A] pb-4">
 								Pricing & Inventory
 							</h2>
@@ -293,16 +262,19 @@ export default function CreateListing() {
 									)}
 								</div>
 							</div>
-						</section>
+						</section> */}
 
 						{/* Footer Buttons */}
-						<footer className="flex flex-col sm:flex-row justify-end gap-4 pt-4 border-t border-[#0000001A]">
-							<button className="px-6 py-2 text-[#0F1724] font-medium">
+						<footer className="flex flex-col justify-end gap-4 border-t border-[#061a3d]/10 pt-4 sm:flex-row">
+							<button
+								onClick={() => router.back()}
+								className="rounded-full border border-[#061a3d]/15 px-6 py-2 text-sm font-semibold text-[#061a3d] transition hover:border-[#d6ad58] hover:text-[#d6ad58]"
+							>
 								Cancel
 							</button>
 							<button
 								onClick={handleSubmit}
-								className="px-6 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
+								className="rounded-full bg-[#d6ad58] px-6 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 							>
 								Publish Listing
 							</button>

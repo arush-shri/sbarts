@@ -66,79 +66,66 @@ export default function SellerSignIn(): ReactElement {
 
 	return (
 		<AuthPage>
-			<div className="flex min-h-screen bg-white">
-				{/* Left Side: Hero Image Section */}
-				<div
-					className="hidden lg:h-screen lg:flex w-1/2 relative bg-cover bg-center"
-					style={{ backgroundImage: `url('/images/sellerbg.avif')` }}
-				>
-					<div className="absolute inset-0 bg-black/20" />
-					<div className="absolute bottom-12 left-12 text-white max-w-md">
-						<h1 className="text-5xl font-bold mb-6 leading-tight">
-							Sign in to continue.
-						</h1>
-						<p className="text-lg mb-8 opacity-90">
-							Access your purchases, manage your listings, and
-							keep track of your orders in one place.
-						</p>
-					</div>
-				</div>
-
-				{/* Right Side: Form Section */}
-				<div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-5 md:px-20 pt-24 overflow-y-auto">
-					<div className="w-full max-w-md">
-						<div className="flex flex-col items-center mb-10">
-							<div className="w-10 h-10 bg-[#0061f2] rounded-full flex items-center justify-center mb-4">
-								<span className="text-white text-xl">🎨</span>
+			<div className="min-h-screen bg-[#f7f1e6] text-[#182033]">
+				<div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col lg:flex-row">
+					<section className="relative flex w-full items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.18),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] px-6 py-16 text-white lg:min-h-screen lg:w-[44%] lg:px-10 lg:py-0">
+						<div className="relative z-10 max-w-md">
+							<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
+								SB Arts
 							</div>
-							<h2 className="text-3xl font-bold text-[#0F1724]">
-								Welcome Back, Artist!
-							</h2>
-							<p className="text-[#0F1724] mt-2">
-								Enter your details to access your seller
-								dashboard.
+							<h1 className="mt-4 font-serif text-4xl leading-tight text-[#d6ad58] sm:text-5xl">
+								Sign in to continue.
+							</h1>
+							<p className="mt-4 text-lg text-white/80">
+								Manage your listings and competitions in one
+								place.
 							</p>
 						</div>
+					</section>
 
-						<form
-							className="space-y-8 w-full flex flex-col"
-							onSubmit={(e) => e.preventDefault()}
-						>
-							<div className="flex flex-col space-y-4 text-[#0F1724] w-full">
-								<CredentioalsForm
-									initialData={{
-										email: formData.current.email,
-										password: formData.current.password,
-									}}
-									onChange={updateField}
-								/>
-								<a
-									href="/forgotPassword"
-									className="self-end text-md font-semibold text-blue-500 cursor-pointer hover:underline"
-								>
-									Forgot password?
-								</a>
+					<section className="flex w-full flex-1 items-center justify-center bg-[#f7f1e6] px-5 py-12 md:px-10 lg:px-14">
+						<div className="w-full max-w-md rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.12)]">
+							<div className="mb-8 flex flex-col items-center text-center">
+								<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#d6ad58] text-xl shadow-sm">
+									<span>🎨</span>
+								</div>
+								<h2 className="font-serif text-3xl text-[#061a3d]">
+									Welcome Back!
+								</h2>
+								<p className="mt-2 text-sm text-[#6a7280]">
+									Enter your details to access dashboard.
+								</p>
 							</div>
 
-							<button
-								onClick={handleClick}
-								className="w-full bg-[#0061f2] text-white py-3 rounded-lg font-medium hover:bg-blue-700
-                            transition-colors mb-15 text-lg"
+							<form
+								className="flex w-full flex-col space-y-6"
+								onSubmit={(e) => e.preventDefault()}
 							>
-								Sign In
-							</button>
+								<div className="flex w-full flex-col space-y-4 text-[#182033]">
+									<CredentioalsForm
+										initialData={{
+											email: formData.current.email,
+											password: formData.current.password,
+										}}
+										onChange={updateField}
+									/>
+									<a
+										href="/forgotPassword"
+										className="self-end text-sm font-semibold text-[#061a3d] transition hover:text-[#d6ad58]"
+									>
+										Forgot password?
+									</a>
+								</div>
 
-							<p className="self-center text-md font-medium text-[#98A2B3]">
-								Don't have an account?{" "}
-								<a
-									href="/signUp"
-									className="self-center text-md font-semibold text-blue-500 cursor-pointer hover:underline"
+								<button
+									onClick={handleClick}
+									className="w-full rounded-full bg-[#d6ad58] px-4 py-3 text-lg font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 								>
-									Create Seller Account
-								</a>
-							</p>
-						</form>
-					</div>
+									Sign In
+								</button>
+							</form>
+						</div>
+					</section>
 				</div>
 			</div>
 			{loading && <Loading />}

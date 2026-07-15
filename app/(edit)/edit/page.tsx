@@ -43,8 +43,6 @@ export default function EditProfile() {
 		const result = await validateImageFile(file, {
 			label: "Profile picture",
 			maxMb: 5,
-			minWidth: 720,
-			minHeight: 720,
 		});
 
 		if (!result.valid) {

@@ -170,8 +170,6 @@ export const SellerImageUpload = memo(
 			const result = await validateImageFile(file, {
 				types: ["image/jpeg", "image/png"],
 				maxMb: 5,
-				minHeight: 720,
-				minWidth: 720,
 				label: "Profile picture",
 			});
 
@@ -263,7 +261,7 @@ export const CredentioalsForm = memo(
 		return (
 			<>
 				<div>
-					<label className="block text-sm font-medium text-[#0F1724] mb-1">
+					<label className="mb-2 block text-sm font-semibold uppercase tracking-[.16em] text-[#061a3d]">
 						Email Address
 					</label>
 					<div className="relative">
@@ -275,15 +273,12 @@ export const CredentioalsForm = memo(
 								setEmail(e.target.value);
 								onChange("email", e.target.value);
 							}}
-							className="w-full px-4 py-2 border border-[#0000001A] placeholder:text-[#98A0AB] rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 pr-24"
+							className="w-full rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-4 py-3 pr-24 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20"
 						/>
-						{/* <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-emerald-500 text-sm font-medium">
-						Verified <CheckCircle2 size={16} />
-					</div> */}
 					</div>
 				</div>
 				<div>
-					<label className="block text-sm font-medium text-[#0F1724] mb-1">
+					<label className="mb-2 block text-sm font-semibold uppercase tracking-[.16em] text-[#061a3d]">
 						Password
 					</label>
 					<div className="relative">
@@ -295,12 +290,12 @@ export const CredentioalsForm = memo(
 								setPassword(e.target.value);
 								onChange("password", e.target.value);
 							}}
-							className="w-full px-4 py-2 border border-[#0000001A] rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 pr-10"
+							className="w-full rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-4 py-3 pr-10 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20"
 						/>
 						<button
 							type="button"
 							onClick={() => setShowPassword(!showPassword)}
-							className="absolute right-3 top-1/2 -translate-y-1/2 text-[#98A0AB] hover:text-[#0F1724]"
+							className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6a7280] transition hover:text-[#061a3d]"
 						>
 							{showPassword ? (
 								<EyeOff size={18} />
@@ -310,7 +305,7 @@ export const CredentioalsForm = memo(
 						</button>
 					</div>
 					{passReqs && (
-						<p className="text-[11px] text-[#98A0AB] mt-1">
+						<p className="mt-2 text-[11px] uppercase tracking-[.16em] text-[#6a7280]">
 							Must be at least 8 characters.
 						</p>
 					)}

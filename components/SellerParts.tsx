@@ -5,7 +5,7 @@ import { PaintingType, SellerType } from "@/app/_lib/customTypes";
 import { thumbnailUrlGenerator } from "@/app/_lib/dataProcessing";
 import { validateImageFile } from "@/app/_lib/validation";
 import { signOut } from "firebase/auth";
-import { Edit2, Plus, Trash2 } from "lucide-react";
+import { Edit2, Plus, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ReactElement, useEffect, useRef, useState } from "react";
@@ -27,18 +27,16 @@ export function SidebarProfile({
 		}
 	};
 	return (
-		<div className="flex flex-col lg:flex-row gap-4">
+		<div className="flex flex-col gap-3 lg:flex-row">
 			<a
 				href="/listing"
-				className="bg-[#007AFF] text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 
-                            hover:bg-blue-600 transition-colors shadow-sm text-sm"
+				className="inline-flex items-center justify-center gap-2 rounded-full bg-[#d6ad58] px-5 py-2.5 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 			>
-				<Plus className="h-auto w-6" /> Add New Listing
+				<Plus className="h-auto w-5" /> Add New Listing
 			</a>
 			<button
 				onClick={handleLogout}
-				className="px-5 py-2.5 bg-red-100 rounded-lg text-sm font-bold hover:bg-red-600
-                transition-colors text-red-500 hover:text-white"
+				className="rounded-full border border-[#061a3d]/15 bg-white px-5 py-2.5 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:border-[#d6ad58] hover:text-[#d6ad58]"
 			>
 				Sign Out
 			</button>
@@ -118,29 +116,47 @@ export function ListingsTable({
 
 	return (
 		<div>
-			<div className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-				<h3 className="font-bold text-lg">Your Listings</h3>
+			<div className="flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between">
+				<div>
+					<h3 className="font-serif text-2xl text-[#061a3d]">
+						Your Listings
+					</h3>
+					<p className="mt-1 text-sm text-[#6a7280]">
+						Keep your gallery visible and current for buyers.
+					</p>
+				</div>
 			</div>
 
 			<div className="overflow-x-auto">
-				<table className="w-full text-left border-collapse">
+				<table className="w-full border-collapse text-left">
 					<thead>
-						<tr className="bg-[#F8F9FA] border-y border-[#0000000D] text-[#98A0AB] text-[11px] font-bold uppercase tracking-wider">
+						<tr className="border-y border-[#061a3d]/10 bg-[#f7f1e6] text-[11px] font-bold uppercase tracking-[.18em] text-[#b88d39]">
 							<th className="px-6 py-4">Item</th>
 							<th className="px-6 py-4">Price</th>
 							<th className="px-6 py-4">Stock</th>
-							{/* <th className="px-6 py-4">Status</th> */}
 							<th className="px-6 py-4 text-right">Actions</th>
 						</tr>
 					</thead>
-					<tbody className="divide-y divide-[#0000000D]">
-						{displayedArtworks.map((item) => (
-							<ItemRow
-								key={item.id}
-								item={item}
-								deleteListing={deleteListing}
-							/>
-						))}
+					<tbody className="divide-y divide-[#061a3d]/10">
+						{displayedArtworks.length > 0 ? (
+							displayedArtworks.map((item) => (
+								<ItemRow
+									key={item.id}
+									item={item}
+									deleteListing={deleteListing}
+								/>
+							))
+						) : (
+							<tr>
+								<td
+									colSpan={4}
+									className="px-6 py-10 text-center text-sm text-[#6a7280]"
+								>
+									No listings yet. Create your first artwork
+									listing to get started.
+								</td>
+							</tr>
+						)}
 					</tbody>
 				</table>
 			</div>
@@ -332,13 +348,13 @@ export function CompetitionManager(): ReactElement {
 	};
 
 	return (
-		<div className="rounded-2xl border border-[#0000001A] bg-white p-6">
+		<div className="rounded-[28px] border border-[#061a3d]/12 bg-white p-6 shadow-[0_18px_50px_rgba(6,26,61,.08)]">
 			<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 				<div>
-					<h3 className="text-lg font-bold">
+					<h3 className="font-serif text-2xl text-[#061a3d]">
 						Competition Management
 					</h3>
-					<p className="mt-1 text-sm text-[#64748B]">
+					<p className="mt-1 text-sm text-[#6a7280]">
 						Create new competitions or update timelines, titles, and
 						status.
 					</p>
@@ -346,9 +362,13 @@ export function CompetitionManager(): ReactElement {
 				<button
 					type="button"
 					onClick={resetForm}
-					className="inline-flex items-center gap-2 rounded-lg bg-[#0066FF] px-4 py-2 text-sm font-bold text-white transition hover:bg-blue-700"
+					className="inline-flex items-center gap-2 rounded-full bg-[#d6ad58] px-4 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 				>
-					<Plus className="h-4 w-4" />
+					{editingId ? (
+						<X className="h-4 w-4" />
+					) : (
+						<Plus className="h-4 w-4" />
+					)}
 					{editingId ? "Cancel Edit" : "New Competition"}
 				</button>
 			</div>
@@ -364,7 +384,7 @@ export function CompetitionManager(): ReactElement {
 						setForm({ ...form, title: event.target.value })
 					}
 					placeholder="Competition title"
-					className="rounded-lg border border-[#0000001A] px-3 py-2 text-sm outline-none focus:border-[#0066FF]"
+					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 				/>
 				<input
 					type="text"
@@ -375,7 +395,7 @@ export function CompetitionManager(): ReactElement {
 					}
 					placeholder="Entries Open (DD/MM/YYYY)"
 					pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-					className="rounded-lg border border-[#0000001A] px-3 py-2 text-sm outline-none focus:border-[#0066FF]"
+					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 				/>
 
 				<input
@@ -387,7 +407,7 @@ export function CompetitionManager(): ReactElement {
 					}
 					placeholder="Final Deadline (DD/MM/YYYY)"
 					pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-					className="rounded-lg border border-[#0000001A] px-3 py-2 text-sm outline-none focus:border-[#0066FF]"
+					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 				/>
 
 				<input
@@ -402,7 +422,7 @@ export function CompetitionManager(): ReactElement {
 					}
 					placeholder="Winners Announcement (DD/MM/YYYY)"
 					pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-					className="rounded-lg border border-[#0000001A] px-3 py-2 text-sm outline-none focus:border-[#0066FF]"
+					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 				/>
 
 				<input
@@ -414,14 +434,14 @@ export function CompetitionManager(): ReactElement {
 					}
 					placeholder="Exhibition Open (DD/MM/YYYY)"
 					pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-					className="rounded-lg border border-[#0000001A] px-3 py-2 text-sm outline-none focus:border-[#0066FF]"
+					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 				/>
 				<select
 					value={form.status}
 					onChange={(event) =>
 						setForm({ ...form, status: event.target.value })
 					}
-					className="rounded-lg border border-[#0000001A] px-3 py-2 text-sm outline-none focus:border-[#0066FF]"
+					className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 				>
 					<option value="registration open">Registration open</option>
 					<option value="registration closed">
@@ -433,7 +453,7 @@ export function CompetitionManager(): ReactElement {
 				<div className="md:col-span-2 xl:col-span-3">
 					<button
 						type="submit"
-						className="rounded-lg bg-[#0F1724] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#061a3d]"
+						className="rounded-full bg-[#061a3d] px-4 py-2 text-sm font-bold uppercase tracking-[.06em] text-white transition hover:bg-[#0b2b63]"
 					>
 						{editingId ? "Save Changes" : "Create Competition"}
 					</button>
@@ -452,7 +472,7 @@ export function CompetitionManager(): ReactElement {
 				) : (
 					<table className="w-full border-collapse text-left text-sm">
 						<thead>
-							<tr className="border-y border-[#0000000D] bg-[#F8F9FA] text-[#98A0AB] uppercase tracking-wider">
+							<tr className="border-y border-[#061a3d]/10 bg-[#f7f1e6] text-[11px] font-bold uppercase tracking-[.18em] text-[#b88d39]">
 								<th className="px-4 py-3">Title</th>
 								<th className="px-4 py-3">Status</th>
 								<th className="px-4 py-3">Dates</th>
@@ -512,8 +532,6 @@ export default function ArtworkUpload({
 		const result = await validateImageFile(file, {
 			label: "Artwork image",
 			maxMb: 50,
-			minWidth: 1920,
-			minHeight: 1080,
 		});
 
 		if (!result.valid) {
@@ -559,25 +577,25 @@ export default function ArtworkUpload({
 				onClick={handleClick}
 				onDragOver={(e) => e.preventDefault()}
 				onDrop={handleDrop}
-				className="border-2 border-dashed border-[#0000001A] bg-[#f4f7ff] rounded-xl mt-3 p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-[#eef3ff] transition"
+				className="mt-3 flex cursor-pointer flex-col items-center justify-center rounded-[24px] border border-dashed border-[#061a3d]/20 bg-[linear-gradient(135deg,rgba(214,173,88,.12),rgba(255,255,255,.95))] p-12 text-center transition hover:bg-[linear-gradient(135deg,rgba(214,173,88,.2),rgba(246,241,230,.95))]"
 			>
 				{preview ? (
 					<>
 						<img
 							src={preview}
 							alt="preview"
-							className="w-32 h-32 object-cover rounded-lg mb-3"
+							className="mb-3 h-32 w-32 rounded-lg object-cover"
 						/>
-						<p className="text-[#0F1724] font-semibold">
+						<p className="font-semibold text-[#061a3d]">
 							{fileName}
 						</p>
-						<p className="text-xs text-[#98A0AB]">
+						<p className="text-xs text-[#6a7280]">
 							Image selected successfully
 						</p>
 					</>
 				) : (
 					<>
-						<div className="w-10 h-10 mb-4 text-blue-500 bg-white rounded-full flex items-center justify-center shadow-sm">
+						<div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#d6ad58] text-[#061a3d] shadow-sm">
 							<svg
 								className="w-6 h-6"
 								fill="none"
@@ -593,11 +611,11 @@ export default function ArtworkUpload({
 							</svg>
 						</div>
 
-						<p className="text-[#0F1724] font-semibold">
+						<p className="font-semibold text-[#061a3d]">
 							Click to upload or drag and drop
 						</p>
 
-						<p className="text-xs text-[#98A0AB] mt-1">
+						<p className="mt-1 text-xs text-[#6a7280]">
 							High resolution required. Max file size 50MB.
 							<br />
 							Recommended aspect ratios: 1:1, 4:3, or 16:9.
@@ -622,7 +640,7 @@ function ItemRow({
 		return (
 			<tr
 				key={item.id}
-				className="group hover:bg-gray-50 transition-colors"
+				className="group transition-colors hover:bg-[#fdfaf4]"
 			>
 				<td className="px-6 py-4 flex items-center gap-3">
 					<Image
@@ -646,8 +664,7 @@ function ItemRow({
 					<div className="flex justify-end gap-2">
 						<button
 							onClick={() => router.push(`/editItem/${item.id}`)}
-							className="p-2 hover:bg-white rounded-md border border-transparent 
-                                            hover:border-[#0000001A] text-[#98A0AB] hover:text-[#0F1724] transition-all"
+							className="rounded-full border border-transparent p-2 text-[#6a7280] transition-all hover:border-[#061a3d]/15 hover:bg-white hover:text-[#061a3d]"
 						>
 							<Edit2 className="h-auto w-4" />
 						</button>
@@ -658,8 +675,7 @@ function ItemRow({
 								setLoading(false);
 							}}
 							disabled={loading}
-							className="p-2 hover:bg-red-50 rounded-md border border-transparent 
-                                            hover:border-red-100 text-[#98A0AB] hover:text-red-500 transition-all"
+							className="rounded-full border border-transparent p-2 text-[#6a7280] transition-all hover:border-red-100 hover:bg-red-50 hover:text-red-500"
 						>
 							{loading ? (
 								<div className="w-4 h-4 border-2 border-gray-300 border-t-red-500 rounded-full animate-spin" />

@@ -174,8 +174,6 @@ export const ImageUploadCard = memo(
 			const result = await validateImageFile(file, {
 				label: "Image",
 				maxMb: 10,
-				minWidth: 1920,
-				minHeight: 1080,
 			});
 
 			if (!result.valid) {
