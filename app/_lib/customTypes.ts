@@ -82,3 +82,15 @@ export type UpdateBody = {
 	price?: number;
 	quantity?: number;
 };
+
+export type CompetitionEntry = {
+	id: string;
+	title: string;
+	entriesOpen: string;
+	finalDeadline: string;
+	winnersAnnouncement: string;
+	exhibitionOpen: string;
+	status: string;
+	createdAt: number;
+	updatedAt: number;
+};

@@ -1,8 +1,7 @@
-import { BUYING_ENABLED } from "@/app/_lib/featureFlags";
 import { validateImageFile } from "@/app/_lib/validation";
 // @ts-ignore
 import { getNames } from "country-list";
-import { CreditCard, Eye, EyeOff, ImagePlus } from "lucide-react";
+import { Eye, EyeOff, ImagePlus } from "lucide-react";
 import { memo, useRef, useState } from "react";
 import { ShowToast } from "./Toaster";
 interface Props {
@@ -254,46 +253,7 @@ export const SellerImageUpload = memo(
 	},
 );
 
-export const StripeConnect = memo(
-	({ onChange }: { onChange: (k: string, v: boolean) => void }) => {
-		const [connected, setConnected] = useState(false);
-
-		if (!BUYING_ENABLED) return null;
-		return (
-			<div className="p-4 border border-dashed border-[#00000033] rounded-xl bg-slate-50">
-				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-3">
-						<div className="p-2 bg-[#635BFF] rounded-md">
-							<CreditCard className="text-white" size={20} />
-						</div>
-						<div>
-							<p className="text-sm font-bold text-[#0F1724]">
-								Payout Method
-							</p>
-							<p className="text-xs text-[#98A0AB]">
-								Connect Stripe to receive payments
-							</p>
-						</div>
-					</div>
-					<button
-						type="button"
-						onClick={() => {
-							setConnected(!connected);
-							onChange("stripeConnected", !connected);
-						}}
-						className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
-							connected
-								? "bg-emerald-100 text-emerald-700 border border-emerald-200"
-								: "bg-[#635BFF] text-white hover:bg-[#5249d9]"
-						}`}
-					>
-						{connected ? "Connected" : "Connect Stripe"}
-					</button>
-				</div>
-			</div>
-		);
-	},
-);
+/* Stripe integration removed */
 
 export const CredentioalsForm = memo(
 	({ initialData, onChange, passReqs }: Props) => {

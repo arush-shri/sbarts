@@ -4,9 +4,7 @@ import { firebaseStorage } from "@/app/_firebase/storage";
 import { SellerType } from "@/app/_lib/customTypes";
 // @ts-ignore
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+// Stripe removed — onboarding disabled
 
 export async function POST(req: NextRequest) {
 	try {
@@ -37,33 +35,9 @@ export async function POST(req: NextRequest) {
 			password,
 		});
 		const sellerId: string = user.uid;
-		const stripeOnboardingEnabled =
-			process.env.STRIPE_ONBOARDING_ENABLED === "true";
-
+		// Stripe onboarding disabled — no stripeConnect created
 		let stripeConnect: string | undefined;
-		let onboardingUrl: string | undefined;
-
-		if (stripeOnboardingEnabled) {
-			const account = await stripe.accounts.create({
-				type: "express",
-				email,
-				capabilities: {
-					card_payments: { requested: true },
-					transfers: { requested: true },
-				},
-			});
-
-			stripeConnect = account.id;
-
-			const accountLink = await stripe.accountLinks.create({
-				account: account.id,
-				refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/signUp`,
-				return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/signIn`,
-				type: "account_onboarding",
-			});
-
-			onboardingUrl = accountLink.url;
-		}
+		let onboardingUrl: string | undefined = null;
 		const docRef = firebaseDB.collection("sellers").doc(sellerId);
 
 		let imageUrl = "";
@@ -108,7 +82,7 @@ export async function POST(req: NextRequest) {
 			totalSale: 0,
 			itemSold: 0,
 			orderIds: [],
-			...(stripeConnect ? { stripeConnect } : {}),
+			// stripeConnect omitted when Stripe is disabled
 		};
 
 		await docRef.set(data);

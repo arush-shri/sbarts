@@ -1,7 +1,8 @@
 "use client";
 
 import { ShowToast } from "@/components/Toaster";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { CompetitionEntry } from "../_lib/customTypes";
 
 export default function CompetitionPage() {
 	const [name, setName] = useState("");
@@ -9,6 +10,28 @@ export default function CompetitionPage() {
 	const [grade, setGrade] = useState("");
 	const [message, setMessage] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [competition, setCompetition] = useState<CompetitionEntry | null>(
+		null,
+	);
+	const [compLoading, setCompLoading] = useState(true);
+
+	useEffect(() => {
+		const loadCompetition = async () => {
+			try {
+				const res = await fetch("/api/competition");
+				const json = await res.json();
+				if (res.ok && json.data) {
+					setCompetition(json.data);
+				}
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setCompLoading(false);
+			}
+		};
+
+		loadCompetition();
+	}, []);
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -96,6 +119,72 @@ export default function CompetitionPage() {
 				</div>
 			</section>
 
+			<section className="bg-[#f7f1e6] py-14">
+				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
+					<div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+						<div>
+							<div className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
+								Key Dates
+							</div>
+							<h2 className="mt-2 font-serif text-4xl text-[#061a3d]">
+								Competition Timeline
+							</h2>
+						</div>
+						<div className="text-right text-sm uppercase tracking-[.12em] text-[#6a7280]">
+							{compLoading
+								? "Loading status..."
+								: competition?.status || "Status pending"}
+						</div>
+					</div>
+
+					<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+						{compLoading ? (
+							Array.from({ length: 4 }).map((_, index) => (
+								<div
+									key={index}
+									className="min-h-[160px] animate-pulse rounded-3xl border border-[#061a3d]/12 bg-white p-6"
+								/>
+							))
+						) : competition ? (
+							[
+								{
+									title: "Entries Open",
+									date: competition.entriesOpen,
+								},
+								{
+									title: "Final Deadline",
+									date: competition.finalDeadline,
+								},
+								{
+									title: "Winners Announcement",
+									date: competition.winnersAnnouncement,
+								},
+								{
+									title: "Exhibition Open",
+									date: competition.exhibitionOpen,
+								},
+							].map((item) => (
+								<div
+									key={item.title}
+									className="rounded-3xl border border-[#061a3d]/12 bg-white p-6 shadow-[0_18px_40px_rgba(6,26,61,.08)]"
+								>
+									<div className="text-xs font-bold uppercase tracking-[.18em] text-[#b88d39]">
+										{item.title}
+									</div>
+									<div className="mt-4 text-2xl font-semibold text-[#061a3d]">
+										{item.date}
+									</div>
+								</div>
+							))
+						) : (
+							<div className="rounded-3xl border border-[#061a3d]/12 bg-white p-8 text-center text-[#6a7280]">
+								No competition dates are available yet.
+							</div>
+						)}
+					</div>
+				</div>
+			</section>
+
 			<section className="bg-white py-20">
 				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] items-center gap-10 lg:grid-cols-2">
 					<div>
@@ -125,8 +214,8 @@ export default function CompetitionPage() {
 						<p className="mt-4 text-[#6a7280]">
 							Eligible students may submit original
 							two-dimensional or digital artwork. Final rules,
-							dates, awards, fees, and juror information should
-							be confirmed before launch.
+							dates, awards, fees, and juror information should be
+							confirmed before launch.
 						</p>
 					</div>
 					<form
@@ -165,9 +254,7 @@ export default function CompetitionPage() {
 						</select>
 						<textarea
 							value={message}
-							onChange={(event) =>
-								setMessage(event.target.value)
-							}
+							onChange={(event) => setMessage(event.target.value)}
 							placeholder="Tell us about your artwork or question"
 							className="min-h-36 resize-y border border-[#061a3d]/20 px-4 py-3 outline-none focus:border-[#d6ad58]"
 						/>

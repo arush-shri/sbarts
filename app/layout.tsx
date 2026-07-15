@@ -3,7 +3,9 @@ import Header from "@/components/header";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import { PaintingProvider } from "./_context/PaintingConext";
+import { SellerProvider } from "./_context/SellerContext";
 import { fontInter } from "./_lib/fonts";
+//@ts-ignore
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -29,11 +31,13 @@ export default async function RootLayout({
 						},
 					}}
 				/>
-				<PaintingProvider>
-					<Header />
-					{children}
-					<Footer />
-				</PaintingProvider>
+				<SellerProvider>
+					<PaintingProvider>
+						<Header />
+						{children}
+						<Footer />
+					</PaintingProvider>
+				</SellerProvider>
 			</body>
 		</html>
 	);

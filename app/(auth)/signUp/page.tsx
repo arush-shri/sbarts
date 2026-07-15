@@ -7,7 +7,6 @@ import {
 	PhysicalAddress,
 	SelfPortraitRow,
 	SellerImageUpload,
-	StripeConnect,
 } from "@/components/AuthPart";
 import Loading from "@/components/Loading";
 import { ShowToast } from "@/components/Toaster";
@@ -26,7 +25,6 @@ export default function SellerOnboarding(): ReactElement {
 		zip: "",
 		password: "",
 		country: "",
-		stripeConnected: false,
 		uploadedFile: "",
 		portraitPrice: 0,
 		selfPortrait: "",
@@ -57,7 +55,7 @@ export default function SellerOnboarding(): ReactElement {
 		body.append("password", data.password);
 		body.append("selfPortrait", data.selfPortrait);
 		body.append("portraitPrice", data.portraitPrice.toString());
-		body.append("stripeConnected", String(data.stripeConnected));
+		// stripe integration removed
 
 		if (data.uploadedFile) {
 			body.append("image", data.uploadedFile);
@@ -173,7 +171,7 @@ export default function SellerOnboarding(): ReactElement {
 								updateField={updateField}
 							/>
 
-							<StripeConnect onChange={updateField} />
+							{/* Stripe integration removed */}
 
 							<button
 								disabled={loading}

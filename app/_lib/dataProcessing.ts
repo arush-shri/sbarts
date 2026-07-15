@@ -1,9 +1,4 @@
 import { ShowToast } from "@/components/Toaster";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(
-	process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-);
 
 export function convertNumToDate(createdAt: number) {
 	const date = new Date(createdAt);
@@ -39,23 +34,8 @@ export const buyPortrait = (data: any) => {
 };
 
 const InitPayment = async (payload: any) => {
-	// ✅ Save full payload (including File)
-	await saveToIndexedDB("pendingOrder", payload);
-
-	const res = await fetch("/api/checkout", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({
-			amount: payload.amount,
-			accountId: payload.accountId,
-		}),
-	});
-
-	const data = await res.json();
-
-	if (data.url) {
-		window.location.href = data.url;
-	}
+	ShowToast("Payments are disabled in this deployment.", 1);
+	return;
 };
 
 export const saveToIndexedDB = (key: string, data: any) => {
@@ -114,33 +94,8 @@ export const getFromIndexedDB = (key: string) => {
 };
 
 export const completeOrder = async (sessionId: string) => {
-	const res = await fetch(`/api/checkout?session_id=${sessionId}`);
-	const data = await res.json();
-
-	if (data.status !== "paid") {
-		ShowToast("Payment failed ❌", 0);
-		return;
-	}
-	ShowToast("Order placed successfully ✅", 2);
-	const payload: any = await getFromIndexedDB("pendingOrder");
-
-	if (!payload) {
-		console.warn("No pending order found (maybe already processed)");
-		return;
-	}
-
-	const formData = new FormData();
-
-	// append all fields
-	Object.keys(payload).forEach((key) => {
-		formData.append(key, payload[key]);
-	});
-	formData.append("sessionId", sessionId);
-
-	await fetch("/api/order", {
-		method: "POST",
-		body: formData,
-	});
+	ShowToast("Payments are disabled in this deployment.", 1);
+	return;
 };
 
 export function thumbnailUrlGenerator(imageId: string): string {
