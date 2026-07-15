@@ -23,7 +23,7 @@ export default function CreateListing() {
 		category: ART_CATEGORIES[0],
 		medium: "",
 		description: "",
-		price: 0,
+		price: 1,
 		quantity: 1,
 		listingType: "Digital Download",
 		uploadedFile: null,
@@ -285,7 +285,7 @@ export default function CreateListing() {
 			{isUploading && (
 				<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
 					<div className="bg-white p-6 rounded-xl shadow-xl max-w-sm w-full mx-4 text-center">
-						<div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+						<div className="w-10 h-10 border-4 border-[#D5AF37] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
 						<p className="text-sm font-semibold text-gray-900 mb-1">
 							Creating your listing
 						</p>

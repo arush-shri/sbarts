@@ -10,7 +10,7 @@ export default async function Marketplace({
 	}>;
 }): Promise<ReactElement> {
 	const params = await searchParams;
-	console.log(params);
+
 	return (
 		<ExplorePage
 			category={params.category || ""}

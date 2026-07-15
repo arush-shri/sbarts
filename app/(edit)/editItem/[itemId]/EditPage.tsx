@@ -1,5 +1,6 @@
 "use client";
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
+import { ART_CATEGORIES } from "@/app/_lib/artCategories";
 import { PaintingType } from "@/app/_lib/customTypes";
 import {
 	convertNumToDate,
@@ -30,9 +31,8 @@ const InputBox: React.FC<InputBoxProps> = ({
 	const isTextArea = type === "textarea";
 
 	// Textarea uses the light blue bg, standard inputs here look like plain text until clicked
-	const baseStyles = isTextArea
-		? "w-full p-3 rounded-md bg-[#f4f7ff] border border-[#0000001A] text-[#98A0AB] text-sm focus:outline-none focus:ring-1 focus:ring-[#0F1724] resize-none"
-		: "w-full py-1 bg-transparent border-b border-transparent hover:border-[#0000001A] focus:border-[#0F1724] focus:outline-none text-[#98A0AB] text-sm transition-all";
+	const baseStyles =
+		"rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20";
 
 	return (
 		<div className="flex flex-col gap-1 w-full">
@@ -210,12 +210,32 @@ export default function EditArtwork({
 							defaultValue={editedData.current.title}
 							onChange={handleUpdate}
 						/>
-						<InputBox
-							label="Category"
-							name="category"
-							defaultValue={editedData.current.category}
-							onChange={handleUpdate}
-						/>
+						<div className="flex flex-col gap-1 w-full">
+							<label className="text-sm font-semibold text-[#0F1724]">
+								Category
+							</label>
+
+							<div className="relative">
+								<select
+									name="category"
+									defaultValue={editedData.current.category}
+									onChange={(e) =>
+										handleUpdate("category", e.target.value)
+									}
+									className="w-full appearance-none rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 pr-10 text-sm text-[#182033] outline-none focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20 cursor-pointer"
+								>
+									{ART_CATEGORIES.map((category) => (
+										<option key={category} value={category}>
+											{category}
+										</option>
+									))}
+								</select>
+
+								<div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-[#6a7280]">
+									▼
+								</div>
+							</div>
+						</div>
 
 						<div className="md:col-span-2">
 							<InputBox
@@ -261,48 +281,21 @@ export default function EditArtwork({
 								priority
 							/>
 						</div>
-						<p className="text-[10px] text-[#98A0AB] mt-3 leading-relaxed">
-							Buyers will see a watermarked version like this. The
-							original file is delivered after successful payment.
-						</p>
 					</div>
 
 					{/* Listing Summary */}
 					<div className="rounded-[24px] border border-[#061a3d]/12 bg-white p-6 shadow-[0_18px_40px_rgba(6,26,61,.08)]">
-						<h3 className="mb-4 text-xs font-bold uppercase tracking-[.16em] text-[#b88d39]">
-							Listing summary
-						</h3>
-						<div className="space-y-3">
-							{[
-								{
-									label: "Current price",
-									value: "$55.00",
-									bold: true,
-								},
-								{
-									label: "Type",
-									value: `${painting.isDigital ? "Digital download" : "Physical art"}`,
-								},
-								{ label: "Sales", value: painting.purchases },
-								{
-									label: "Last updated",
-									value: convertNumToDate(painting.updatedAt),
-								},
-							].map((item, i) => (
-								<div
-									key={i}
-									className="flex justify-between text-xs"
-								>
-									<span className="text-[#98A0AB]">
-										{item.label}
-									</span>
-									<span
-										className={`text-[#0F1724] ${item.bold ? "font-bold" : ""}`}
-									>
-										{item.value}
-									</span>
-								</div>
-							))}
+						<div className="flex justify-between text-xs">
+							<h3 className="mb-4 text-xs font-bold uppercase tracking-[.16em] text-[#b88d39]">
+								Created On
+							</h3>
+							<span>{convertNumToDate(painting.createdAt)}</span>
+						</div>
+						<div className="flex justify-between text-xs">
+							<h3 className="text-xs font-bold uppercase tracking-[.16em] text-[#b88d39]">
+								Updated On
+							</h3>
+							<span>{convertNumToDate(painting.updatedAt)}</span>
 						</div>
 					</div>
 				</div>
@@ -310,7 +303,7 @@ export default function EditArtwork({
 			{isUploading && (
 				<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
 					<div className="bg-white p-6 rounded-xl shadow-xl max-w-sm w-full mx-4 text-center">
-						<div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+						<div className="w-10 h-10 border-4 border-[#D5AF37] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
 						<p className="text-sm font-semibold text-gray-900 mb-1">
 							Updating your listing
 						</p>

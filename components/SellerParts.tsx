@@ -2,7 +2,10 @@
 
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { PaintingType, SellerType } from "@/app/_lib/customTypes";
-import { thumbnailUrlGenerator } from "@/app/_lib/dataProcessing";
+import {
+	convertNumToDate,
+	thumbnailUrlGenerator,
+} from "@/app/_lib/dataProcessing";
 import { validateImageFile } from "@/app/_lib/validation";
 import { signOut } from "firebase/auth";
 import { Edit2, Plus, Trash2, X } from "lucide-react";
@@ -132,8 +135,8 @@ export function ListingsTable({
 					<thead>
 						<tr className="border-y border-[#061a3d]/10 bg-[#f7f1e6] text-[11px] font-bold uppercase tracking-[.18em] text-[#b88d39]">
 							<th className="px-6 py-4">Item</th>
-							<th className="px-6 py-4">Price</th>
-							<th className="px-6 py-4">Stock</th>
+							<th className="px-6 py-4">Listed On</th>
+							<th className="px-6 py-4">Updated On</th>
 							<th className="px-6 py-4 text-right">Actions</th>
 						</tr>
 					</thead>
@@ -654,11 +657,11 @@ function ItemRow({
 						<p className="font-bold text-sm">{item.title}</p>
 					</div>
 				</td>
-				<td className="px-6 py-4 text-sm font-medium text-[#0F1724]">
-					${item.price.toFixed(2)}
+				<td className="px-6 py-4 text-sm text-[#98A0AB]">
+					{convertNumToDate(item.createdAt)}
 				</td>
 				<td className="px-6 py-4 text-sm text-[#98A0AB]">
-					{item.quantity}
+					{convertNumToDate(item.updatedAt)}
 				</td>
 				<td className="px-6 py-4 text-right">
 					<div className="flex justify-end gap-2">

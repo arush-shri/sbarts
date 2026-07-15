@@ -3,6 +3,7 @@
 import { ART_CATEGORIES } from "@/app/_lib/artCategories";
 import { PaintingType } from "@/app/_lib/customTypes";
 import PaintingCard from "@/components/PaintingCard";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
 	FormEvent,
 	ReactElement,
@@ -30,10 +31,19 @@ export default function ExplorePage({
 	keyword?: string;
 	title?: string;
 }): ReactElement {
+	const router = useRouter();
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
 	const [items, setItems] = useState<PaintingType[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState(category || "All");
 	const [search, setSearch] = useState(keyword || "");
 	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		if (searchParams.toString()) {
+			window.history.replaceState(window.history.state, "", pathname);
+		}
+	}, [pathname, searchParams]);
 
 	const loadData = useCallback(
 		async (nextCategory: string, nextSearch: string) => {
