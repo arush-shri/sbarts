@@ -77,11 +77,8 @@ export default function CreateListing() {
 					if (prev === "Preparing files...")
 						return "Uploading high-resolution artwork...";
 					if (prev === "Uploading high-resolution artwork...")
-						return "Processing images & applying watermarks (this takes a moment)...";
-					if (
-						prev ===
-						"Processing images & applying watermarks (this takes a moment)..."
-					)
+						return "Processing image (this takes a moment)...";
+					if (prev === "Processing image (this takes a moment)...")
 						return "Saving listing details...";
 					return prev;
 				});

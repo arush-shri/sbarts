@@ -52,31 +52,13 @@ export async function POST(req: NextRequest) {
 
 		const bucket = firebaseStorage.bucket();
 
-		// ---------- UPLOAD THUMBNAIL ----------
-		const thumbFile = bucket.file(`paintings/${imageId}/thumbnail.jpg`);
-
-		await thumbFile.save(result.thumbnail, {
-			contentType: "image/jpeg",
-		});
-		await thumbFile.makePublic();
-
-		// ---------- UPLOAD WATERMARK ----------
-		const watermarkFile = bucket.file(
-			`paintings/${imageId}/watermarked.jpg`,
-		);
-
-		await watermarkFile.save(result.watermarked, {
-			contentType: "image/jpeg",
-		});
-		await watermarkFile.makePublic();
-
 		// ---------- UPLOAD ORIGINAL (PRIVATE) ----------
 		const originalFile = bucket.file(`originals/${imageId}/artWork.jpg`);
 
 		await originalFile.save(result.original, {
 			contentType: "image/jpeg",
 		});
-		await originalFile.makePrivate();
+		await originalFile.makePublic();
 
 		const metadata = await sharp(result.original).metadata();
 		const width = metadata.width;
@@ -263,11 +245,7 @@ export async function DELETE(req: NextRequest) {
 
 		// 4. DELETE STORAGE IMAGES
 		// We delete the exact files created during the upload phase
-		const filesToDelete = [
-			`paintings/${imageId}/thumbnail.jpg`,
-			`paintings/${imageId}/watermarked.jpg`,
-			`originals/${imageId}/artWork.jpg`,
-		];
+		const filesToDelete = [`originals/${imageId}/artWork.jpg`];
 
 		// Map them to promises and use ignoreErrors to prevent crashes if a specific file doesn't exist
 		await Promise.all(

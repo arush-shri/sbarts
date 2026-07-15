@@ -2,10 +2,7 @@
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { ART_CATEGORIES } from "@/app/_lib/artCategories";
 import { PaintingType } from "@/app/_lib/customTypes";
-import {
-	convertNumToDate,
-	thumbnailUrlGenerator,
-} from "@/app/_lib/dataProcessing";
+import { convertNumToDate, imageUrlGenerator } from "@/app/_lib/dataProcessing";
 import { validateListing } from "@/app/_lib/validation";
 import Loading from "@/components/Loading";
 import { ShowToast } from "@/components/Toaster";
@@ -274,7 +271,7 @@ export default function EditArtwork({
 						<div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-gray-200">
 							<Image
 								className="object-cover w-full h-full brightness-75"
-								src={thumbnailUrlGenerator(painting.images)}
+								src={imageUrlGenerator(painting.images)}
 								alt="Art pic"
 								width={1024}
 								height={1024}

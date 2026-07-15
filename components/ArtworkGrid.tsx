@@ -1,7 +1,7 @@
 "use client";
 
 import { PaintingType } from "@/app/_lib/customTypes";
-import { thumbnailUrlGenerator } from "@/app/_lib/dataProcessing";
+import { imageUrlGenerator } from "@/app/_lib/dataProcessing";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -52,7 +52,7 @@ const ArtworkGrid = ({ artworkIds, filterValue }: Props) => {
 						<div className="aspect-[4/3] relative bg-[#F1F3F5]">
 							{/* Image source logic based on context ID */}
 							<Image
-								src={thumbnailUrlGenerator(art?.images)}
+								src={imageUrlGenerator(art?.images)}
 								alt={art.title}
 								fill
 								className="object-cover transition-transform duration-500 group-hover:scale-105"

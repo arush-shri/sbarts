@@ -2,10 +2,7 @@
 
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import { PaintingType, SellerType } from "@/app/_lib/customTypes";
-import {
-	convertNumToDate,
-	thumbnailUrlGenerator,
-} from "@/app/_lib/dataProcessing";
+import { convertNumToDate, imageUrlGenerator } from "@/app/_lib/dataProcessing";
 import { validateImageFile } from "@/app/_lib/validation";
 import { signOut } from "firebase/auth";
 import { Edit2, Plus, Trash2, X } from "lucide-react";
@@ -647,7 +644,7 @@ function ItemRow({
 			>
 				<td className="px-6 py-4 flex items-center gap-3">
 					<Image
-						src={thumbnailUrlGenerator(item.images)}
+						src={imageUrlGenerator(item.images)}
 						alt={`${item.title} image`}
 						width={864}
 						height={1184}

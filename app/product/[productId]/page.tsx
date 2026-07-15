@@ -1,7 +1,7 @@
 "use client";
 
 import { PaintingType } from "@/app/_lib/customTypes";
-import { watermarkedUrlGenerator } from "@/app/_lib/dataProcessing";
+import { imageUrlGenerator } from "@/app/_lib/dataProcessing";
 import InquiryModal from "@/components/InquiryModal";
 import Loading from "@/components/Loading";
 import { PaintingImage } from "@/components/PaintingParts";
@@ -91,7 +91,7 @@ export default function ProductPage() {
 
 			<section className="mx-auto flex w-[min(1180px,calc(100%-40px))] flex-col gap-12 py-16 md:flex-row">
 				<PaintingImage
-					uri={watermarkedUrlGenerator(painting.images)}
+					uri={imageUrlGenerator(painting.images)}
 					title={painting.title}
 				/>
 

@@ -98,14 +98,8 @@ export const completeOrder = async (sessionId: string) => {
 	return;
 };
 
-export function thumbnailUrlGenerator(imageId: string): string {
+export function imageUrlGenerator(imageId: string): string {
 	const bucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
-	const imagePath: string = `paintings/${imageId}/thumbnail.jpg`;
-	return `https://storage.googleapis.com/${bucket}/${encodeURIComponent(imagePath)}`;
-}
-
-export function watermarkedUrlGenerator(imageId: string): string {
-	const bucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
-	const imagePath: string = `paintings/${imageId}/watermarked.jpg`;
+	const imagePath: string = `originals/${imageId}/artWork.jpg`;
 	return `https://storage.googleapis.com/${bucket}/${encodeURIComponent(imagePath)}`;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { PaintingType } from "@/app/_lib/customTypes";
-import { thumbnailUrlGenerator } from "@/app/_lib/dataProcessing";
+import { imageUrlGenerator } from "@/app/_lib/dataProcessing";
 import Image from "next/image";
 import { ReactElement, useState } from "react";
 import InquiryModal from "./InquiryModal";
@@ -25,7 +25,7 @@ export default function PaintingCard({
 				<div className="block">
 					<div className="relative aspect-[1.15/1] overflow-hidden bg-[#061a3d]">
 						<Image
-							src={thumbnailUrlGenerator(artData.images)}
+							src={imageUrlGenerator(artData.images)}
 							alt={`${artData.title} image`}
 							width={864}
 							height={1184}
