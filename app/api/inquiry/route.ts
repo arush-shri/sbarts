@@ -12,6 +12,7 @@ type InquiryBody = {
 	message?: string;
 	paintingId?: string;
 	paintingTitle?: string;
+	subject?: string;
 };
 
 export async function POST(req: NextRequest) {
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
 
 		const subject = body.paintingTitle
 			? `Artwork inquiry: ${body.paintingTitle}`
-			: "SB Arts inquiry";
+			: body.subject || "SB Arts inquiry";
 
 		const text = [
 			`Name: ${name.value}`,

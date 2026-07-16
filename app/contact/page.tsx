@@ -21,7 +21,8 @@ export default function ContactPage() {
 				body: JSON.stringify({
 					name,
 					email,
-					message: `${subject ? `Subject: ${subject}\n\n` : ""}${message}`,
+					subject,
+					message,
 				}),
 			});
 			const data = await res.json();

@@ -44,7 +44,8 @@ export default function CompetitionPage() {
 				body: JSON.stringify({
 					name,
 					email,
-					message: `Competition interest\nGrade: ${grade}\n\n${message || "Please send entry information."}`,
+					subject: "Competition Registration",
+					message: `Grade: ${grade}\n\n${message || "Please send entry information."}`,
 				}),
 			});
 			const data = await res.json();
