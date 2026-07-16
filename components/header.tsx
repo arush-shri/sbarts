@@ -30,7 +30,7 @@ export default function Header(): ReactElement {
 	};
 
 	return (
-		<header className="sticky top-0 z-50 border-b border-[#d6ad58]/40 bg-[#061a3d]/95 backdrop-blur">
+		<header className="sticky top-0 z-50 bg-[#061a3d] backdrop-blur">
 			<div className="mx-auto flex min-h-[78px] w-[min(1180px,calc(100%-40px))] items-center justify-between gap-5">
 				<Link href="/" className="flex items-center gap-3 text-white">
 					<Image
@@ -56,9 +56,11 @@ export default function Header(): ReactElement {
 						<Link
 							key={item.href}
 							href={item.href}
-							className={`transition hover:text-[#d6ad58] ${
-								pathname === item.href ? "text-[#d6ad58]" : ""
-							}`}
+							className={`relative pb-2 transition-colors duration-300 hover:text-[#d6ad58]
+		after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full
+		after:origin-left after:scale-x-0 after:bg-[#d6ad58]
+		after:transition-transform after:duration-300 hover:after:scale-x-100
+		${pathname === item.href ? "text-[#d6ad58] after:scale-x-100" : ""}`}
 						>
 							{item.label}
 						</Link>
@@ -89,7 +91,7 @@ export default function Header(): ReactElement {
 								onClick={() => setMobileOpen(false)}
 								className={
 									pathname === item.href
-										? "text-[#d6ad58]"
+										? "text-[#d6ad58] border-b"
 										: ""
 								}
 							>

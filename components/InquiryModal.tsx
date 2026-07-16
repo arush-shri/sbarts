@@ -86,7 +86,7 @@ export default function InquiryModal({
 						<p className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
 							Inquire
 						</p>
-						<h2 className="mt-2  text-3xl leading-tight text-[#061a3d]">
+						<h2 className="mt-2 font-semibold text-3xl leading-tight text-[#061a3d]">
 							{painting
 								? `Ask about ${painting.title}`
 								: "Send a message"}

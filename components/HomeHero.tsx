@@ -45,7 +45,7 @@ export default function HomeHero() {
 					<p className="heading-font mt-4 text-2xl italic md:text-3xl">
 						Art for Hope, Dignity & Freedom
 					</p>
-					<p className="mt-6 max-w-2xl text-lg text-white/80">
+					<p className="heading-font mt-6 max-w-2xl text-xl md:text-2xl text-white/80">
 						Creating artwork that invites reflection, celebrates
 						humanity, and inspires hope through observation,
 						craftsmanship, and imagination.

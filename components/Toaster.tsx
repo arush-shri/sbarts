@@ -15,7 +15,7 @@ export const ShowToast = (message: string, type: 0 | 1 | 2) => {
 		},
 		2: {
 			bg: "#D5AF37",
-			color: "#0A1830",
+			color: "#061a3d",
 			icon: "OK",
 		},
 	};
