@@ -71,19 +71,22 @@ export default function GalleryPage() {
 
 	return (
 		<main className="bg-white text-[#182033]">
-			<section className="bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.2),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] py-10 text-white">
+			<section className="bg-[#061a3d] py-5 text-white">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
 					<h1 className="heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl">
 						Gallery
 					</h1>
-					<p className="mt-4 max-w-3xl text-lg text-white/75">
+					<p className="heading-font mt-4 text-2xl md:text-3xl">
+						Five collections. One mission.
+					</p>
+					<p className="mt-4 max-w-3xl heading-font text-xl md:text-2xl text-white/85">
 						Explore work centered on humanity, portraiture, nature,
 						aerospace, and design.
 					</p>
 				</div>
 			</section>
 
-			<section className="py-20">
+			<section className="py-10">
 				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] gap-5">
 					{collections.map((collection) => (
 						<article

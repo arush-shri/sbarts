@@ -1,7 +1,7 @@
 export default function AboutPage() {
 	return (
 		<main className="bg-[#f7f1e6] text-[#182033]">
-			<section className="bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.2),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] py-10 text-white">
+			<section className="bg-[#061a3d] py-10 text-white">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
 					<h1 className="mt-2 heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl">
 						About SB Arts

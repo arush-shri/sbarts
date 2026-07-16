@@ -70,7 +70,7 @@ export default function CompetitionPage() {
 
 	return (
 		<main className="bg-[#f7f1e6] text-[#182033]">
-			<section className="bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.2),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] py-10 text-white">
+			<section className="bg-[#061a3d] py-5 text-white">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
 					<h1 className="heading-font font-bold text-5xl uppercase tracking-[.22em] text-[#d6ad58]">
 						SB Arts International Juried Competition
@@ -91,7 +91,7 @@ export default function CompetitionPage() {
 				</div>
 			</section>
 
-			<section className="py-20">
+			<section className="py-10">
 				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] gap-6 md:grid-cols-3">
 					{[
 						[
@@ -120,7 +120,7 @@ export default function CompetitionPage() {
 				</div>
 			</section>
 
-			<section className="bg-[#f7f1e6] py-14">
+			<section className="bg-[#f7f1e6] pb-12 pt-2">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
 					<div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 						<div>
@@ -143,7 +143,7 @@ export default function CompetitionPage() {
 							Array.from({ length: 4 }).map((_, index) => (
 								<div
 									key={index}
-									className="min-h-[160px] animate-pulse rounded-3xl border border-[#061a3d]/12 bg-white p-6"
+									className="min-h-[160px] animate-pulse border border-[#061a3d]/12 bg-white p-6"
 								/>
 							))
 						) : competition ? (
@@ -167,7 +167,7 @@ export default function CompetitionPage() {
 							].map((item) => (
 								<div
 									key={item.title}
-									className="rounded-3xl border border-[#061a3d]/12 bg-white p-6 shadow-[0_18px_40px_rgba(6,26,61,.08)]"
+									className="border border-[#061a3d]/12 bg-white p-6 shadow-[0_18px_40px_rgba(6,26,61,.08)]"
 								>
 									<div className="text-xs font-bold uppercase tracking-[.18em] text-[#b88d39]">
 										{item.title}
@@ -178,7 +178,7 @@ export default function CompetitionPage() {
 								</div>
 							))
 						) : (
-							<div className="rounded-3xl border border-[#061a3d]/12 bg-white p-8 text-center text-[#6a7280]">
+							<div className="border border-[#061a3d]/12 bg-white p-8 text-center text-[#6a7280]">
 								No competition dates are available yet.
 							</div>
 						)}
@@ -221,9 +221,9 @@ export default function CompetitionPage() {
 					</div>
 					<form
 						onSubmit={handleSubmit}
-						className="grid gap-4 border border-[#061a3d]/12 bg-white p-8"
+						className="grid gap-4 border border-[#d6ad58]/12 bg-[#061a3d] p-8"
 					>
-						<h2 className=" text-4xl text-[#061a3d]">
+						<h2 className=" text-4xl text-[#d6ad58]">
 							Register Interest
 						</h2>
 						<input
@@ -231,7 +231,7 @@ export default function CompetitionPage() {
 							value={name}
 							onChange={(event) => setName(event.target.value)}
 							placeholder="Student name"
-							className="border border-[#061a3d]/20 px-4 py-3 outline-none focus:border-[#d6ad58]"
+							className="border border-[#d6ad58]/50 px-4 py-3 outline-none focus:border-[#d6ad58] text-[#fff] placeholder:text-[#fff]/70"
 						/>
 						<input
 							required
@@ -239,25 +239,38 @@ export default function CompetitionPage() {
 							value={email}
 							onChange={(event) => setEmail(event.target.value)}
 							placeholder="Email address"
-							className="border border-[#061a3d]/20 px-4 py-3 outline-none focus:border-[#d6ad58]"
+							className="border border-[#d6ad58]/50 px-4 py-3 outline-none focus:border-[#d6ad58] text-[#fff] placeholder:text-[#fff]/70"
 						/>
 						<select
 							required
 							value={grade}
 							onChange={(event) => setGrade(event.target.value)}
-							className="border border-[#061a3d]/20 px-4 py-3 outline-none focus:border-[#d6ad58]"
+							className="border border-[#d6ad58]/50 px-4 py-3 outline-none focus:border-[#d6ad58] text-[#fff] placeholder:text-[#fff]/70"
 						>
-							<option value="">Select grade</option>
-							<option>9</option>
-							<option>10</option>
-							<option>11</option>
-							<option>12</option>
+							<option
+								value=""
+								className="bg-[#061a3d] text-white"
+							>
+								Select grade
+							</option>
+							<option className="bg-[#061a3d] text-white">
+								9
+							</option>
+							<option className="bg-[#061a3d] text-white">
+								10
+							</option>
+							<option className="bg-[#061a3d] text-white">
+								11
+							</option>
+							<option className="bg-[#061a3d] text-white">
+								12
+							</option>
 						</select>
 						<textarea
 							value={message}
 							onChange={(event) => setMessage(event.target.value)}
 							placeholder="Tell us about your artwork or question"
-							className="min-h-36 resize-y border border-[#061a3d]/20 px-4 py-3 outline-none focus:border-[#d6ad58]"
+							className="min-h-36 resize-y border border-[#d6ad58]/50 px-4 py-3 outline-none focus:border-[#d6ad58] text-[#fff] placeholder:text-[#fff]/70"
 						/>
 						<button
 							type="submit"
