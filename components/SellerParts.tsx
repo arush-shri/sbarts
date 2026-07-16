@@ -189,7 +189,7 @@ export function CompetitionButton({
 		<button
 			type="button"
 			onClick={handleForm}
-			className="inline-flex items-center justify-center gap-2 rounded-full bg-[#d6ad58] px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
+			className="inline-flex items-center justify-center gap-2 bg-[#d6ad58] px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 		>
 			<Plus className="h-auto w-5" /> New Competition
 		</button>
@@ -367,7 +367,7 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 		}));
 
 		return (
-			<div className="rounded-[28px] border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.08)]">
+			<div className="border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.08)]">
 				<div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
 					<div>
 						<h3 className="font-semibold text-2xl text-[#061a3d]">
@@ -401,7 +401,7 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 								setForm({ ...form, title: event.target.value })
 							}
 							placeholder="Competition title"
-							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+							className="border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 						/>
 						<input
 							type="text"
@@ -415,7 +415,7 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 							}
 							placeholder="Entries Open (DD/MM/YYYY)"
 							pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+							className="border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 						/>
 
 						<input
@@ -430,7 +430,7 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 							}
 							placeholder="Final Deadline (DD/MM/YYYY)"
 							pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+							className="border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 						/>
 
 						<input
@@ -445,7 +445,7 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 							}
 							placeholder="Winners Announcement (DD/MM/YYYY)"
 							pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+							className="border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 						/>
 
 						<input
@@ -460,14 +460,14 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 							}
 							placeholder="Exhibition Open (DD/MM/YYYY)"
 							pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+							className="border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 						/>
 						<select
 							value={form.status}
 							onChange={(event) =>
 								setForm({ ...form, status: event.target.value })
 							}
-							className="rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
+							className="border border-[#061a3d]/15 bg-[#fdfaf4] px-3 py-2.5 text-sm text-[#182033] outline-none focus:border-[#d6ad58] focus:ring-2 focus:ring-[#d6ad58]/20"
 						>
 							<option value="registration open">
 								Registration open
@@ -485,14 +485,14 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 						<div className="md:col-span-2 xl:col-span-3">
 							<button
 								type="submit"
-								className="rounded-full bg-[#061a3d] px-5 py-2 text-sm font-bold uppercase tracking-[.06em] text-white transition hover:bg-[#0b2b63] cursor-pointer"
+								className="bg-[#061a3d] px-5 py-2 text-sm font-bold uppercase tracking-[.06em] text-white transition hover:bg-[#0b2b63] cursor-pointer"
 							>
 								{editingId ? "Save Changes" : "Create"}
 							</button>
 							<button
 								onClick={resetForm}
 								type="button"
-								className="rounded-full ml-3 border-1 border-[#061a3d] px-5 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] cursor-pointer"
+								className="ml-3 border-1 border-[#061a3d] px-5 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] cursor-pointer"
 							>
 								Cancel
 							</button>
@@ -542,7 +542,7 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 												onClick={() => {
 													startEdit(competition);
 												}}
-												className="rounded-full border border-transparent p-2 text-[#6a7280] transition-all hover:border-[#061a3d]/15 hover:bg-white hover:text-[#061a3d]"
+												className="border border-transparent p-2 text-[#6a7280] transition-all hover:border-[#061a3d]/15 hover:bg-white hover:text-[#061a3d]"
 											>
 												<Edit2 className="h-auto w-4" />
 											</button>
@@ -620,14 +620,14 @@ export default function ArtworkUpload({
 				onClick={handleClick}
 				onDragOver={(e) => e.preventDefault()}
 				onDrop={handleDrop}
-				className="mt-3 flex cursor-pointer flex-col items-center justify-center rounded-[24px] border border-dashed border-[#061a3d]/20 bg-[linear-gradient(135deg,rgba(214,173,88,.12),rgba(255,255,255,.95))] p-12 text-center transition hover:bg-[linear-gradient(135deg,rgba(214,173,88,.2),rgba(246,241,230,.95))]"
+				className="mt-3 flex cursor-pointer flex-col items-center justify-center border border-dashed border-[#061a3d]/20 bg-[linear-gradient(135deg,rgba(214,173,88,.12),rgba(255,255,255,.95))] p-12 text-center transition hover:bg-[linear-gradient(135deg,rgba(214,173,88,.2),rgba(246,241,230,.95))]"
 			>
 				{preview ? (
 					<>
 						<img
 							src={preview}
 							alt="preview"
-							className="mb-3 h-32 w-32 rounded-lg object-cover"
+							className="mb-3 h-32 w-32 object-cover"
 						/>
 						<p className="font-semibold text-[#061a3d]">
 							{fileName}

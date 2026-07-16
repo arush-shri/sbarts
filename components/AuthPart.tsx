@@ -273,7 +273,7 @@ export const CredentioalsForm = memo(
 								setEmail(e.target.value);
 								onChange("email", e.target.value);
 							}}
-							className="w-full rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-4 py-3 pr-24 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20"
+							className="w-full border border-[#061a3d]/15 bg-[#fdfaf4] px-4 py-3 pr-24 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20"
 						/>
 					</div>
 				</div>
@@ -290,7 +290,7 @@ export const CredentioalsForm = memo(
 								setPassword(e.target.value);
 								onChange("password", e.target.value);
 							}}
-							className="w-full rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-4 py-3 pr-10 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20"
+							className="w-full border border-[#061a3d]/15 bg-[#fdfaf4] px-4 py-3 pr-10 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20"
 						/>
 						<button
 							type="button"

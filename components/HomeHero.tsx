@@ -39,10 +39,10 @@ export default function HomeHero() {
 		<section className="overflow-hidden bg-[#061a3d] text-white">
 			<div className="mx-auto grid min-h-[650px] w-[min(1180px,calc(100%-40px))] items-center gap-12 py-18 lg:grid-cols-[1.02fr_.98fr] lg:py-22">
 				<div>
-					<h1 className="heading-font mt-4 font-bold text-5xl leading-[1.02] text-[#d6ad58] md:text-7xl lg:text-[88px]">
-						Stories drawn with purpose.
+					<h1 className="heading-font font-bold text-5xl leading-[1.02] text-[#d6ad58] md:text-9xl">
+						SB Arts
 					</h1>
-					<p className="mt-4 text-2xl italic md:text-3xl">
+					<p className="heading-font mt-4 text-2xl italic md:text-3xl">
 						Art for Hope, Dignity & Freedom
 					</p>
 					<p className="mt-6 max-w-2xl text-lg text-white/80">

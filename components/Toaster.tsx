@@ -9,13 +9,13 @@ export const ShowToast = (message: string, type: 0 | 1 | 2) => {
 			icon: "!",
 		},
 		1: {
-			bg: "#1e3a8a",
-			color: "#bfdbfe",
+			bg: "#F7F8DC",
+			color: "#D5AF37",
 			icon: "i",
 		},
 		2: {
-			bg: "#065f46",
-			color: "#a7f3d0",
+			bg: "#D5AF37",
+			color: "#0A1830",
 			icon: "OK",
 		},
 	};
@@ -25,7 +25,7 @@ export const ShowToast = (message: string, type: 0 | 1 | 2) => {
 	toast(
 		(t) => (
 			<div className="flex items-center gap-4">
-				<span className="font-bold">{s.icon}</span>
+				{/* <span className="font-bold">{s.icon}</span> */}
 				<span>{message}</span>
 				<button
 					type="button"

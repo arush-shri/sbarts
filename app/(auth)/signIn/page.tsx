@@ -81,7 +81,7 @@ export default function SellerSignIn(): ReactElement {
 					</section>
 
 					<section className="flex w-full flex-1 items-center justify-center bg-[#f7f1e6] px-5 py-12 md:px-10 lg:px-14">
-						<div className="w-full max-w-md rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.12)]">
+						<div className="w-full max-w-md border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.12)]">
 							<div className="mb-8 flex flex-col items-center text-center">
 								<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#d6ad58] text-xl shadow-sm">
 									<span>🎨</span>
@@ -116,7 +116,7 @@ export default function SellerSignIn(): ReactElement {
 
 								<button
 									onClick={handleClick}
-									className="w-full rounded-full bg-[#d6ad58] px-4 py-3 text-lg font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
+									className="w-full bg-[#d6ad58] px-4 py-3 text-lg font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 								>
 									Sign In
 								</button>

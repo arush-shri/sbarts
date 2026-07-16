@@ -68,7 +68,7 @@ function ResetPasswordForm() {
 
 	return (
 		<AuthPage>
-			<div className="w-full max-w-md rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.12)]">
+			<div className="w-full max-w-md border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.12)]">
 				<h2 className=" text-3xl text-[#061a3d]">Forgot password</h2>
 				<p className="mt-3 text-sm leading-6 text-[#6a7280]">
 					Enter your email and we will send you a secure reset link
@@ -95,7 +95,7 @@ function ResetPasswordForm() {
 								placeholder="you@example.com"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
-								className="w-full rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] py-3 pl-10 pr-4 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20"
+								className="w-full border border-[#061a3d]/15 bg-[#fdfaf4] py-3 pl-10 pr-4 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20"
 							/>
 						</div>
 						<p className="mt-2 text-[11px] uppercase tracking-[.16em] text-[#6a7280]">
@@ -103,7 +103,7 @@ function ResetPasswordForm() {
 						</p>
 						<button
 							onClick={handleSendOtp}
-							className="mt-4 w-full rounded-full bg-[#d6ad58] px-4 py-3 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
+							className="mt-4 w-full bg-[#d6ad58] px-4 py-3 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 						>
 							Reset Password
 						</button>

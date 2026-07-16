@@ -16,7 +16,7 @@ const InputBox: React.FC<InputBoxProps> = ({
 	onChange,
 }) => {
 	const baseStyles =
-		"w-full rounded-2xl border border-[#061a3d]/15 bg-[#fdfaf4] px-4 py-3 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20";
+		"w-full border border-[#061a3d]/15 bg-[#fdfaf4] px-4 py-3 text-[#182033] placeholder:text-[#6a7280] focus:border-[#d6ad58] focus:outline-none focus:ring-2 focus:ring-[#d6ad58]/20";
 
 	return (
 		<div className="flex flex-col gap-2 w-full">

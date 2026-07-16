@@ -52,14 +52,14 @@ export default function SellerDashboard(): ReactElement {
 						<div className="flex flex-col gap-3 lg:flex-row">
 							<button
 								onClick={() => router.push("/listing")}
-								className="inline-flex items-center justify-center gap-2 rounded-full bg-[#d6ad58] px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
+								className="inline-flex items-center justify-center gap-2 bg-[#d6ad58] px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
 							>
 								<Plus className="h-auto w-5" /> Add New Listing
 							</button>
 							<CompetitionButton managerRef={managerRef} />
 							<button
 								onClick={handleLogout}
-								className="rounded-full border border-[#061a3d]/15 bg-white px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:border-[#d6ad58] hover:text-[#d6ad58]"
+								className="border border-[#061a3d]/15 bg-white px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:border-[#d6ad58] hover:text-[#d6ad58]"
 							>
 								Sign Out
 							</button>
@@ -67,11 +67,11 @@ export default function SellerDashboard(): ReactElement {
 					</div>
 
 					<main className="flex-1 space-y-8">
-						<div className="overflow-hidden rounded-[28px] border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">
+						<div className="overflow-hidden border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">
 							<CompetitionManager ref={managerRef} />
 						</div>
 
-						<div className="overflow-hidden rounded-[28px] border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">
+						<div className="overflow-hidden border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">
 							<ListingsTable artworkIds={artistData.artWorks} />
 						</div>
 					</main>
