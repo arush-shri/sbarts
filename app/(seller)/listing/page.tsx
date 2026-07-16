@@ -121,7 +121,7 @@ export default function CreateListing() {
 				<div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
 					<main className="mb-10 flex flex-1 flex-col gap-6">
 						<header className="rounded-[28px] border border-[#061a3d]/12 bg-[radial-gradient(circle_at_top_left,rgba(214,173,88,.16),transparent_40%),white] p-8 shadow-[0_20px_60px_rgba(6,26,61,.08)]">
-							<h1 className="font-serif text-3xl text-[#061a3d]">
+							<h1 className="font-bold text-3xl text-[#061a3d]">
 								Create New Listing
 							</h1>
 							<p className="mt-2 text-sm text-[#6a7280]">
@@ -130,7 +130,7 @@ export default function CreateListing() {
 						</header>
 
 						<section className="space-y-6 rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.08)]">
-							<h2 className="border-b border-[#061a3d]/10 pb-4 font-serif text-2xl text-[#061a3d]">
+							<h2 className="font-semibold border-b border-[#061a3d]/10 pb-4  text-2xl text-[#061a3d]">
 								Basic Information
 							</h2>
 							<InputBox
@@ -190,7 +190,7 @@ export default function CreateListing() {
 
 						{/* Media Upload Section */}
 						<section className="space-y-6 rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.08)]">
-							<h2 className="border-b border-[#061a3d]/10 pb-4 font-serif text-2xl text-[#061a3d]">
+							<h2 className="border-b border-[#061a3d]/10 pb-4 font-semibold text-2xl text-[#061a3d]">
 								Media Upload
 							</h2>
 							<label className="text-sm font-semibold text-[#0F1724]">

@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import { PaintingProvider } from "./_context/PaintingConext";
 import { SellerProvider } from "./_context/SellerContext";
-import { fontInter } from "./_lib/fonts";
+import { fontCormorant, fontMontserrat } from "./_lib/fonts";
 //@ts-ignore
 import "./globals.css";
 
@@ -21,7 +21,9 @@ export default async function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${fontInter.className} bg-[#f7f1e6]`}>
+			<body
+				className={`${fontCormorant.className} ${fontMontserrat.className} bg-[#f7f1e6]`}
+			>
 				<Toaster
 					position="top-center"
 					toastOptions={{

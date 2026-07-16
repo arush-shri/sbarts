@@ -34,7 +34,7 @@ export default function Header(): ReactElement {
 			<div className="mx-auto flex min-h-[78px] w-[min(1180px,calc(100%-40px))] items-center justify-between gap-5">
 				<Link href="/" className="flex items-center gap-3 text-white">
 					<Image
-						src="/images/logo.svg"
+						src="/images/logo.png"
 						alt="SB Arts logo"
 						width={58}
 						height={58}
@@ -42,7 +42,7 @@ export default function Header(): ReactElement {
 						priority
 					/>
 					<div>
-						<strong className="block font-serif text-2xl font-bold tracking-[.08em] text-[#d6ad58]">
+						<strong className="block  text-2xl font-bold tracking-[.08em] text-[#d6ad58]">
 							SB ARTS
 						</strong>
 						<span className="block text-[10px] uppercase tracking-[.13em] text-[#ece7dd]">

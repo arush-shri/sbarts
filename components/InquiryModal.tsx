@@ -86,7 +86,7 @@ export default function InquiryModal({
 						<p className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
 							Inquire
 						</p>
-						<h2 className="mt-2 font-serif text-3xl leading-tight text-[#061a3d]">
+						<h2 className="mt-2  text-3xl leading-tight text-[#061a3d]">
 							{painting
 								? `Ask about ${painting.title}`
 								: "Send a message"}
@@ -129,9 +129,7 @@ export default function InquiryModal({
 						<textarea
 							required
 							value={message}
-							onChange={(event) =>
-								setMessage(event.target.value)
-							}
+							onChange={(event) => setMessage(event.target.value)}
 							className="min-h-36 resize-y border border-[#061a3d]/20 bg-white px-4 py-3 font-normal outline-none transition focus:border-[#d6ad58]"
 							placeholder="Tell us what you would like to know."
 						/>

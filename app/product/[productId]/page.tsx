@@ -83,7 +83,7 @@ export default function ProductPage() {
 					<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
 						Artwork
 					</div>
-					<h1 className="mt-2 font-serif text-5xl leading-tight text-[#d6ad58] md:text-7xl">
+					<h1 className="mt-2  text-5xl leading-tight text-[#d6ad58] md:text-7xl">
 						{painting.title}
 					</h1>
 				</div>
@@ -100,7 +100,7 @@ export default function ProductPage() {
 						<div className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
 							{painting.category}
 						</div>
-						<h2 className="mt-3 font-serif text-4xl leading-tight text-[#061a3d]">
+						<h2 className="mt-3  text-4xl leading-tight text-[#061a3d]">
 							{painting.title}
 						</h2>
 						<p className="mt-4 text-[#6a7280]">

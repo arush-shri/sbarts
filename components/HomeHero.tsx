@@ -39,13 +39,10 @@ export default function HomeHero() {
 		<section className="overflow-hidden bg-[#061a3d] text-white">
 			<div className="mx-auto grid min-h-[650px] w-[min(1180px,calc(100%-40px))] items-center gap-12 py-18 lg:grid-cols-[1.02fr_.98fr] lg:py-22">
 				<div>
-					<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
-						SB Arts
-					</div>
-					<h1 className="mt-4 font-serif text-5xl leading-[1.02] text-[#d6ad58] md:text-7xl lg:text-[88px]">
+					<h1 className="heading-font mt-4 font-bold text-5xl leading-[1.02] text-[#d6ad58] md:text-7xl lg:text-[88px]">
 						Stories drawn with purpose.
 					</h1>
-					<p className="mt-4 font-serif text-2xl italic md:text-3xl">
+					<p className="mt-4 text-2xl italic md:text-3xl">
 						Art for Hope, Dignity & Freedom
 					</p>
 					<p className="mt-6 max-w-2xl text-lg text-white/80">
@@ -81,9 +78,7 @@ export default function HomeHero() {
 					/>
 					<div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#061a3d]/15 to-[#061a3d]/85" />
 					<div className="absolute bottom-7 left-7 right-7">
-						<h2 className="font-serif text-3xl text-white">
-							{slide.title}
-						</h2>
+						<h2 className=" text-3xl text-white">{slide.title}</h2>
 						<p className="mt-1 text-white/75">{slide.copy}</p>
 					</div>
 					<div className="absolute bottom-6 right-6 flex gap-2">

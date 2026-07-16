@@ -70,14 +70,14 @@ export default function CompetitionPage() {
 
 	return (
 		<main className="bg-[#f7f1e6] text-[#182033]">
-			<section className="bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.2),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] py-20 text-white">
+			<section className="bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.2),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] py-10 text-white">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
-					<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
+					<h1 className="heading-font font-bold text-5xl uppercase tracking-[.22em] text-[#d6ad58]">
 						SB Arts International Juried Competition
-					</div>
-					<h1 className="mt-2 max-w-4xl font-serif text-5xl leading-tight text-[#d6ad58] md:text-7xl">
-						Arts for Hope, Dignity & Freedom
 					</h1>
+					<p className="mt-2 max-w-4xl text-2xl italic md:text-3xl heading-font leading-tight text-[#d6ad58]">
+						Arts for Hope, Dignity & Freedom
+					</p>
 					<p className="mt-4 max-w-3xl text-lg text-white/75">
 						An international juried art competition for high school
 						students worldwide.
@@ -111,7 +111,7 @@ export default function CompetitionPage() {
 							key={title}
 							className="border border-[#061a3d]/12 bg-white p-7 shadow-[0_18px_50px_rgba(6,26,61,.12)]"
 						>
-							<h2 className="font-serif text-2xl text-[#061a3d]">
+							<h2 className=" text-2xl text-[#061a3d]">
 								{title}
 							</h2>
 							<p className="mt-3 text-[#6a7280]">{copy}</p>
@@ -127,7 +127,7 @@ export default function CompetitionPage() {
 							<div className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
 								Key Dates
 							</div>
-							<h2 className="mt-2 font-serif text-4xl text-[#061a3d]">
+							<h2 className="mt-2  text-4xl text-[#061a3d]">
 								Competition Timeline
 							</h2>
 						</div>
@@ -192,7 +192,7 @@ export default function CompetitionPage() {
 						<div className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
 							Competition Mission
 						</div>
-						<h2 className="mt-3 font-serif text-4xl leading-tight text-[#061a3d] md:text-5xl">
+						<h2 className="mt-3  text-4xl leading-tight text-[#061a3d] md:text-5xl">
 							Young artists. Global voices.
 						</h2>
 						<p className="mt-5 text-[#6a7280]">
@@ -209,7 +209,7 @@ export default function CompetitionPage() {
 			<section className="py-20" id="entry">
 				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] gap-9 lg:grid-cols-2">
 					<div className="border border-[#061a3d]/12 bg-white p-8">
-						<h2 className="font-serif text-4xl text-[#061a3d]">
+						<h2 className=" text-4xl text-[#061a3d]">
 							Entry Information
 						</h2>
 						<p className="mt-4 text-[#6a7280]">
@@ -223,7 +223,7 @@ export default function CompetitionPage() {
 						onSubmit={handleSubmit}
 						className="grid gap-4 border border-[#061a3d]/12 bg-white p-8"
 					>
-						<h2 className="font-serif text-4xl text-[#061a3d]">
+						<h2 className=" text-4xl text-[#061a3d]">
 							Register Interest
 						</h2>
 						<input

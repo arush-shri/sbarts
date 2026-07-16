@@ -16,7 +16,7 @@ export default function FeaturedArtworks() {
 					<div className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
 						Marketplace
 					</div>
-					<h2 className="mt-2 font-serif text-4xl leading-tight text-[#061a3d] md:text-5xl">
+					<h2 className="mt-2  text-4xl leading-tight text-[#061a3d] md:text-5xl">
 						Collect SB Arts
 					</h2>
 					<p className="mt-3 text-[#6a7280]">

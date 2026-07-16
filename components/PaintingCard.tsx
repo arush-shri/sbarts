@@ -35,7 +35,7 @@ export default function PaintingCard({
 				</div>
 				<div className="flex flex-1 flex-col p-5">
 					<div>
-						<h3 className="font-serif text-2xl font-medium leading-tight text-[#061a3d]">
+						<h3 className=" text-2xl font-medium leading-tight text-[#061a3d]">
 							{artData.title}
 						</h3>
 					</div>

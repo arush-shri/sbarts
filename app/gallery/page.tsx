@@ -71,12 +71,9 @@ export default function GalleryPage() {
 
 	return (
 		<main className="bg-white text-[#182033]">
-			<section className="bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.2),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] py-20 text-white">
+			<section className="bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.2),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] py-10 text-white">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
-					<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
-						Five Collections
-					</div>
-					<h1 className="mt-2 font-serif text-5xl leading-tight text-[#d6ad58] md:text-7xl">
+					<h1 className="heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl">
 						Gallery
 					</h1>
 					<p className="mt-4 max-w-3xl text-lg text-white/75">
@@ -103,7 +100,7 @@ export default function GalleryPage() {
 								/>
 							</div>
 							<div className="p-6">
-								<h2 className="font-serif text-2xl text-[#061a3d]">
+								<h2 className=" text-2xl text-[#061a3d]">
 									{collection.title}
 								</h2>
 								<p className="mt-2 text-[#6a7280]">
@@ -128,7 +125,7 @@ export default function GalleryPage() {
 						<div className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
 							Available Work
 						</div>
-						<h2 className="mt-2 font-serif text-4xl text-[#061a3d]">
+						<h2 className="mt-2  text-4xl text-[#061a3d]">
 							Current Catalogue
 						</h2>
 					</div>

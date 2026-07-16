@@ -92,7 +92,7 @@ export function ListingsTable({
 		<div>
 			<div className="flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between">
 				<div>
-					<h3 className="font-serif text-2xl text-[#061a3d]">
+					<h3 className="font-semibold text-2xl text-[#061a3d]">
 						Your Listings
 					</h3>
 					<p className="mt-1 text-sm text-[#6a7280]">
@@ -370,7 +370,7 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 			<div className="rounded-[28px] border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.08)]">
 				<div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
 					<div>
-						<h3 className="font-serif text-2xl text-[#061a3d]">
+						<h3 className="font-semibold text-2xl text-[#061a3d]">
 							Competition{""}
 							{openForm
 								? editingId

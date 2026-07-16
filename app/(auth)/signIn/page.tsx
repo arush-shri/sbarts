@@ -70,10 +70,7 @@ export default function SellerSignIn(): ReactElement {
 				<div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col lg:flex-row">
 					<section className="relative flex w-full items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.18),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] px-6 py-16 text-white lg:min-h-screen lg:w-[44%] lg:px-10 lg:py-0">
 						<div className="relative z-10 max-w-md">
-							<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
-								SB Arts
-							</div>
-							<h1 className="mt-4 font-serif text-4xl leading-tight text-[#d6ad58] sm:text-5xl">
+							<h1 className="heading-font font-bold  text-4xl leading-tight text-[#d6ad58] sm:text-5xl">
 								Sign in to continue.
 							</h1>
 							<p className="mt-4 text-lg text-white/80">
@@ -89,7 +86,7 @@ export default function SellerSignIn(): ReactElement {
 								<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#d6ad58] text-xl shadow-sm">
 									<span>🎨</span>
 								</div>
-								<h2 className="font-serif text-3xl text-[#061a3d]">
+								<h2 className=" text-3xl text-[#061a3d]">
 									Welcome Back!
 								</h2>
 								<p className="mt-2 text-sm text-[#6a7280]">

@@ -45,14 +45,14 @@ export default function Home() {
 			<section className="relative z-10 -mt-10">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
 					<div className="grid items-center gap-6 border border-[#d6ad58] bg-[#061a3d] p-7 text-white shadow-[0_18px_50px_rgba(6,26,61,.15)] md:grid-cols-[auto_1fr_auto]">
-						<div className="grid h-24 w-24 place-items-center rounded-full border-2 border-[#d6ad58] font-serif text-3xl font-bold text-[#d6ad58]">
+						<div className="grid h-24 w-24 place-items-center rounded-full border-2 border-[#d6ad58]  text-3xl font-bold text-[#d6ad58]">
 							SB
 						</div>
 						<div>
 							<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
 								Entries Now Open
 							</div>
-							<h2 className="mt-1 font-serif text-3xl leading-tight">
+							<h2 className="mt-1  text-3xl leading-tight">
 								SB Arts International Juried Competition
 							</h2>
 							<p className="mt-1 text-white/75">
@@ -76,7 +76,7 @@ export default function Home() {
 						<div className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
 							Explore the Gallery
 						</div>
-						<h2 className="mt-2 font-serif text-4xl leading-tight text-[#061a3d] md:text-5xl">
+						<h2 className="mt-2  text-4xl leading-tight text-[#061a3d] md:text-5xl">
 							Five Collections
 						</h2>
 						<p className="mt-3 text-[#6a7280]">
@@ -103,7 +103,7 @@ export default function Home() {
 										/>
 									</div>
 									<div className="p-5 text-center">
-										<h3 className="font-serif text-xl font-medium text-[#061a3d]">
+										<h3 className=" text-xl font-medium text-[#061a3d]">
 											{collection.title}
 										</h3>
 									</div>
@@ -126,7 +126,7 @@ export default function Home() {
 							key={label}
 							className="border-b border-[#d6ad58]/40 p-8 text-center last:border-b-0 sm:border-r sm:last:border-r-0 lg:border-b-0"
 						>
-							<strong className="block font-serif text-5xl font-medium text-[#d6ad58]">
+							<strong className="block  text-5xl font-medium text-[#d6ad58]">
 								{value}
 							</strong>
 							<span className="mt-2 block text-xs uppercase tracking-[.12em] text-white/70">

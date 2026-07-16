@@ -190,7 +190,7 @@ export default function EditArtwork({
 				<div className="rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.08)] lg:col-span-2">
 					<div className="mb-6 flex items-start justify-between">
 						<div>
-							<h1 className="font-serif text-3xl text-[#061a3d]">
+							<h1 className=" text-3xl text-[#061a3d]">
 								Edit artwork details
 							</h1>
 							<p className="mt-2 text-sm text-[#6a7280]">

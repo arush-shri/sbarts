@@ -99,12 +99,9 @@ export default function ExplorePage({
 
 	return (
 		<main className="bg-[#f7f1e6] text-[#182033]">
-			<section className="bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.2),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] py-20 text-white">
+			<section className="bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.2),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] py-10 text-white">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
-					<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
-						Collect SB Arts
-					</div>
-					<h1 className="mt-2 font-serif text-5xl leading-tight text-[#d6ad58] md:text-7xl">
+					<h1 className="heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl">
 						{title}
 					</h1>
 					<p className="mt-4 max-w-3xl text-lg text-white/75">

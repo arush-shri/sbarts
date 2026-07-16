@@ -3,6 +3,8 @@
 :root {
   --background: #f7f1e6;
   --foreground: #182033;
+  --font-heading: "Cormorant Garamond", serif;
+  --font-body: "Montserrat", sans-serif;
 }
 
 @theme inline {
@@ -24,6 +26,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
+  font-family: var(--font-body);
 }
 
 html {
@@ -35,4 +38,8 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+.heading-font {
+	font-family: var(--font-heading);
 }

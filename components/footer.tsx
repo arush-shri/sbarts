@@ -6,7 +6,7 @@ export default function Footer(): ReactElement {
 		<footer className="bg-[#031126] py-9 text-white/70">
 			<div className="mx-auto flex w-[min(1180px,calc(100%-40px))] flex-col gap-5 md:flex-row md:items-center md:justify-between">
 				<div>
-					<div className="font-serif text-xl font-bold text-[#d6ad58]">
+					<div className=" text-xl font-bold text-[#d6ad58]">
 						SB Arts
 					</div>
 					<p className="mt-2 text-sm">

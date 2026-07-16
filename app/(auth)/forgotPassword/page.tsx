@@ -15,10 +15,7 @@ export default function ResetPasswordPage(): ReactElement {
 			<div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col lg:flex-row">
 				<section className="relative flex w-full items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_82%_20%,rgba(214,173,88,.18),transparent_30%),linear-gradient(135deg,#061a3d,#0b2b63)] px-6 py-16 text-white lg:min-h-screen lg:w-[44%] lg:px-10 lg:py-0">
 					<div className="max-w-md">
-						<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
-							SB Arts
-						</div>
-						<h1 className="mt-4 font-serif text-4xl leading-tight text-[#d6ad58] sm:text-5xl">
+						<h1 className="heading-font font-bold text-4xl leading-tight text-[#d6ad58] sm:text-5xl">
 							Reset your password
 						</h1>
 						<p className="mt-4 text-lg text-white/80">
@@ -72,9 +69,7 @@ function ResetPasswordForm() {
 	return (
 		<AuthPage>
 			<div className="w-full max-w-md rounded-[28px] border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.12)]">
-				<h2 className="font-serif text-3xl text-[#061a3d]">
-					Forgot password
-				</h2>
+				<h2 className=" text-3xl text-[#061a3d]">Forgot password</h2>
 				<p className="mt-3 text-sm leading-6 text-[#6a7280]">
 					Enter your email and we will send you a secure reset link
 					for your account.
