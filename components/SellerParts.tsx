@@ -542,7 +542,7 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 												onClick={() => {
 													startEdit(competition);
 												}}
-												className="border border-transparent p-2 text-[#6a7280] transition-all hover:border-[#061a3d]/15 hover:bg-white hover:text-[#061a3d]"
+												className="border rounded-full border-transparent p-2 text-[#6a7280] transition-all hover:border-[#061a3d]/15 hover:bg-white hover:text-[#061a3d]"
 											>
 												<Edit2 className="h-auto w-4" />
 											</button>

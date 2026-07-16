@@ -1,6 +1,7 @@
 "use client";
 
 import { ShowToast } from "@/components/Toaster";
+import Image from "next/image";
 import { FormEvent, useState } from "react";
 
 export default function ContactPage() {
@@ -77,14 +78,24 @@ export default function ContactPage() {
 								aria-label="Instagram"
 								className="grid h-11 w-11 place-items-center rounded-full bg-[#061a3d] font-bold text-[#d6ad58]"
 							>
-								IG
+								<Image
+									src="/svg/insta.svg"
+									alt="SB Arts"
+									width={29}
+									height={29}
+								/>
 							</a>
 							<a
 								href="#"
 								aria-label="X"
 								className="grid h-11 w-11 place-items-center rounded-full bg-[#061a3d] font-bold text-[#d6ad58]"
 							>
-								X
+								<Image
+									src="/svg/x.svg"
+									alt="SB Arts"
+									width={32}
+									height={32}
+								/>
 							</a>
 						</div>
 					</div>

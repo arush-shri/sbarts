@@ -10,11 +10,11 @@ export const ShowToast = (message: string, type: 0 | 1 | 2) => {
 		},
 		1: {
 			bg: "#F7F8DC",
-			color: "#D5AF37",
+			color: "#d6ad58",
 			icon: "i",
 		},
 		2: {
-			bg: "#D5AF37",
+			bg: "#D6AD58",
 			color: "#061a3d",
 			icon: "OK",
 		},
