@@ -1,3 +1,5 @@
+import CountShowCard from "@/components/CountShowCard";
+
 export default function AboutPage() {
 	return (
 		<main className="bg-[#f7f1e6] text-[#182033]">
@@ -38,26 +40,11 @@ export default function AboutPage() {
 			</section>
 
 			<section className="py-20">
-				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] border-y border-[#d6ad58]/40 bg-[#061a3d] sm:grid-cols-2 lg:grid-cols-4">
-					{[
-						["40+", "Original Artworks"],
-						["10+", "Exhibitions & Awards"],
-						["5", "Gallery Collections"],
-						["1", "Global Mission"],
-					].map(([value, label]) => (
-						<div
-							key={label}
-							className="border-b border-[#d6ad58]/40 p-8 text-center text-white last:border-b-0 sm:border-r sm:last:border-r-0 lg:border-b-0"
-						>
-							<strong className="block  text-5xl font-medium text-[#d6ad58]">
-								{value}
-							</strong>
-							<span className="mt-2 block text-xs uppercase tracking-[.12em] text-white/70">
-								{label}
-							</span>
-						</div>
-					))}
-				</div>
+				<CountShowCard
+					styles={
+						"mx-auto grid w-[min(1180px,calc(100%-40px))] border-y border-[#d6ad58]/40 bg-[#061a3d] sm:grid-cols-2 lg:grid-cols-4"
+					}
+				/>
 			</section>
 		</main>
 	);
