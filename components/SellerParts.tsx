@@ -103,14 +103,18 @@ export function ListingsTable({
 
 			<div className="overflow-x-auto">
 				<table className="w-full border-collapse text-left">
-					<thead>
-						<tr className="border-y border-[#061a3d]/10 bg-[#f7f1e6] text-[11px] font-bold uppercase tracking-[.18em] text-[#b88d39]">
-							<th className="px-6 py-4">Item</th>
-							<th className="px-6 py-4">Listed On</th>
-							<th className="px-6 py-4">Updated On</th>
-							<th className="px-6 py-4 text-right">Actions</th>
-						</tr>
-					</thead>
+					{displayedArtworks.length !== 0 && (
+						<thead>
+							<tr className="border-y border-[#061a3d]/10 bg-[#f7f1e6] text-[11px] font-bold uppercase tracking-[.18em] text-[#b88d39]">
+								<th className="px-6 py-4">Item</th>
+								<th className="px-6 py-4">Listed On</th>
+								<th className="px-6 py-4">Updated On</th>
+								<th className="px-6 py-4 text-right">
+									Actions
+								</th>
+							</tr>
+						</thead>
+					)}
 					<tbody className="divide-y divide-[#061a3d]/10">
 						{displayedArtworks.length > 0 ? (
 							displayedArtworks.map((item) => (
@@ -257,22 +261,25 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 					return;
 				}
 
-				if (!isValidFutureDate(form.entriesOpen)) {
+				if (!editingId && !isValidFutureDate(form.entriesOpen)) {
 					alert("Entries Open must be a valid future date.");
 					return;
 				}
 
-				if (!isValidFutureDate(form.finalDeadline)) {
+				if (!editingId && !isValidFutureDate(form.finalDeadline)) {
 					alert("Final Deadline must be a valid future date.");
 					return;
 				}
 
-				if (!isValidFutureDate(form.winnersAnnouncement)) {
+				if (
+					!editingId &&
+					!isValidFutureDate(form.winnersAnnouncement)
+				) {
 					alert("Winners Announcement must be a valid future date.");
 					return;
 				}
 
-				if (!isValidFutureDate(form.exhibitionOpen)) {
+				if (!editingId && !isValidFutureDate(form.exhibitionOpen)) {
 					alert("Exhibition Open must be a valid future date.");
 					return;
 				}
@@ -365,6 +372,39 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 				setOpenForm(toOpen);
 			},
 		}));
+
+		const handleDelete = async (id: string) => {
+			try {
+				const token =
+					await firebaseClientAuth.currentUser?.getIdToken();
+
+				const res = await fetch("/api/competition/seller", {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify({ id }),
+				});
+
+				const json = await res.json();
+
+				if (!res.ok) {
+					ShowToast(json.error, 1);
+					return;
+				}
+
+				// Remove from UI
+				setCompetitions((prev) =>
+					prev.filter((competition) => competition.id !== id),
+				);
+
+				ShowToast("Competition deleted successfully.", 2);
+			} catch (error) {
+				console.error(error);
+				ShowToast("Failed to delete competition.", 0);
+			}
+		};
 
 		return (
 			<div className="border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.08)]">
@@ -506,7 +546,7 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 							Loading competitions...
 						</div>
 					) : competitions.length === 0 ? (
-						<div className="p-6 text-sm text-[#64748B]">
+						<div className="px-6 py-10 text-center text-sm text-[#6a7280]">
 							No competitions created yet.
 						</div>
 					) : (
@@ -545,6 +585,17 @@ export const CompetitionManager = forwardRef<CompetitionManagerRef, object>(
 												className="border rounded-full border-transparent p-2 text-[#6a7280] transition-all hover:border-[#061a3d]/15 hover:bg-white hover:text-[#061a3d]"
 											>
 												<Edit2 className="h-auto w-4" />
+											</button>
+											<button
+												onClick={() => {
+													handleDelete(
+														competition.id,
+													);
+												}}
+												disabled={loading}
+												className="rounded-full border border-transparent p-2 text-[#6a7280] transition-all hover:border-red-100 hover:bg-red-50 hover:text-red-500"
+											>
+												<Trash2 className="h-auto w-4" />
 											</button>
 										</td>
 									</tr>
