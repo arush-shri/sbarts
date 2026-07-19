@@ -123,3 +123,40 @@ export async function PUT(req: NextRequest) {
 		);
 	}
 }
+
+export async function DELETE(req: NextRequest) {
+	try {
+		await requireFirebaseUser(req);
+
+		const { id } = (await req.json()) as { id?: string };
+
+		if (!id) {
+			return NextResponse.json(
+				{ error: "Competition id is required." },
+				{ status: 400 },
+			);
+		}
+
+		const competitionRef = firebaseDB.collection("competetion").doc(id);
+
+		const competitionDoc = await competitionRef.get();
+
+		if (!competitionDoc.exists) {
+			return NextResponse.json(
+				{ error: "Competition not found." },
+				{ status: 404 },
+			);
+		}
+
+		await competitionRef.delete();
+
+		return NextResponse.json({ success: true }, { status: 200 });
+	} catch (err) {
+		console.error(err);
+
+		return NextResponse.json(
+			{ error: "Failed to delete competition." },
+			{ status: 500 },
+		);
+	}
+}
