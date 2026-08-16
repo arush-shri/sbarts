@@ -1,10 +1,13 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { useEditablePageForPath } from "@/app/_context/SiteContentContext";
+import { useSellerContext } from "@/app/_context/SellerContext";
+import { Edit3, Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { FormEvent, ReactElement, useState } from "react";
+import { usePathname } from "next/navigation";
+import { ReactElement, useState } from "react";
+import SiteContentEditor from "./SiteContentEditor";
 
 const navItems = [
 	{ href: "/", label: "Home" },
@@ -17,17 +20,11 @@ const navItems = [
 
 export default function Header(): ReactElement {
 	const pathname = usePathname();
-	const router = useRouter();
 	const [mobileOpen, setMobileOpen] = useState(false);
-	const [keyword, setKeyword] = useState("");
-
-	const handleSearch = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		const value = keyword.trim();
-		if (!value) return;
-		setMobileOpen(false);
-		router.push(`/marketplace?keyword=${encodeURIComponent(value)}`);
-	};
+	const [editorOpen, setEditorOpen] = useState(false);
+	const pageKey = useEditablePageForPath(pathname);
+	const { authenticated, loading } = useSellerContext();
+	const canEditPage = authenticated && !loading && pageKey;
 
 	return (
 		<header className="sticky top-0 z-50 bg-[#061a3d] backdrop-blur">
@@ -101,6 +98,22 @@ export default function Header(): ReactElement {
 					</nav>
 				</div>
 			)}
+			{canEditPage ? (
+				<button
+					type="button"
+					onClick={() => setEditorOpen(true)}
+					className="absolute right-16 top-[19px] grid h-10 w-10 place-items-center border border-[#d6ad58]/60 bg-[#061a3d] text-[#d6ad58] shadow-[0_10px_24px_rgba(0,0,0,.2)] transition hover:bg-[#d6ad58] hover:text-[#061a3d] lg:right-4"
+					aria-label="Edit page text"
+					title="Edit page text"
+				>
+					<Edit3 className="h-4 w-4" />
+				</button>
+			) : null}
+			<SiteContentEditor
+				pageKey={pageKey}
+				open={editorOpen}
+				onClose={() => setEditorOpen(false)}
+			/>
 		</header>
 	);
 }

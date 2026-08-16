@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import { PaintingProvider } from "./_context/PaintingConext";
 import { SellerProvider } from "./_context/SellerContext";
+import { SiteContentProvider } from "./_context/SiteContentContext";
 import { fontCormorant, fontMontserrat } from "./_lib/fonts";
-//@ts-ignore
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,11 +34,13 @@ export default async function RootLayout({
 					}}
 				/>
 				<SellerProvider>
-					<PaintingProvider>
-						<Header />
-						{children}
-						<Footer />
-					</PaintingProvider>
+					<SiteContentProvider>
+						<PaintingProvider>
+							<Header />
+							{children}
+							<Footer />
+						</PaintingProvider>
+					</SiteContentProvider>
 				</SellerProvider>
 			</body>
 		</html>

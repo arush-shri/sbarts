@@ -1,5 +1,6 @@
 "use client";
 
+import PageIntro from "@/components/PageIntro";
 import { ShowToast } from "@/components/Toaster";
 import { FormEvent, useEffect, useState } from "react";
 import { CompetitionEntry } from "../_lib/customTypes";
@@ -72,16 +73,12 @@ export default function CompetitionPage() {
 		<main className="bg-[#f7f1e6] text-[#182033]">
 			<section className="bg-[#061a3d] py-5 text-white">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
-					<h1 className="heading-font font-bold text-5xl uppercase tracking-[.22em] text-[#d6ad58]">
-						SB Arts International Juried Competition
-					</h1>
-					<p className="mt-2 max-w-4xl text-2xl italic md:text-3xl heading-font leading-tight text-[#d6ad58]">
-						Arts for Hope, Dignity & Freedom
-					</p>
-					<p className="mt-4 max-w-3xl text-lg text-white/75">
-						An international juried art competition for high school
-						students worldwide.
-					</p>
+					<PageIntro
+						pageKey="competition"
+						titleClassName="heading-font font-bold text-5xl uppercase tracking-[.22em] text-[#d6ad58]"
+						subtitleClassName="mt-2 max-w-4xl text-2xl italic md:text-3xl heading-font leading-tight text-[#d6ad58]"
+						subtextClassName="mt-4 max-w-3xl text-lg text-white/75"
+					/>
 					<a
 						href="#entry"
 						className="mt-8 inline-flex items-center justify-center bg-[#d6ad58] px-6 py-4 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"

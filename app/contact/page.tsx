@@ -1,10 +1,19 @@
 "use client";
 
+import { useSiteContent } from "@/app/_context/SiteContentContext";
+import PageIntro from "@/components/PageIntro";
 import { ShowToast } from "@/components/Toaster";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
 
 export default function ContactPage() {
+	const { getPageContent } = useSiteContent();
+	const content = getPageContent("contact");
+	const contactEmail = content.fields?.contactEmail || "info@msbart.com";
+	const websiteText = content.fields?.websiteText || "msbart.com";
+	const websiteUrl = content.fields?.websiteUrl || "https://msbart.com";
+	const instagramUrl = content.fields?.instagramUrl || "#";
+	const xUrl = content.fields?.xUrl || "#";
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [subject, setSubject] = useState("");
@@ -50,31 +59,45 @@ export default function ContactPage() {
 		<main className="bg-[#f7f1e6] text-[#182033]">
 			<section className="bg-[#061a3d] py-5 text-white">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
-					<h1 className="heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl">
-						Get in Touch
-					</h1>
-					<p className="heading-font mt-4 text-xl md:text-2xl">
-						For commissions, media, partnerships, marketplace
-						inquiries, or competition questions.
-					</p>
+					<PageIntro
+						pageKey="contact"
+						titleClassName="heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl"
+						subtitleClassName="heading-font mt-4 text-xl md:text-2xl"
+						subtextClassName="mt-4 max-w-3xl text-lg text-white/75"
+					/>
 				</div>
 			</section>
 
 			<section className="py-10">
 				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] gap-9 lg:grid-cols-[.9fr_1.1fr]">
 					<div className="border border-[#061a3d]/12 bg-white p-8">
-						<h2 className=" text-4xl text-[#061a3d]">
+						<h2 className="text-4xl text-[#061a3d]">
 							Contact SB Arts
 						</h2>
 						<p className="mt-5">
-							<strong>Email:</strong> info@msbart.com
+							<strong>Email:</strong> {contactEmail}
 						</p>
 						<p className="mt-2">
-							<strong>Website:</strong> msbart.com
+							<strong>Website:</strong>{" "}
+							<a
+								href={websiteUrl}
+								target="_blank"
+								rel="noreferrer"
+							>
+								{websiteText}
+							</a>
 						</p>
 						<div className="mt-6 flex gap-3">
 							<a
-								href="#"
+								href={instagramUrl}
+								target={
+									instagramUrl === "#" ? undefined : "_blank"
+								}
+								rel={
+									instagramUrl === "#"
+										? undefined
+										: "noreferrer"
+								}
 								aria-label="Instagram"
 								className="grid h-11 w-11 place-items-center rounded-full bg-[#061a3d] font-bold text-[#d6ad58]"
 							>
@@ -86,7 +109,9 @@ export default function ContactPage() {
 								/>
 							</a>
 							<a
-								href="#"
+								href={xUrl}
+								target={xUrl === "#" ? undefined : "_blank"}
+								rel={xUrl === "#" ? undefined : "noreferrer"}
 								aria-label="X"
 								className="grid h-11 w-11 place-items-center rounded-full bg-[#061a3d] font-bold text-[#d6ad58]"
 							>
@@ -104,7 +129,7 @@ export default function ContactPage() {
 						onSubmit={handleSubmit}
 						className="grid gap-4 border border-[#061a3d]/12 bg-[#061a3d] p-8"
 					>
-						<h2 className=" text-4xl text-[#d6ad58]">
+						<h2 className="text-4xl text-[#d6ad58]">
 							Send a Message
 						</h2>
 						<input

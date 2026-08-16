@@ -14,12 +14,14 @@ import { SellerType } from "../_lib/customTypes";
 interface SellerContextType {
 	artistData: SellerType | null;
 	loading: boolean;
+	authenticated: boolean;
 	setSellerData: (data: SellerType | null) => void;
 }
 
 const SellerContext = createContext<SellerContextType>({
 	artistData: null,
 	loading: true,
+	authenticated: false,
 	setSellerData: () => {},
 });
 
@@ -27,10 +29,14 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 	const [seller, setSeller] = useState<{
 		artistData: SellerType | null;
 		loading: boolean;
-	}>({ artistData: null, loading: true });
+		authenticated: boolean;
+	}>({ artistData: null, loading: true, authenticated: false });
 
 	const setSellerData = (data: SellerType | null) => {
-		setSeller((prev) => ({ ...prev, artistData: data }));
+		setSeller((prev) => ({
+			...prev,
+			artistData: data,
+		}));
 	};
 
 	useEffect(() => {
@@ -38,7 +44,11 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 			firebaseClientAuth,
 			async (user) => {
 				if (!user) {
-					setSeller({ artistData: null, loading: false });
+					setSeller({
+						artistData: null,
+						loading: false,
+						authenticated: false,
+					});
 					return;
 				}
 
@@ -62,14 +72,27 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 						body: JSON.stringify({ sellerId: data.sellerId }),
 					});
 
-					if (!res.ok) return null;
+					if (!res.ok) {
+						setSeller({
+							artistData: null,
+							loading: false,
+							authenticated: true,
+						});
+						return;
+					}
 					const json = await res.json();
+					const artistData = json.data as SellerType;
 					setSeller({
-						artistData: json.data as SellerType,
+						artistData,
 						loading: false,
+						authenticated: true,
 					});
 				} else {
-					setSeller({ artistData: null, loading: false });
+					setSeller({
+						artistData: null,
+						loading: false,
+						authenticated: false,
+					});
 				}
 			},
 		);
@@ -82,6 +105,7 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 			value={{
 				artistData: seller.artistData,
 				loading: seller.loading,
+				authenticated: seller.authenticated,
 				setSellerData,
 			}}
 		>

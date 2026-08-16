@@ -2,15 +2,10 @@
 
 import { ART_CATEGORIES } from "@/app/_lib/artCategories";
 import { PaintingType } from "@/app/_lib/customTypes";
+import PageIntro from "@/components/PageIntro";
 import PaintingCard from "@/components/PaintingCard";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-	FormEvent,
-	ReactElement,
-	useCallback,
-	useEffect,
-	useState,
-} from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 
 const categories = ["All", ...ART_CATEGORIES];
 
@@ -31,7 +26,6 @@ export default function ExplorePage({
 	keyword?: string;
 	title?: string;
 }): ReactElement {
-	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const [items, setItems] = useState<PaintingType[]>([]);
@@ -87,11 +81,6 @@ export default function ExplorePage({
 		loadData(mappedCategory, nextSearch);
 	}, [category, keyword, loadData]);
 
-	const handleSearch = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		loadData(selectedCategory, search);
-	};
-
 	const handleCategory = (nextCategory: string) => {
 		setSelectedCategory(nextCategory);
 		loadData(nextCategory, search);
@@ -101,13 +90,18 @@ export default function ExplorePage({
 		<main className="bg-[#f7f1e6] text-[#182033]">
 			<section className="bg-[#061a3d] py-5 text-white">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
-					<h1 className="heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl">
-						{title}
-					</h1>
-					<p className="heading-font mt-4 text-xl md:text-2xl">
-						Original artwork, limited-edition prints, and selected
-						design pieces presented in a gallery-style catalogue.
-					</p>
+					{title === "Marketplace" ? (
+						<PageIntro
+							pageKey="marketplace"
+							titleClassName="heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl"
+							subtitleClassName="heading-font mt-4 text-xl md:text-2xl"
+							subtextClassName="heading-font mt-4 max-w-3xl text-lg text-white/75"
+						/>
+					) : (
+						<h1 className="heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl">
+							{title}
+						</h1>
+					)}
 				</div>
 			</section>
 

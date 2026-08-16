@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import PageIntro from "./PageIntro";
 
 const slides = [
 	{
@@ -39,17 +40,12 @@ export default function HomeHero() {
 		<section className="overflow-hidden bg-[#061a3d] text-white">
 			<div className="mx-auto grid min-h-[650px] w-[min(1180px,calc(100%-40px))] items-center gap-12 py-18 lg:grid-cols-[1.02fr_.98fr] lg:py-22">
 				<div>
-					<h1 className="heading-font font-bold text-5xl leading-[1.02] text-[#d6ad58] md:text-9xl">
-						SB Arts
-					</h1>
-					<p className="heading-font mt-4 text-2xl italic md:text-3xl">
-						Art for Hope, Dignity & Freedom
-					</p>
-					<p className="heading-font mt-6 max-w-2xl text-xl md:text-2xl text-white/85">
-						Creating artwork that invites reflection, celebrates
-						humanity, and inspires hope through observation,
-						craftsmanship, and imagination.
-					</p>
+					<PageIntro
+						pageKey="home"
+						titleClassName="heading-font font-bold text-5xl leading-[1.02] text-[#d6ad58] md:text-9xl"
+						subtitleClassName="heading-font mt-4 text-2xl italic md:text-3xl"
+						subtextClassName="heading-font mt-6 max-w-2xl text-xl md:text-2xl text-white/85"
+					/>
 					<div className="mt-8 flex flex-wrap gap-4">
 						<Link
 							href="/gallery"

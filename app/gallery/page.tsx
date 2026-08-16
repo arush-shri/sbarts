@@ -2,6 +2,7 @@
 
 import { ART_CATEGORIES } from "@/app/_lib/artCategories";
 import { PaintingType } from "@/app/_lib/customTypes";
+import PageIntro from "@/components/PageIntro";
 import PaintingCard from "@/components/PaintingCard";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -73,16 +74,12 @@ export default function GalleryPage() {
 		<main className="bg-white text-[#182033]">
 			<section className="bg-[#061a3d] py-5 text-white">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
-					<h1 className="heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl">
-						Gallery
-					</h1>
-					<p className="heading-font mt-4 text-2xl md:text-3xl">
-						Five collections. One mission.
-					</p>
-					<p className="mt-4 max-w-3xl heading-font text-xl md:text-2xl text-white/85">
-						Explore work centered on humanity, portraiture, nature,
-						aerospace, and design.
-					</p>
+					<PageIntro
+						pageKey="gallery"
+						titleClassName="heading-font font-bold text-5xl leading-tight text-[#d6ad58] md:text-7xl"
+						subtitleClassName="heading-font mt-4 text-2xl md:text-3xl"
+						subtextClassName="mt-4 max-w-3xl heading-font text-xl md:text-2xl text-white/85"
+					/>
 				</div>
 			</section>
 
