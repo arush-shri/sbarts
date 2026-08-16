@@ -11,9 +11,11 @@ import InquiryModal from "./InquiryModal";
 export default function PaintingCard({
 	artData,
 	extraStyle,
+	showInquiryButton = true,
 }: {
 	artData?: PaintingType;
 	extraStyle?: string;
+	showInquiryButton?: boolean;
 }): ReactElement {
 	const [inquiryOpen, setInquiryOpen] = useState(false);
 	const [imageOpen, setImageOpen] = useState(false);
@@ -51,24 +53,32 @@ export default function PaintingCard({
 						</h3>
 					</div>
 					<p className="mt-2 line-clamp-2 text-sm text-[#6a7280]">
-						{artData.category} · Available by inquiry
+						{showInquiryButton
+							? `${artData.category} · Available by inquiry`
+							: artData.category}
 					</p>
-					<div className="mt-auto flex items-center justify-between gap-3 pt-5">
-						<button
-							type="button"
-							onClick={() => setInquiryOpen(true)}
-							className="w-full cursor-pointer inline-flex items-center justify-center bg-[#061a3d] px-4 py-3 text-xs font-bold uppercase tracking-[.06em] text-white transition hover:bg-[#0b2b63]"
-						>
-							Inquire
-						</button>
-					</div>
+					{showInquiryButton ? (
+						<div className="mt-auto flex items-center justify-between gap-3 pt-5">
+							<button
+								type="button"
+								onClick={() => setInquiryOpen(true)}
+								className="w-full cursor-pointer inline-flex items-center justify-center bg-[#061a3d] px-4 py-3 text-xs font-bold uppercase tracking-[.06em] text-white transition hover:bg-[#0b2b63]"
+							>
+								Inquire
+							</button>
+						</div>
+					) : (
+						<div className="mt-auto pt-5" />
+					)}
 				</div>
 			</article>
-			<InquiryModal
-				painting={artData}
-				open={inquiryOpen}
-				onClose={() => setInquiryOpen(false)}
-			/>
+			{showInquiryButton ? (
+				<InquiryModal
+					painting={artData}
+					open={inquiryOpen}
+					onClose={() => setInquiryOpen(false)}
+				/>
+			) : null}
 			<ImageLightbox
 				src={imageUrlGenerator(artData.images)}
 				alt={`${artData.title} image`}

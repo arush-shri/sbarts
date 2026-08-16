@@ -4,8 +4,9 @@ import { ART_CATEGORIES } from "@/app/_lib/artCategories";
 import { PaintingType } from "@/app/_lib/customTypes";
 import PageIntro from "@/components/PageIntro";
 import PaintingCard from "@/components/PaintingCard";
+import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const collections = [
 	{
@@ -13,62 +14,93 @@ const collections = [
 		title: ART_CATEGORIES[0],
 		copy: "Art exploring resilience, identity, migration, memory, and the quiet strength of everyday lives.",
 		image: "/images/hope.png",
-		className: "from-[#d6ad58] to-[#0c2a62]",
 	},
 	{
 		id: "portrait",
 		title: ART_CATEGORIES[1],
 		copy: "Drawing character, identity, and emotion through careful observation.",
 		image: "/images/portrait.png",
-		className: "from-[#b9a190] to-[#463029]",
 	},
 	{
 		id: "wildlife",
 		title: ART_CATEGORIES[2],
 		copy: "Celebrating the beauty and dignity of the natural world.",
 		image: "/images/wildlife.png",
-		className: "from-[#304b36] to-[#b39250]",
 	},
 	{
 		id: "high-altitude",
 		title: ART_CATEGORIES[3],
 		copy: "Inspired by aviation, aerospace, mountains, clouds, and exploration.",
 		image: "/images/altitude.png",
-		className: "from-[#a4bfd8] to-[#112957]",
 	},
 	{
 		id: "design",
 		title: ART_CATEGORIES[4],
 		copy: "Where precision, creativity, and visual storytelling come together.",
 		image: "/images/design.png",
-		className: "from-[#0f2e67] to-[#d6ad58]",
 	},
-];
+] as const;
+
+const collectionIdToCategory: Record<string, string> = {
+	hope: "Hope & Dignity",
+	portrait: "Portrait",
+	wildlife: "Wildlife",
+	"high-altitude": "High Altitude",
+	design: "Design",
+};
 
 export default function GalleryPage() {
 	const [items, setItems] = useState<PaintingType[]>([]);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
+	const [selectedCollectionId, setSelectedCollectionId] = useState<
+		string | null
+	>(null);
+
+	const selectedCollection = useMemo(
+		() =>
+			collections.find(
+				(collection) => collection.id === selectedCollectionId,
+			) || null,
+		[selectedCollectionId],
+	);
+
+	const loadCollection = useCallback(async (collectionId: string) => {
+		setLoading(true);
+		try {
+			const category =
+				collectionIdToCategory[collectionId] || collectionId;
+			const res = await fetch("/api/explore", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					category: [category],
+					sort: "Newest",
+				}),
+			});
+			const json = await res.json();
+			setItems(Array.isArray(json.data) ? json.data : []);
+		} catch (error) {
+			console.error(error);
+			setItems([]);
+		} finally {
+			setLoading(false);
+		}
+	}, []);
 
 	useEffect(() => {
-		const loadData = async () => {
-			try {
-				const res = await fetch("/api/explore", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ sort: "Newest" }),
-				});
-				const json = await res.json();
-				setItems(Array.isArray(json.data) ? json.data : []);
-			} catch (error) {
-				console.error(error);
-				setItems([]);
-			} finally {
-				setLoading(false);
-			}
-		};
+		if (!selectedCollectionId) return;
+		loadCollection(selectedCollectionId);
+	}, [loadCollection, selectedCollectionId]);
 
-		loadData();
-	}, []);
+	const handleOpenCollection = (collectionId: string) => {
+		setSelectedCollectionId(collectionId);
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+
+	const handleBack = () => {
+		setSelectedCollectionId(null);
+		setItems([]);
+	};
 
 	return (
 		<main className="bg-white text-[#182033]">
@@ -84,59 +116,85 @@ export default function GalleryPage() {
 			</section>
 
 			<section className="py-10">
-				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] gap-5">
-					{collections.map((collection) => (
-						<article
-							key={collection.id}
-							id={collection.id}
-							className="grid overflow-hidden border border-[#061a3d]/12 bg-white md:grid-cols-[180px_1fr]"
-						>
-							<div className="relative min-h-32 overflow-hidden bg-gradient-to-br">
-								<Image
-									src={collection.image}
-									alt={collection.title}
-									fill
-									className="object-cover"
-								/>
-							</div>
-							<div className="p-6">
-								<h2 className=" text-2xl text-[#061a3d]">
-									{collection.title}
-								</h2>
-								<p className="mt-2 text-[#6a7280]">
-									{collection.copy}
-								</p>{" "}
-								<a
-									href={`/marketplace?category=${collection.id}`}
-									className="mt-4 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[.06em] text-[#b88d39] transition duration-300 hover:scale-108 origin-left"
+				<div className="mx-auto w-[min(1180px,calc(100%-40px))] min-h-[calc(100vh-220px)]">
+					{selectedCollection ? (
+						<div className="animate-[fadeIn_0.3s_ease-out] min-h-[calc(100vh-260px)]">
+							<div className="mb-6 flex items-center gap-3">
+								<button
+									type="button"
+									onClick={handleBack}
+									className="inline-flex h-11 w-11 items-center justify-center border border-[#061a3d]/15 bg-white text-[#061a3d] transition hover:border-[#d6ad58] hover:text-[#d6ad58]"
+									aria-label="Back to collections"
 								>
-									View collection
-									<span>→</span>
-								</a>{" "}
+									<ArrowLeft className="h-5 w-5" />
+								</button>
+								<div>
+									<p className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
+										Collection
+									</p>
+									<h2 className="mt-1 text-3xl text-[#061a3d] md:text-4xl">
+										{selectedCollection.title}
+									</h2>
+								</div>
 							</div>
-						</article>
-					))}
-				</div>
-			</section>
 
-			<section className="bg-[#f7f1e6] py-20">
-				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
-					<div className="mb-9 text-center">
-						<div className="text-xs font-bold uppercase tracking-[.22em] text-[#b88d39]">
-							Available Work
-						</div>
-						<h2 className="mt-2  text-4xl text-[#061a3d]">
-							Current Catalogue
-						</h2>
-					</div>
-					{loading ? (
-						<div className="py-12 text-center text-[#6a7280]">
-							Loading artwork...
+							{loading ? (
+								<div className="flex min-h-[50vh] items-center justify-center text-center text-[#6a7280]">
+									Loading artwork...
+								</div>
+							) : items.length ? (
+								<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+									{items.map((item) => (
+										<PaintingCard
+											key={item.id}
+											artData={item}
+											showInquiryButton={false}
+										/>
+									))}
+								</div>
+							) : (
+								<div className="border border-[#061a3d]/12 bg-white p-10 text-center text-[#6a7280]">
+									No artwork found for this collection.
+								</div>
+							)}
 						</div>
 					) : (
-						<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-							{items.map((item) => (
-								<PaintingCard key={item.id} artData={item} />
+						<div className="grid min-h-[calc(100vh-260px)] gap-5 transition-all duration-300">
+							{collections.map((collection) => (
+								<article
+									key={collection.id}
+									id={collection.id}
+									className="grid overflow-hidden border border-[#061a3d]/12 bg-white transition-all duration-300 hover:-translate-y-0.5 md:grid-cols-[180px_1fr]"
+								>
+									<div className="relative min-h-32 overflow-hidden bg-gradient-to-br">
+										<Image
+											src={collection.image}
+											alt={collection.title}
+											fill
+											className="object-cover"
+										/>
+									</div>
+									<div className="p-6">
+										<h2 className="text-2xl text-[#061a3d]">
+											{collection.title}
+										</h2>
+										<p className="mt-2 text-[#6a7280]">
+											{collection.copy}
+										</p>
+										<button
+											type="button"
+											onClick={() =>
+												handleOpenCollection(
+													collection.id,
+												)
+											}
+											className="mt-4 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[.06em] text-[#b88d39] transition duration-300 hover:translate-x-1"
+										>
+											View collection
+											<span aria-hidden="true">→</span>
+										</button>
+									</div>
+								</article>
 							))}
 						</div>
 					)}
