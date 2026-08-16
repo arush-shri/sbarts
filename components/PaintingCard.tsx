@@ -2,8 +2,10 @@
 
 import { PaintingType } from "@/app/_lib/customTypes";
 import { imageUrlGenerator } from "@/app/_lib/dataProcessing";
+import { Maximize2 } from "lucide-react";
 import Image from "next/image";
 import { ReactElement, useState } from "react";
+import ImageLightbox from "./ImageLightbox";
 import InquiryModal from "./InquiryModal";
 
 export default function PaintingCard({
@@ -14,7 +16,7 @@ export default function PaintingCard({
 	extraStyle?: string;
 }): ReactElement {
 	const [inquiryOpen, setInquiryOpen] = useState(false);
-
+	const [imageOpen, setImageOpen] = useState(false);
 	if (!artData) return <></>;
 
 	return (
@@ -23,7 +25,7 @@ export default function PaintingCard({
 				className={`group flex h-full w-full flex-col overflow-hidden border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.12)] transition duration-500 hover:scale-103 ${extraStyle || ""}`}
 			>
 				<div className="block">
-					<div className="relative aspect-[1.15/1] overflow-hidden bg-[#061a3d]">
+					<div className="group/image relative aspect-[1.15/1] overflow-hidden bg-[#061a3d]">
 						<Image
 							src={imageUrlGenerator(artData.images)}
 							alt={`${artData.title} image`}
@@ -31,6 +33,15 @@ export default function PaintingCard({
 							height={1184}
 							className="h-full w-full object-cover"
 						/>
+
+						<button
+							type="button"
+							onClick={() => setImageOpen(true)}
+							className="absolute bottom-3 right-3 z-10 grid p-1.5 cursor-pointer place-items-center bg-black/60 text-white opacity-0 backdrop-blur-sm transition-all duration-200 hover:bg-black/80 group-hover/image:opacity-100"
+							aria-label={`Enlarge ${artData.title}`}
+						>
+							<Maximize2 className="h-5 w-5" />
+						</button>
 					</div>
 				</div>
 				<div className="flex flex-1 flex-col p-5">
@@ -57,6 +68,12 @@ export default function PaintingCard({
 				painting={artData}
 				open={inquiryOpen}
 				onClose={() => setInquiryOpen(false)}
+			/>
+			<ImageLightbox
+				src={imageUrlGenerator(artData.images)}
+				alt={`${artData.title} image`}
+				open={imageOpen}
+				onClose={() => setImageOpen(false)}
 			/>
 		</>
 	);
