@@ -10,12 +10,26 @@ const transporter = nodemailer.createTransport({
 	},
 });
 
-export async function sendEmail(to: string, subject: string, text: string) {
+export async function sendEmail(
+	to: string,
+	subject: string,
+	text: string,
+	attachments?: Array<{
+		filename: string;
+		content: Buffer;
+		contentType?: string;
+	}>,
+) {
 	await transporter.sendMail({
 		from: `SB Arts <${process.env.EMAIL_USER}>`,
 		to,
 		subject,
 		text,
+		attachments: attachments?.map((attachment) => ({
+			filename: attachment.filename,
+			content: attachment.content,
+			contentType: attachment.contentType,
+		})),
 	});
 }
 

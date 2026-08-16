@@ -15,21 +15,54 @@ type InquiryBody = {
 	subject?: string;
 };
 
+function getFirstValue(value: FormDataEntryValue | null | undefined) {
+	if (typeof value === "string") return value;
+	return "";
+}
+
 export async function POST(req: NextRequest) {
 	try {
-		const body = (await req.json()) as InquiryBody;
-		const name = validateName(body.name);
+		let nameValue = "";
+		let emailValue = "";
+		let messageValue = "";
+		let subjectValue = "";
+		let paintingTitleValue = "";
+		let paintingIdValue = "";
+		let attachment: File | null = null;
+
+		const contentType = req.headers.get("content-type") || "";
+		if (contentType.includes("multipart/form-data")) {
+			const formData = await req.formData();
+			nameValue = getFirstValue(formData.get("name"));
+			emailValue = getFirstValue(formData.get("email"));
+			messageValue = getFirstValue(formData.get("message"));
+			subjectValue = getFirstValue(formData.get("subject"));
+			paintingTitleValue = getFirstValue(formData.get("paintingTitle"));
+			paintingIdValue = getFirstValue(formData.get("paintingId"));
+			const uploadedFile = formData.get("attachment");
+			attachment = uploadedFile instanceof File ? uploadedFile : null;
+		} else {
+			const body = (await req.json()) as InquiryBody;
+			nameValue = body.name || "";
+			emailValue = body.email || "";
+			messageValue = body.message || "";
+			subjectValue = body.subject || "";
+			paintingTitleValue = body.paintingTitle || "";
+			paintingIdValue = body.paintingId || "";
+		}
+
+		const name = validateName(nameValue);
 		if (!name.valid) {
 			return NextResponse.json({ error: name.message }, { status: 400 });
 		}
 
-		const email = validateEmail(body.email);
+		const email = validateEmail(emailValue);
 		if (!email.valid) {
 			return NextResponse.json({ error: email.message }, { status: 400 });
 		}
 
 		const message = validateRequiredText(
-			body.message,
+			messageValue,
 			"Message",
 			"message",
 			10,
@@ -50,15 +83,16 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
-		const subject = body.paintingTitle
-			? `Artwork inquiry: ${body.paintingTitle}`
-			: body.subject || "SB Arts inquiry";
+		const subject = paintingTitleValue
+			? `Artwork inquiry: ${paintingTitleValue}`
+			: subjectValue || "SB Arts inquiry";
 
 		const text = [
 			`Name: ${name.value}`,
 			`Email: ${email.value}`,
-			body.paintingTitle ? `Artwork: ${body.paintingTitle}` : undefined,
-			body.paintingId ? `Artwork ID: ${body.paintingId}` : undefined,
+			paintingTitleValue ? `Artwork: ${paintingTitleValue}` : undefined,
+			paintingIdValue ? `Artwork ID: ${paintingIdValue}` : undefined,
+			attachment ? `Attachment: ${attachment.name}` : undefined,
 			"",
 			"Message:",
 			message.value,
@@ -66,7 +100,17 @@ export async function POST(req: NextRequest) {
 			.filter((line) => line !== undefined)
 			.join("\n");
 
-		await sendEmail(inbox, subject, text);
+		const attachments = attachment
+			? [
+					{
+						filename: attachment.name,
+						content: Buffer.from(await attachment.arrayBuffer()),
+						contentType: attachment.type || undefined,
+					},
+				]
+			: undefined;
+
+		await sendEmail(inbox, subject, text, attachments);
 
 		return NextResponse.json({ success: true }, { status: 200 });
 	} catch (err) {

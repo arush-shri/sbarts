@@ -10,6 +10,7 @@ export default function CompetitionPage() {
 	const [email, setEmail] = useState("");
 	const [grade, setGrade] = useState("");
 	const [message, setMessage] = useState("");
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [competition, setCompetition] = useState<CompetitionEntry | null>(
 		null,
@@ -39,15 +40,21 @@ export default function CompetitionPage() {
 		setIsSubmitting(true);
 
 		try {
+			const formData = new FormData();
+			formData.append("name", name);
+			formData.append("email", email);
+			formData.append("subject", "Competition Registration");
+			formData.append(
+				"message",
+				`Grade: ${grade}\n\n${message || "Please send entry information."}`,
+			);
+			if (selectedFile) {
+				formData.append("attachment", selectedFile);
+			}
+
 			const res = await fetch("/api/inquiry", {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					name,
-					email,
-					subject: "Competition Registration",
-					message: `Grade: ${grade}\n\n${message || "Please send entry information."}`,
-				}),
+				body: formData,
 			});
 			const data = await res.json();
 
@@ -61,6 +68,10 @@ export default function CompetitionPage() {
 			setEmail("");
 			setGrade("");
 			setMessage("");
+			setSelectedFile(null);
+			if (event.currentTarget) {
+				event.currentTarget.reset();
+			}
 		} catch (error) {
 			console.error(error);
 			ShowToast("Could not register interest.", 0);
@@ -269,6 +280,24 @@ export default function CompetitionPage() {
 							placeholder="Tell us about your artwork or question"
 							className="min-h-36 resize-y border border-[#d6ad58]/50 px-4 py-3 outline-none focus:border-[#d6ad58] text-[#fff] placeholder:text-[#fff]/70"
 						/>
+						<label className="grid gap-2 text-sm font-semibold text-[#f7f1e6]">
+							Upload artwork image (optional)
+							<input
+								type="file"
+								accept="image/*"
+								onChange={(event) =>
+									setSelectedFile(
+										event.target.files?.[0] || null,
+									)
+								}
+								className="block w-full cursor-pointer border border-[#d6ad58]/50 bg-[#061a3d] px-4 py-3 text-sm text-[#fff] file:mr-3 file:rounded-none file:border file:border-[#d6ad58] file:bg-[#d6ad58] file:px-3 file:py-2 file:text-xs file:font-bold file:uppercase file:tracking-[.06em] file:text-[#061a3d]"
+							/>
+							{selectedFile ? (
+								<p className="text-xs text-[#d6ad58]">
+									Selected: {selectedFile.name}
+								</p>
+							) : null}
+						</label>
 						<button
 							type="submit"
 							disabled={isSubmitting}
