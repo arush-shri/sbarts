@@ -27,19 +27,19 @@ export default function PaintingCard({
 				className={`group flex h-full w-full flex-col overflow-hidden border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.12)] transition duration-500 hover:scale-103 ${extraStyle || ""}`}
 			>
 				<div className="block">
-					<div className="group/image relative aspect-[1.15/1] overflow-hidden bg-[#061a3d]">
+					<div className="group/image relative flex aspect-[1.15/1] items-center justify-center overflow-hidden bg-[#061a3d]">
 						<Image
 							src={imageUrlGenerator(artData.images)}
 							alt={`${artData.title} image`}
 							width={864}
 							height={1184}
-							className="h-full w-full object-cover"
+							className="h-[93%] w-auto object-contain"
 						/>
 
 						<button
 							type="button"
 							onClick={() => setImageOpen(true)}
-							className="absolute bottom-3 right-3 z-10 grid p-1.5 cursor-pointer place-items-center bg-black/60 text-white opacity-0 backdrop-blur-sm transition-all duration-200 hover:bg-black/80 group-hover/image:opacity-100"
+							className="absolute bottom-3 right-3 z-10 grid cursor-pointer place-items-center bg-black/60 p-1.5 text-white opacity-0 backdrop-blur-sm transition-all duration-200 hover:bg-black/80 group-hover/image:opacity-100"
 							aria-label={`Enlarge ${artData.title}`}
 						>
 							<Maximize2 className="h-5 w-5" />
@@ -48,7 +48,7 @@ export default function PaintingCard({
 				</div>
 				<div className="flex flex-1 flex-col p-5">
 					<div>
-						<h3 className=" text-2xl font-medium leading-tight text-[#061a3d]">
+						<h3 className=" text-lg font-medium leading-tight text-[#061a3d]">
 							{artData.title}
 						</h3>
 					</div>
@@ -62,7 +62,7 @@ export default function PaintingCard({
 							<button
 								type="button"
 								onClick={() => setInquiryOpen(true)}
-								className="w-full cursor-pointer inline-flex items-center justify-center bg-[#061a3d] px-4 py-3 text-xs font-bold uppercase tracking-[.06em] text-white transition hover:bg-[#0b2b63]"
+								className="w-full cursor-pointer inline-flex items-center justify-center bg-[#061a3d] px-4 py-3 font-bold uppercase tracking-[.06em] text-white transition hover:bg-[#0b2b63]"
 							>
 								Inquire
 							</button>

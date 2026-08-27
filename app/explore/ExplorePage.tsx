@@ -131,7 +131,7 @@ export default function ExplorePage({
 							Loading artwork...
 						</div>
 					) : items.length ? (
-						<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 flex-1">
+						<div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 flex-1">
 							{items.map((art) => (
 								<PaintingCard key={art.id} artData={art} />
 							))}

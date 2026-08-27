@@ -51,7 +51,16 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 		subtitle: "Arts for Hope, Dignity & Freedom",
 		subtext:
 			"An international juried art competition for high school students worldwide.",
-		fields: {},
+		fields: {
+			card1Title: "International",
+			card1Subtitle: "Open to high school students worldwide.",
+			card2Title: "Juried",
+			card2Subtitle:
+				"Reviewed by distinguished artists and arts professionals.",
+			card3Title: "Theme",
+			card3Subtitle:
+				"Hope, dignity, freedom, resilience, identity, and humanity.",
+		},
 	},
 	about: {
 		title: "About SB Arts",
@@ -106,6 +115,29 @@ export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 			label: "Mission subtext",
 			type: "textarea",
 			rows: 3,
+		},
+	],
+	competition: [
+		{ key: "card1Title", label: "First card title" },
+		{
+			key: "card1Subtitle",
+			label: "First card subtitle",
+			type: "textarea",
+			rows: 2,
+		},
+		{ key: "card2Title", label: "Second card title" },
+		{
+			key: "card2Subtitle",
+			label: "Second card subtitle",
+			type: "textarea",
+			rows: 2,
+		},
+		{ key: "card3Title", label: "Third card title" },
+		{
+			key: "card3Subtitle",
+			label: "Third card subtitle",
+			type: "textarea",
+			rows: 2,
 		},
 	],
 	contact: [

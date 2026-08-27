@@ -25,8 +25,8 @@ export default function FeaturedArtworks() {
 					</p>
 				</div>
 
-				<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-					{paintingsData.slice(0, 3).map((painting) => (
+				<div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+					{paintingsData.slice(0, 4).map((painting) => (
 						<PaintingCard key={painting.id} artData={painting} />
 					))}
 				</div>

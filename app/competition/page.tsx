@@ -1,11 +1,14 @@
 "use client";
 
+import { useSiteContent } from "@/app/_context/SiteContentContext";
 import PageIntro from "@/components/PageIntro";
 import { ShowToast } from "@/components/Toaster";
 import { FormEvent, useEffect, useState } from "react";
 import { CompetitionEntry } from "../_lib/customTypes";
 
 export default function CompetitionPage() {
+	const { getPageContent } = useSiteContent();
+	const content = getPageContent("competition");
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [grade, setGrade] = useState("");
@@ -103,16 +106,19 @@ export default function CompetitionPage() {
 				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] gap-6 md:grid-cols-3">
 					{[
 						[
-							"International",
-							"Open to high school students worldwide.",
+							content.fields?.card1Title || "International",
+							content.fields?.card1Subtitle ||
+								"Open to high school students worldwide.",
 						],
 						[
-							"Juried",
-							"Reviewed by distinguished artists and arts professionals.",
+							content.fields?.card2Title || "Juried",
+							content.fields?.card2Subtitle ||
+								"Reviewed by distinguished artists and arts professionals.",
 						],
 						[
-							"Theme",
-							"Hope, dignity, freedom, resilience, identity, and humanity.",
+							content.fields?.card3Title || "Theme",
+							content.fields?.card3Subtitle ||
+								"Hope, dignity, freedom, resilience, identity, and humanity.",
 						],
 					].map(([title, copy]) => (
 						<article
