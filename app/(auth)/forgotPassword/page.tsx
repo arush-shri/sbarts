@@ -20,7 +20,7 @@ export default function ResetPasswordPage(): ReactElement {
 						</h1>
 						<p className="mt-4 text-lg text-white/80">
 							Securely update your password in a few quick steps
-							and return to your seller workspace.
+							and return to your workspace.
 						</p>
 					</div>
 				</section>
@@ -38,6 +38,14 @@ function ResetPasswordForm() {
 	const router = useRouter();
 
 	const navToSignIn = () => router.replace("/signIn");
+	const getErrorCode = (error: unknown) =>
+		typeof error === "object" &&
+		error !== null &&
+		"code" in error &&
+		typeof error.code === "string"
+			? error.code
+			: "";
+
 	const handleSendOtp = async () => {
 		try {
 			// ---------- VALIDATE ----------
@@ -53,12 +61,13 @@ function ResetPasswordForm() {
 
 			ShowToast("Password reset email sent. Please check your inbox.", 2);
 			navToSignIn();
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error(error);
+			const errorCode = getErrorCode(error);
 
-			if (error.code === "auth/user-not-found") {
+			if (errorCode === "auth/user-not-found") {
 				ShowToast("No account found with this email.", 0);
-			} else if (error.code === "auth/invalid-email") {
+			} else if (errorCode === "auth/invalid-email") {
 				ShowToast("Invalid email address.", 0);
 			} else {
 				ShowToast("Failed to send reset email.", 0);

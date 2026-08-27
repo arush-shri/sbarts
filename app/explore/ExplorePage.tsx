@@ -50,6 +50,7 @@ export default function ExplorePage({
 							? [nextCategory]
 							: undefined,
 					sort: "Newest",
+					surface: "marketplace",
 				};
 
 				const res = await fetch("/api/explore", {

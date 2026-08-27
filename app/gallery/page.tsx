@@ -75,6 +75,7 @@ export default function GalleryPage() {
 				body: JSON.stringify({
 					category: [category],
 					sort: "Newest",
+					surface: "gallery",
 				}),
 			});
 			const json = await res.json();

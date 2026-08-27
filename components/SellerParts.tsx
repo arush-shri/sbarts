@@ -20,30 +20,14 @@ import { ShowToast } from "./Toaster";
 
 export function ListingsTable({
 	artworkIds,
+	showAll = false,
 }: {
 	artworkIds: string[];
+	showAll?: boolean;
 }): ReactElement {
 	const [displayedArtworks, setDisplayedArtworks] = useState<PaintingType[]>(
 		[],
 	);
-	const router = useRouter();
-
-	const loadData = async () => {
-		const res = await fetch("/api/painting", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ ids: artworkIds }),
-		});
-
-		if (!res.ok) return null;
-
-		const json = await res.json();
-
-		const art: PaintingType[] = json.data;
-		setDisplayedArtworks(art);
-	};
 
 	const deleteListing = async (paintingId: string) => {
 		try {
@@ -67,8 +51,9 @@ export function ListingsTable({
 			});
 
 			if (!res.ok) {
-				const errorData = await res.json();
+				await res.json();
 				ShowToast("Unable to delete listing", 0);
+				return false;
 			}
 
 			setDisplayedArtworks((prev) =>
@@ -85,18 +70,47 @@ export function ListingsTable({
 	};
 
 	useEffect(() => {
-		loadData();
-	}, []);
+		let ignore = false;
+
+		async function loadListings() {
+			const token = await firebaseClientAuth.currentUser?.getIdToken();
+			const res = showAll
+				? await fetch("/api/listing?scope=all", {
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					})
+				: await fetch("/api/painting", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ ids: artworkIds }),
+					});
+
+			if (!res.ok || ignore) return;
+
+			const json = await res.json();
+			const art: PaintingType[] = json.data;
+			setDisplayedArtworks(art);
+		}
+
+		void loadListings();
+
+		return () => {
+			ignore = true;
+		};
+	}, [artworkIds, showAll]);
 
 	return (
 		<div>
 			<div className="flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<h3 className="font-semibold text-2xl text-[#061a3d]">
-						Your Listings
+						Artwork Listings
 					</h3>
 					<p className="mt-1 text-sm text-[#6a7280]">
-						Keep your gallery visible and current for buyers.
+						Keep artwork details visible and current.
 					</p>
 				</div>
 			</div>
@@ -130,7 +144,7 @@ export function ListingsTable({
 									colSpan={4}
 									className="px-6 py-10 text-center text-sm text-[#6a7280]"
 								>
-									No listings yet. Create your first artwork
+									No listings yet. Create the first artwork
 									listing to get started.
 								</td>
 							</tr>

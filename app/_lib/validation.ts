@@ -200,6 +200,20 @@ export function validateSignIn(data: any) {
 	);
 }
 
+export function validateAccountSignUp(data: Record<string, unknown>) {
+	const base = firstInvalid(
+		validateName(data.fullName, "Full name", "fullName"),
+		validateEmail(data.email),
+		validatePassword(data.password, true),
+	);
+
+	if (!base.valid) return base;
+
+	return data.password === data.confirmPassword
+		? pass()
+		: fail("Passwords do not match.", "confirmPassword");
+}
+
 export function validateListing(data: any, requireFile = true) {
 	return firstInvalid(
 		validateRequiredText(data.title, "Artwork title", "title", 3, 100),

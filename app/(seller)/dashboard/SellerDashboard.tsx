@@ -33,6 +33,8 @@ export default function SellerDashboard(): ReactElement {
 		if (!artistData) return;
 	}, [artistData]);
 
+	const isAdmin = artistData?.admin === true || artistData?.isAdmin === true;
+
 	const handleLogout = async () => {
 		try {
 			await signOut(firebaseClientAuth);
@@ -56,7 +58,9 @@ export default function SellerDashboard(): ReactElement {
 							>
 								<Plus className="h-auto w-5" /> Add New Listing
 							</button>
-							<CompetitionButton managerRef={managerRef} />
+							{isAdmin ? (
+								<CompetitionButton managerRef={managerRef} />
+							) : null}
 							<button
 								onClick={handleLogout}
 								className="border border-[#061a3d]/15 bg-white px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:border-[#d6ad58] hover:text-[#d6ad58]"
@@ -67,12 +71,17 @@ export default function SellerDashboard(): ReactElement {
 					</div>
 
 					<main className="flex-1 space-y-8">
-						<div className="overflow-hidden border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">
-							<CompetitionManager ref={managerRef} />
-						</div>
+						{isAdmin ? (
+							<div className="overflow-hidden border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">
+								<CompetitionManager ref={managerRef} />
+							</div>
+						) : null}
 
 						<div className="overflow-hidden border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">
-							<ListingsTable artworkIds={artistData.artWorks} />
+							<ListingsTable
+								artworkIds={artistData.artWorks}
+								showAll={isAdmin}
+							/>
 						</div>
 					</main>
 				</div>

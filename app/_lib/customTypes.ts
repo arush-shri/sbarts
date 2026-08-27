@@ -18,6 +18,8 @@ export type PaintingType = {
 	createdAt: number;
 	updatedAt: number;
 	resolution?: string;
+	createdByAdmin?: boolean;
+	marketplaceVisible?: boolean;
 };
 
 export type SellerType = {
@@ -40,6 +42,8 @@ export type SellerType = {
 	itemSold: number;
 	orderIds: string[];
 	stripeConnect?: string;
+	admin?: boolean;
+	isAdmin?: boolean;
 };
 
 export type FilterButtonRef = {
@@ -62,6 +66,7 @@ export type ExploreRequest = {
 	search?: string;
 	category?: string[];
 	type?: "digital" | "physical" | "all";
+	surface?: "marketplace" | "gallery" | "all";
 
 	minPrice?: number;
 	maxPrice?: number;

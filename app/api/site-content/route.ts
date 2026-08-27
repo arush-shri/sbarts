@@ -9,7 +9,7 @@ import {
 	invalidateSiteContentCache,
 	updateSitePageContent,
 } from "@/app/_lib/siteContentServer";
-import { requireFirebaseUser } from "@/server/Auth";
+import { requireAdminUser } from "@/server/Auth";
 import { NextRequest, NextResponse } from "next/server";
 
 const MAX_FIELD_LENGTH = 600;
@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
 	try {
-		await requireFirebaseUser(req);
+		await requireAdminUser(req);
 
 		const body = await req.json();
 		const pageKey = String(body.pageKey || "");
@@ -125,10 +125,27 @@ export async function PUT(req: NextRequest) {
 	} catch (error) {
 		console.error("Site content update error:", error);
 
-		if (error instanceof Error && error.message === "Unauthorized") {
+		if (
+			error instanceof Error &&
+			(error.message === "Unauthorized" ||
+				error.message === "Forbidden" ||
+				error.message === "Profile not found")
+		) {
 			return NextResponse.json(
-				{ error: "Unauthorized" },
-				{ status: 401 },
+				{
+					error:
+						error.message === "Profile not found"
+							? "Account profile not found."
+							: error.message,
+				},
+				{
+					status:
+						error.message === "Unauthorized"
+							? 401
+							: error.message === "Profile not found"
+								? 404
+								: 403,
+				},
 			);
 		}
 

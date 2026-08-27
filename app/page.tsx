@@ -67,7 +67,7 @@ export default function Home() {
 						{collections.map((collection) => (
 							<Link
 								key={collection.id}
-								href={`/marketplace?category=${collection.id}`}
+								href="/gallery"
 							>
 								<article className="border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.12)] cursor-pointer transition duration-300 hover:scale-105 origin-center h-full">
 									<div

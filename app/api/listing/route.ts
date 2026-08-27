@@ -3,10 +3,32 @@ import { firebaseStorage } from "@/app/_firebase/storage";
 import { isArtCategory } from "@/app/_lib/artCategories";
 import { PaintingType, UpdateBody } from "@/app/_lib/customTypes";
 import { processImage } from "@/server/ArtImageHandler";
-import { requireFirebaseUser } from "@/server/Auth";
+import {
+	canManagePainting,
+	requireAdminUser,
+	requireUserProfile,
+} from "@/server/Auth";
+import { filterPaintingsBySurface } from "@/server/PaintingVisibility";
 import { FieldValue } from "firebase-admin/firestore";
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
+
+function authErrorResponse(err: unknown) {
+	if (!(err instanceof Error)) return null;
+	if (err.message === "Unauthorized") {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	}
+	if (err.message === "Forbidden") {
+		return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+	}
+	if (err.message === "Profile not found") {
+		return NextResponse.json(
+			{ error: "Account profile not found." },
+			{ status: 404 },
+		);
+	}
+	return null;
+}
 
 export async function POST(req: NextRequest) {
 	try {
@@ -29,8 +51,8 @@ export async function POST(req: NextRequest) {
 		const quantity = Number(formData.get("quantity"));
 		const listingType = formData.get("listingType") as string;
 		// const sellerId = formData.get("sellerId") as string;
-		const decoded = await requireFirebaseUser(req);
-		const sellerId = decoded.uid;
+		const session = await requireUserProfile(req);
+		const sellerId = session.decoded.uid;
 
 		if (!isArtCategory(category)) {
 			return NextResponse.json(
@@ -84,6 +106,8 @@ export async function POST(req: NextRequest) {
 			createdAt: Date.now(),
 			updatedAt: Date.now(),
 			resolution: `${width}x${height}`,
+			createdByAdmin: session.isAdmin,
+			marketplaceVisible: !session.isAdmin,
 		});
 
 		await firebaseDB
@@ -96,21 +120,51 @@ export async function POST(req: NextRequest) {
 		return NextResponse.json({ id: paintingRef.id }, { status: 200 });
 	} catch (err) {
 		console.error(err);
+		const authResponse = authErrorResponse(err);
+		if (authResponse) return authResponse;
+
 		return NextResponse.json({ error: "Upload failed" }, { status: 500 });
 	}
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
 	try {
+		const { searchParams } = new URL(req.url);
+		const scope = searchParams.get("scope");
+
+		if (scope === "all") {
+			await requireAdminUser(req);
+
+			const snap = await firebaseDB
+				.collection("paintings")
+				.orderBy("createdAt", "desc")
+				.get();
+
+			const data: PaintingType[] = snap.docs.map(
+				(doc) => doc.data() as PaintingType,
+			);
+
+			return NextResponse.json(
+				{
+					success: true,
+					data,
+				},
+				{ status: 200 },
+			);
+		}
+
 		const snap = await firebaseDB
 			.collection("paintings")
-			.orderBy("views", "desc") // top paintings
-			.limit(4)
+			.orderBy("views", "desc")
+			.limit(24)
 			.get();
 
-		const data: PaintingType[] = snap.docs.map(
+		const allData: PaintingType[] = snap.docs.map(
 			(doc) => doc.data() as PaintingType,
 		);
+		const data = (
+			await filterPaintingsBySurface(allData, "marketplace")
+		).slice(0, 4);
 
 		return NextResponse.json(
 			{
@@ -121,6 +175,8 @@ export async function GET() {
 		);
 	} catch (err) {
 		console.error(err);
+		const authResponse = authErrorResponse(err);
+		if (authResponse) return authResponse;
 
 		return NextResponse.json(
 			{ error: "Failed to fetch listings" },
@@ -153,8 +209,8 @@ export async function PUT(req: NextRequest) {
 
 		const existing = docSnap.data() as PaintingType;
 
-		const decoded = await requireFirebaseUser(req);
-		if (existing.sellerId !== decoded.uid) {
+		const session = await requireUserProfile(req);
+		if (!canManagePainting(existing, session.decoded.uid, session.profile)) {
 			return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 		}
 
@@ -192,6 +248,8 @@ export async function PUT(req: NextRequest) {
 		return NextResponse.json({ success: true }, { status: 200 });
 	} catch (err) {
 		console.error(err);
+		const authResponse = authErrorResponse(err);
+		if (authResponse) return authResponse;
 
 		return NextResponse.json(
 			{ error: "Failed to update painting" },
@@ -203,8 +261,8 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
 	try {
 		// 1. Authorize the user using your Bearer Token helper
-		const decoded = await requireFirebaseUser(req);
-		const sellerId = decoded.uid;
+		const session = await requireUserProfile(req);
+		const sellerId = session.decoded.uid;
 
 		// 2. Extract the painting ID from the query parameters
 		const { searchParams } = new URL(req.url);
@@ -228,10 +286,13 @@ export async function DELETE(req: NextRequest) {
 			);
 		}
 
-		const paintingData = paintingDoc.data();
+		const paintingData = paintingDoc.data() as PaintingType | undefined;
 
 		// Security Check: Ensure the person deleting this item is the seller who listed it
-		if (paintingData?.sellerId !== sellerId) {
+		if (
+			!paintingData ||
+			!canManagePainting(paintingData, sellerId, session.profile)
+		) {
 			return NextResponse.json(
 				{ error: "Unauthorized to delete this listing" },
 				{ status: 403 },
@@ -240,6 +301,7 @@ export async function DELETE(req: NextRequest) {
 
 		const category = paintingData.category;
 		const imageId = paintingData.images; // e.g., the folder name / ID string
+		const ownerId = paintingData.sellerId;
 
 		const bucket = firebaseStorage.bucket();
 
@@ -268,7 +330,7 @@ export async function DELETE(req: NextRequest) {
 		// 5. UPDATE SELLER DOCUMENT (Remove references)
 		await firebaseDB
 			.collection("sellers")
-			.doc(sellerId)
+			.doc(ownerId)
 			.update({
 				artWorks: FieldValue.arrayRemove(paintingId),
 				// Note: Removing categories via arrayRemove can be aggressive if they have other items
@@ -280,15 +342,11 @@ export async function DELETE(req: NextRequest) {
 		await paintingRef.delete();
 
 		return NextResponse.json({ success: true }, { status: 200 });
-	} catch (err: any) {
+	} catch (err: unknown) {
 		console.error("Listing deletion failed:", err);
 
-		if (err.message === "Unauthorized") {
-			return NextResponse.json(
-				{ error: "Authentication token invalid" },
-				{ status: 401 },
-			);
-		}
+		const authResponse = authErrorResponse(err);
+		if (authResponse) return authResponse;
 
 		return NextResponse.json(
 			{ error: "Internal Server Error during deletion" },

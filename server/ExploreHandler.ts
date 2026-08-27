@@ -1,6 +1,7 @@
 import { firebaseDB } from "@/app/_firebase/firebaseDb";
 import { isArtCategory } from "@/app/_lib/artCategories";
 import { ExploreRequest, PaintingType } from "@/app/_lib/customTypes";
+import { filterPaintingsBySurface } from "./PaintingVisibility";
 
 export async function ExploreHandler(
 	params: ExploreRequest,
@@ -59,6 +60,11 @@ export async function ExploreHandler(
 
 		let results: PaintingType[] = snap.docs.map(
 			(doc) => doc.data() as PaintingType,
+		);
+
+		results = await filterPaintingsBySurface(
+			results,
+			params.surface || "marketplace",
 		);
 
 		// ---------- SEARCH / RELEVANCE ----------

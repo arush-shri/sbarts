@@ -7,6 +7,8 @@ import { CredentioalsForm } from "@/components/AuthPart";
 import Loading from "@/components/Loading";
 import { ShowToast } from "@/components/Toaster";
 import { signInWithEmailAndPassword } from "@firebase/auth";
+import { Palette } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactElement, useRef, useState } from "react";
 
@@ -18,6 +20,14 @@ export default function SellerSignIn(): ReactElement {
 	});
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
+
+	const getErrorCode = (error: unknown) =>
+		typeof error === "object" &&
+		error !== null &&
+		"code" in error &&
+		typeof error.code === "string"
+			? error.code
+			: "";
 
 	const handleClick = async () => {
 		try {
@@ -43,14 +53,15 @@ export default function SellerSignIn(): ReactElement {
 			if (userCredential.user) {
 				router.replace("/dashboard");
 			}
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.log("Error sign in:", error);
+			const errorCode = getErrorCode(error);
 
-			if (error.code === "auth/user-not-found") {
+			if (errorCode === "auth/user-not-found") {
 				ShowToast("No account found with this email.", 0);
-			} else if (error.code === "auth/wrong-password") {
+			} else if (errorCode === "auth/wrong-password") {
 				ShowToast("Incorrect password.", 0);
-			} else if (error.code === "auth/invalid-email") {
+			} else if (errorCode === "auth/invalid-email") {
 				ShowToast("Invalid email address.", 0);
 			} else {
 				ShowToast("Sign in failed. Please try again.", 0);
@@ -74,8 +85,8 @@ export default function SellerSignIn(): ReactElement {
 								Sign in to continue.
 							</h1>
 							<p className="mt-4 text-lg text-white/80">
-								Manage your listings and competitions in one
-								place.
+								Manage artwork listings and keep your workspace
+								current.
 							</p>
 						</div>
 					</section>
@@ -83,14 +94,14 @@ export default function SellerSignIn(): ReactElement {
 					<section className="flex w-full flex-1 items-center justify-center bg-[#f7f1e6] px-5 py-12 md:px-10 lg:px-14">
 						<div className="w-full max-w-md border border-[#061a3d]/12 bg-white p-8 shadow-[0_20px_60px_rgba(6,26,61,.12)]">
 							<div className="mb-8 flex flex-col items-center text-center">
-								<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#d6ad58] text-xl shadow-sm">
-									<span>🎨</span>
+								<div className="mb-4 grid h-12 w-12 place-items-center rounded-full bg-[#d6ad58] text-[#061a3d] shadow-sm">
+									<Palette className="h-5 w-5" />
 								</div>
 								<h2 className=" text-3xl text-[#061a3d]">
 									Welcome Back!
 								</h2>
 								<p className="mt-2 text-sm text-[#6a7280]">
-									Enter your details to access dashboard.
+									Enter your details to access your workspace.
 								</p>
 							</div>
 
@@ -106,12 +117,12 @@ export default function SellerSignIn(): ReactElement {
 										}}
 										onChange={updateField}
 									/>
-									<a
+									<Link
 										href="/forgotPassword"
 										className="self-end text-sm font-semibold text-[#061a3d] transition hover:text-[#d6ad58]"
 									>
 										Forgot password?
-									</a>
+									</Link>
 								</div>
 
 								<button
@@ -121,6 +132,16 @@ export default function SellerSignIn(): ReactElement {
 									Sign In
 								</button>
 							</form>
+
+							<div className="mt-7 text-center text-sm text-[#6a7280]">
+								Need an account?{" "}
+								<Link
+									href="/signUp"
+									className="font-semibold text-[#061a3d] transition hover:text-[#d6ad58]"
+								>
+									Sign up
+								</Link>
+							</div>
 						</div>
 					</section>
 				</div>

@@ -23,8 +23,12 @@ export default function Header(): ReactElement {
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [editorOpen, setEditorOpen] = useState(false);
 	const pageKey = useEditablePageForPath(pathname);
-	const { authenticated, loading } = useSellerContext();
-	const canEditPage = authenticated && !loading && pageKey;
+	const { artistData, authenticated, loading } = useSellerContext();
+	const canEditPage =
+		authenticated &&
+		!loading &&
+		pageKey &&
+		(artistData?.admin === true || artistData?.isAdmin === true);
 
 	return (
 		<header className="sticky top-0 z-50 bg-[#061a3d] backdrop-blur">
