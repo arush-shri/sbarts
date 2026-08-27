@@ -21,13 +21,18 @@ export default function SellerDashboard(): ReactElement {
 	const {
 		artistData,
 		loading,
-	}: { artistData: SellerType | null; loading: boolean } = useSellerContext();
+		authenticated,
+	}: {
+		artistData: SellerType | null;
+		loading: boolean;
+		authenticated: boolean;
+	} = useSellerContext();
 
 	useEffect(() => {
-		if (!loading && !artistData) {
+		if (!loading && !artistData && !authenticated) {
 			router.replace("/signIn");
 		}
-	}, [artistData, loading, router]);
+	}, [artistData, authenticated, loading, router]);
 
 	useEffect(() => {
 		if (!artistData) return;

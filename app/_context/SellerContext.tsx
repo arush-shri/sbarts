@@ -52,27 +52,23 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 					return;
 				}
 
-				const token = await user.getIdToken();
+				setSeller((current) => ({
+					...current,
+					loading: true,
+					authenticated: true,
+				}));
 
-				const res = await fetch("/api/auth/signIn", {
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-
-				const data = await res.json();
-
-				if (data.success) {
-					const res = await fetch("/api/seller", {
+				try {
+					const token = await user.getIdToken();
+					const authResponse = await fetch("/api/auth/signIn", {
 						method: "POST",
 						headers: {
-							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`,
 						},
-						body: JSON.stringify({ sellerId: data.sellerId }),
 					});
 
-					if (!res.ok) {
+					const authData = await authResponse.json();
+					if (!authResponse.ok || !authData.success) {
 						setSeller({
 							artistData: null,
 							loading: false,
@@ -80,18 +76,53 @@ export function SellerProvider({ children }: { children: ReactNode }) {
 						});
 						return;
 					}
-					const json = await res.json();
+
+					let sellerResponse: Response | null = null;
+					for (let attempt = 0; attempt < 3; attempt += 1) {
+						sellerResponse = await fetch("/api/seller", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({
+								sellerId: authData.sellerId,
+							}),
+						});
+
+						if (
+							sellerResponse.ok ||
+							sellerResponse.status !== 404
+						) {
+							break;
+						}
+
+						await new Promise((resolve) =>
+							setTimeout(resolve, 250 * (attempt + 1)),
+						);
+					}
+
+					if (!sellerResponse?.ok) {
+						setSeller({
+							artistData: null,
+							loading: false,
+							authenticated: true,
+						});
+						return;
+					}
+
+					const json = await sellerResponse.json();
 					const artistData = json.data as SellerType;
 					setSeller({
 						artistData,
 						loading: false,
 						authenticated: true,
 					});
-				} else {
+				} catch (error) {
+					console.error("Failed to load seller profile:", error);
 					setSeller({
 						artistData: null,
 						loading: false,
-						authenticated: false,
+						authenticated: true,
 					});
 				}
 			},
