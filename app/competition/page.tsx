@@ -2,6 +2,7 @@
 
 import { useSiteContent } from "@/app/_context/SiteContentContext";
 import PageIntro from "@/components/PageIntro";
+import Poster from "@/components/Poster";
 import { ShowToast } from "@/components/Toaster";
 import { FormEvent, useEffect, useState } from "react";
 import { CompetitionEntry } from "../_lib/customTypes";
@@ -89,7 +90,7 @@ export default function CompetitionPage() {
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
 					<PageIntro
 						pageKey="competition"
-						titleClassName="heading-font font-bold text-5xl uppercase tracking-[.22em] text-[#d6ad58]"
+						titleClassName="heading-font max-w-full break-words font-bold text-3xl leading-tight uppercase tracking-[.12em] text-[#d6ad58] sm:text-5xl sm:tracking-[.22em]"
 						subtitleClassName="mt-2 max-w-4xl text-2xl italic md:text-3xl heading-font leading-tight text-[#d6ad58]"
 						subtextClassName="mt-4 max-w-3xl text-lg text-white/75"
 					/>
@@ -101,6 +102,8 @@ export default function CompetitionPage() {
 					</a>
 				</div>
 			</section>
+
+			<Poster />
 
 			<section className="py-10">
 				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] gap-6 md:grid-cols-3">
