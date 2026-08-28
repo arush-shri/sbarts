@@ -3,6 +3,7 @@ import CountShowCard from "@/components/CountShowCard";
 import FeaturedArtworks from "@/components/FeaturedArtworks";
 import HomeHero from "@/components/HomeHero";
 import { CompetetionCard } from "@/components/HomeParts";
+import Poster from "@/components/Poster";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -48,6 +49,8 @@ export default function Home() {
 				<CompetetionCard />
 			</section>
 
+			<Poster />
+
 			<section className="py-20">
 				<div className="mx-auto w-[min(1180px,calc(100%-40px))]">
 					<div className="mx-auto mb-9 max-w-3xl text-center">
@@ -65,10 +68,7 @@ export default function Home() {
 
 					<div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
 						{collections.map((collection) => (
-							<Link
-								key={collection.id}
-								href="/gallery"
-							>
+							<Link key={collection.id} href="/gallery">
 								<article className="border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.12)] cursor-pointer transition duration-300 hover:scale-105 origin-center h-full">
 									<div
 										className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${collection.className}`}
