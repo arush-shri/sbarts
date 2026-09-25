@@ -2,22 +2,17 @@
 
 import { useSellerContext } from "@/app/_context/SellerContext";
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
-import { CompetitionManagerRef, SellerType } from "@/app/_lib/customTypes";
+import { SellerType } from "@/app/_lib/customTypes";
 import Loading from "@/components/Loading";
 import ProtectedPage from "@/components/ProtectedPage";
-import {
-	CompetitionButton,
-	CompetitionManager,
-	ListingsTable,
-} from "@/components/SellerParts";
+import { ListingsTable } from "@/components/SellerParts";
 import { signOut } from "@firebase/auth";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ReactElement, useEffect, useRef } from "react";
+import { ReactElement, useEffect } from "react";
 
 export default function SellerDashboard(): ReactElement {
 	const router = useRouter();
-	const managerRef = useRef<CompetitionManagerRef>(null);
 	const {
 		artistData,
 		loading,
@@ -63,9 +58,6 @@ export default function SellerDashboard(): ReactElement {
 							>
 								<Plus className="h-auto w-5" /> Add New Listing
 							</button>
-							{isAdmin ? (
-								<CompetitionButton managerRef={managerRef} />
-							) : null}
 							<button
 								onClick={handleLogout}
 								className="border border-[#061a3d]/15 bg-white px-3 py-2 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:border-[#d6ad58] hover:text-[#d6ad58]"
@@ -76,12 +68,6 @@ export default function SellerDashboard(): ReactElement {
 					</div>
 
 					<main className="flex-1 space-y-8">
-						{isAdmin ? (
-							<div className="overflow-hidden border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">
-								<CompetitionManager ref={managerRef} />
-							</div>
-						) : null}
-
 						<div className="overflow-hidden border border-[#061a3d]/12 bg-white shadow-[0_20px_60px_rgba(6,26,61,.08)]">
 							<ListingsTable
 								artworkIds={artistData.artWorks}

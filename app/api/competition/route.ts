@@ -3,6 +3,8 @@ import { CompetitionEntry } from "@/app/_lib/customTypes";
 import { requireAdminUser } from "@/server/Auth";
 import { NextRequest, NextResponse } from "next/server";
 
+const CURRENT_COMPETITION_ID = "current";
+
 function authErrorResponse(err: unknown) {
 	if (!(err instanceof Error)) return null;
 	if (err.message === "Unauthorized") {
@@ -21,6 +23,13 @@ function authErrorResponse(err: unknown) {
 }
 
 async function fetchLatestCompetition() {
+	const current = await firebaseDB
+		.collection("competetion")
+		.doc(CURRENT_COMPETITION_ID)
+		.get();
+
+	if (current.exists) return current.data() as CompetitionEntry;
+
 	const snap = await firebaseDB
 		.collection("competetion")
 		.orderBy("createdAt", "desc")
@@ -34,25 +43,8 @@ async function fetchLatestCompetition() {
 	return snap.docs[0].data() as CompetitionEntry;
 }
 
-async function fetchAllCompetitions() {
-	const snap = await firebaseDB
-		.collection("competetion")
-		.orderBy("createdAt", "desc")
-		.get();
-
-	return snap.docs.map((doc) => doc.data() as CompetitionEntry);
-}
-
-export async function GET(req: NextRequest) {
+export async function GET() {
 	try {
-		const { searchParams } = new URL(req.url);
-		const all = searchParams.get("all");
-
-		if (all === "1") {
-			const data = await fetchAllCompetitions();
-			return NextResponse.json({ success: true, data }, { status: 200 });
-		}
-
 		const data = await fetchLatestCompetition();
 		return NextResponse.json({ success: true, data }, { status: 200 });
 	} catch (err) {
@@ -89,7 +81,9 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
-		const competitionRef = firebaseDB.collection("competetion").doc();
+		const competitionRef = firebaseDB
+			.collection("competetion")
+			.doc(CURRENT_COMPETITION_ID);
 		const now = Date.now();
 
 		const document: CompetitionEntry = {
@@ -128,42 +122,74 @@ export async function PUT(req: NextRequest) {
 			id?: string;
 		};
 
-		if (!body.id) {
-			return NextResponse.json(
-				{ error: "Competition id is required." },
-				{ status: 400 },
-			);
+		let competitionRef = firebaseDB
+			.collection("competetion")
+			.doc(body.id || CURRENT_COMPETITION_ID);
+		const initialDoc = await competitionRef.get();
+
+		if (!body.id && !initialDoc.exists) {
+			const latest = await firebaseDB
+				.collection("competetion")
+				.orderBy("createdAt", "desc")
+				.limit(1)
+				.get();
+			if (!latest.empty) {
+				competitionRef = latest.docs[0].ref;
+			}
 		}
 
-		const competitionRef = firebaseDB
-			.collection("competetion")
-			.doc(body.id);
-		const competitionDoc = await competitionRef.get();
+		const currentDoc = await competitionRef.get();
 
-		if (!competitionDoc.exists) {
+		if (!currentDoc.exists && body.id) {
 			return NextResponse.json(
 				{ error: "Competition not found." },
 				{ status: 404 },
 			);
 		}
 
+		const bodyValues = {
+			title: body.title?.trim() || "SB Arts International Juried Competition",
+			entriesOpen: String(body.entriesOpen || "").trim(),
+			finalDeadline: String(body.finalDeadline || "").trim(),
+			winnersAnnouncement: String(body.winnersAnnouncement || "").trim(),
+			exhibitionOpen: String(body.exhibitionOpen || "").trim(),
+			status: body.status?.trim() || "registration open",
+		};
+
+		if (
+			!bodyValues.entriesOpen ||
+			!bodyValues.finalDeadline ||
+			!bodyValues.winnersAnnouncement ||
+			!bodyValues.exhibitionOpen
+		) {
+			return NextResponse.json(
+				{ error: "All competition dates are required." },
+				{ status: 400 },
+			);
+		}
+
 		const updateData: Partial<CompetitionEntry> = {
+			...bodyValues,
 			updatedAt: Date.now(),
 		};
 
-		if (body.entriesOpen !== undefined)
-			updateData.entriesOpen = String(body.entriesOpen);
-		if (body.finalDeadline !== undefined)
-			updateData.finalDeadline = String(body.finalDeadline);
-		if (body.winnersAnnouncement !== undefined)
-			updateData.winnersAnnouncement = String(body.winnersAnnouncement);
-		if (body.exhibitionOpen !== undefined)
-			updateData.exhibitionOpen = String(body.exhibitionOpen);
-		if (body.status !== undefined) updateData.status = body.status.trim();
-		if (body.title !== undefined) updateData.title = body.title.trim();
+		if (currentDoc.exists) {
+			await competitionRef.update(updateData);
+		} else {
+			const now = Date.now();
+			await competitionRef.set({
+				id: competitionRef.id,
+				...bodyValues,
+				createdAt: now,
+				updatedAt: now,
+			} satisfies CompetitionEntry);
+		}
 
-		await competitionRef.update(updateData);
-		return NextResponse.json({ success: true }, { status: 200 });
+		const saved = await competitionRef.get();
+		return NextResponse.json(
+			{ success: true, data: saved.data() as CompetitionEntry },
+			{ status: 200 },
+		);
 	} catch (err) {
 		console.error(err);
 		const authResponse = authErrorResponse(err);
