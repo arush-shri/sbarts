@@ -30,7 +30,11 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 		subtitle: "Art for Hope, Dignity & Freedom",
 		subtext:
 			"Creating artwork that invites reflection, celebrates humanity, and inspires hope through observation, craftsmanship, and imagination.",
-		fields: {},
+		fields: {
+			exhibitionCount: "",
+			collectionCount: "5",
+			missionCount: "1",
+		},
 	},
 	gallery: {
 		title: "Gallery",
@@ -94,13 +98,26 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 export type SiteContentFieldConfig = {
 	key: string;
 	label: string;
-	type?: "text" | "textarea" | "email" | "url";
+	type?: "text" | "textarea" | "email" | "url" | "number";
 	rows?: number;
 };
 
 export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 	Record<SitePageKey, SiteContentFieldConfig[]>
 > = {
+	home: [
+		{
+			key: "exhibitionCount",
+			label: "Exhibitions & awards count",
+			type: "number",
+		},
+		{
+			key: "collectionCount",
+			label: "Gallery collections count",
+			type: "number",
+		},
+		{ key: "missionCount", label: "Global mission count", type: "number" },
+	],
 	about: [
 		{ key: "missionLabel", label: "Mission label" },
 		{ key: "missionTitle", label: "Mission title" },

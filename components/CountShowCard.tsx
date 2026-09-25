@@ -1,5 +1,6 @@
 "use client";
 
+import { useSiteContent } from "@/app/_context/SiteContentContext";
 import { ReactElement, useEffect, useState } from "react";
 
 export default function CountShowCard({
@@ -7,6 +8,7 @@ export default function CountShowCard({
 }: {
 	styles: string;
 }): ReactElement {
+	const { getPageContent } = useSiteContent();
 	const [stats, setStats] = useState<{
 		paintingCount: number;
 		exhibitionCount: number;
@@ -29,13 +31,18 @@ export default function CountShowCard({
 		loadStats();
 	}, []);
 
+	const homeFields = getPageContent("home").fields || {};
+	const exhibitionCount = homeFields.exhibitionCount?.trim()
+		? homeFields.exhibitionCount
+		: `${stats?.exhibitionCount ?? 0}`;
+
 	return (
 		<div className={styles}>
 			{[
 				[`${stats?.paintingCount ?? 0}`, "Original Artworks"],
-				[`${stats?.exhibitionCount ?? 0}`, "Exhibitions & Awards"],
-				["5", "Gallery Collections"],
-				["1", "Global Mission"],
+				[exhibitionCount, "Exhibitions & Awards"],
+				[homeFields.collectionCount || "5", "Gallery Collections"],
+				[homeFields.missionCount || "1", "Global Mission"],
 			].map(([value, label]) => (
 				<div
 					key={label}
