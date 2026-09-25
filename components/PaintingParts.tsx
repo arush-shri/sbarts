@@ -1,12 +1,19 @@
 "use client";
 
-import { SellerType } from "@/app/_lib/customTypes";
-import { X, ZoomIn } from "lucide-react";
+import { PaintingType, SellerType } from "@/app/_lib/customTypes";
+import { ZoomIn } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ReactElement, useEffect, useState } from "react";
+import ImageLightbox from "./ImageLightbox";
 
-export function PaintingImage({ uri, title }: { uri: string; title: string }) {
+export function PaintingImage({
+	uri,
+	painting,
+}: {
+	uri: string;
+	painting: PaintingType;
+}) {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
@@ -16,7 +23,7 @@ export function PaintingImage({ uri, title }: { uri: string; title: string }) {
 				<div className="relative overflow-hidden rounded-xl shadow-sm">
 					<Image
 						src={uri}
-						alt={`${title} image`}
+						alt={`${painting.title} image`}
 						width={864}
 						height={1184}
 						className="object-cover aspect-auto h-auto md:h-[82dvh]"
@@ -24,7 +31,9 @@ export function PaintingImage({ uri, title }: { uri: string; title: string }) {
 
 					{/* ZOOM BUTTON */}
 					<button
+						type="button"
 						onClick={() => setIsOpen(true)}
+						aria-label={`Enlarge ${painting.title}`}
 						className="absolute bottom-3 right-3 bg-black/60 p-3 rounded-xl text-sm hover:bg-black/100 transition"
 					>
 						<ZoomIn className="h-auto w-4 text-[#FFFFFF]" />
@@ -32,35 +41,13 @@ export function PaintingImage({ uri, title }: { uri: string; title: string }) {
 				</div>
 			</section>
 
-			{/* FULLSCREEN MODAL */}
-			{isOpen && (
-				<div
-					className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
-					onClick={() => setIsOpen(false)}
-				>
-					{/* Prevent close when clicking image */}
-					<div
-						className="relative max-w-[95vw] max-h-[95vh]"
-						onClick={(e) => e.stopPropagation()}
-					>
-						<Image
-							src={uri}
-							alt={`${title} fullscreen`}
-							width={1600}
-							height={2000}
-							className="object-contain max-h-[95vh] w-auto h-auto rounded-lg"
-						/>
-
-						{/* CLOSE BUTTON */}
-						<button
-							onClick={() => setIsOpen(false)}
-							className="absolute top-3 right-3 bg-black/60 p-2 rounded-lg hover:bg-black/80 transition"
-						>
-							<X className="h-auto w-5 text-[#FFFFFF]" />
-						</button>
-					</div>
-				</div>
-			)}
+			<ImageLightbox
+				src={uri}
+				alt={`${painting.title} image`}
+				painting={painting}
+				open={isOpen}
+				onClose={() => setIsOpen(false)}
+			/>
 		</>
 	);
 }

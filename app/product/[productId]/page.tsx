@@ -92,7 +92,7 @@ export default function ProductPage() {
 			<section className="mx-auto flex w-[min(1180px,calc(100%-40px))] flex-col gap-12 py-16 md:flex-row">
 				<PaintingImage
 					uri={imageUrlGenerator(painting.images)}
-					title={painting.title}
+					painting={painting}
 				/>
 
 				<div className="flex w-full flex-col gap-8 md:w-1/2">

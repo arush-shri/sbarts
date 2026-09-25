@@ -82,6 +82,7 @@ export default function PaintingCard({
 			<ImageLightbox
 				src={imageUrlGenerator(artData.images)}
 				alt={`${artData.title} image`}
+				painting={artData}
 				open={imageOpen}
 				onClose={() => setImageOpen(false)}
 			/>
