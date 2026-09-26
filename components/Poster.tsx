@@ -1,6 +1,14 @@
+"use client";
+
+import { useSiteContent } from "@/app/_context/SiteContentContext";
 import Image from "next/image";
 
 export default function Poster() {
+	const { getPageContent } = useSiteContent();
+	const posterImage =
+		getPageContent("home").fields?.competitionPosterImage ||
+		"/images/poster.jpg";
+
 	return (
 		<section className="bg-[#061a3d] py-16 text-white">
 			<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] items-center gap-8 md:grid-cols-[.8fr_1.2fr]">
@@ -18,7 +26,7 @@ export default function Poster() {
 				</div>
 				<div className="mx-auto w-full max-w-[520px] overflow-hidden border border-[#d6ad58]/50 bg-[#0b254f]">
 					<Image
-						src="/images/poster.jpg"
+						src={posterImage}
 						alt="SB Arts International Competition poster"
 						width={1080}
 						height={1080}

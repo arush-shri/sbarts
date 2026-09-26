@@ -1,12 +1,14 @@
 "use client";
 
 import { useSiteContent } from "@/app/_context/SiteContentContext";
+import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import {
 	SITE_CONTENT_EXTRA_FIELDS,
 	SitePageKey,
 } from "@/app/_lib/siteContent";
 import { Save, X } from "lucide-react";
 import { FormEvent, useState } from "react";
+import { ShowToast } from "@/components/Toaster";
 
 type SiteContentEditorProps = {
 	pageKey: SitePageKey | null;
@@ -21,11 +23,54 @@ export default function SiteContentEditor({
 }: SiteContentEditorProps) {
 	const { getPageContent, updatePageContent } = useSiteContent();
 	const [saving, setSaving] = useState(false);
+	const [uploadingField, setUploadingField] = useState<string | null>(null);
 
 	if (!open || !pageKey) return null;
 
 	const content = getPageContent(pageKey);
 	const extraFields = SITE_CONTENT_EXTRA_FIELDS[pageKey] || [];
+
+	const uploadImage = async (fieldKey: string, file: File) => {
+		if (!file.type.startsWith("image/")) {
+			ShowToast("Please choose an image file.", 1);
+			return;
+		}
+		const user = firebaseClientAuth.currentUser;
+		if (!user) {
+			ShowToast("Please sign in again to upload images.", 1);
+			return;
+		}
+
+		setUploadingField(fieldKey);
+		try {
+			const token = await user.getIdToken();
+			const uploadData = new FormData();
+			uploadData.append("file", file);
+			const response = await fetch("/api/site-content/upload", {
+				method: "POST",
+				headers: { Authorization: `Bearer ${token}` },
+				body: uploadData,
+			});
+			const result = await response.json();
+			if (!response.ok) throw new Error(result.error || "Image upload failed.");
+			const input = document.querySelector<HTMLInputElement>(
+				`input[data-image-field="${fieldKey}"]`,
+			);
+			if (input) input.value = result.url;
+			const preview = document.querySelector<HTMLImageElement>(
+				`img[data-image-preview="${fieldKey}"]`,
+			);
+			if (preview) preview.src = result.url;
+			ShowToast("Image uploaded. Save the page to publish it.", 2);
+		} catch (error) {
+			ShowToast(
+				error instanceof Error ? error.message : "Image upload failed.",
+				0,
+			);
+		} finally {
+			setUploadingField(null);
+		}
+	};
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -127,7 +172,35 @@ export default function SiteContentEditor({
 									className="grid gap-2 text-sm font-semibold text-[#061a3d]"
 								>
 									{field.label}
-									{field.type === "textarea" ? (
+									{field.type === "image" ? (
+										<div className="grid gap-3">
+											<input
+												name={`fields.${field.key}`}
+												data-image-field={field.key}
+												defaultValue={content.fields?.[field.key] || ""}
+												className="border border-[#061a3d]/20 bg-white px-4 py-3 font-normal outline-none focus:border-[#d6ad58]"
+											/>
+											<label className="inline-flex w-fit cursor-pointer items-center border border-[#061a3d]/20 bg-white px-4 py-3 text-xs font-bold uppercase tracking-[.06em] text-[#061a3d] hover:border-[#d6ad58]">
+												{uploadingField === field.key ? "Uploading..." : "Upload image"}
+												<input
+													type="file"
+													accept="image/*"
+													hidden
+													disabled={uploadingField !== null}
+													onChange={(event) => {
+														const file = event.target.files?.[0];
+														if (file) void uploadImage(field.key, file);
+													}}
+												/>
+											</label>
+											<img
+												data-image-preview={field.key}
+												src={content.fields?.[field.key] || ""}
+												alt=""
+												className="h-40 w-full object-cover"
+											/>
+										</div>
+									) : field.type === "textarea" ? (
 										<textarea
 											name={`fields.${field.key}`}
 											defaultValue={

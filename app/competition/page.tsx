@@ -475,7 +475,13 @@ export default function CompetitionPage() {
 							dignified future.
 						</p>
 					</div>
-					<div className="min-h-[420px] border border-[#d6ad58] bg-gradient-to-br from-[#d6ad58] to-[#0c2a62]" />
+					<div className="relative min-h-[420px] overflow-hidden border border-[#d6ad58] bg-[#0c2a62]">
+						<img
+							src={content.fields?.featureImage || "/images/hope.png"}
+							alt="Competition feature"
+							className="absolute inset-0 h-full w-full object-cover"
+						/>
+					</div>
 				</div>
 			</section>
 

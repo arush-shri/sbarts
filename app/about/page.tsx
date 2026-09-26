@@ -42,7 +42,16 @@ export default function AboutPage() {
 						<p className="mt-5 text-white/75">{missionSubtitle}</p>
 						<p className="mt-4 text-white/75">{missionSubtext}</p>
 					</div>
-					<div className="min-h-[420px] border border-[#d6ad58] bg-gradient-to-br from-[#d6ad58] to-[#0c2a62]" />
+					<div className="relative min-h-[420px] overflow-hidden border border-[#d6ad58] bg-[#0c2a62]">
+						<img
+							src={
+								content.fields?.featureImage ||
+								"/images/wildlife.png"
+							}
+							alt="About SB Arts"
+							className="absolute inset-0 h-full w-full object-cover"
+						/>
+					</div>
 				</div>
 			</section>
 

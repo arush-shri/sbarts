@@ -34,6 +34,7 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 			exhibitionCount: "",
 			collectionCount: "5",
 			missionCount: "1",
+			competitionPosterImage: "/images/poster.jpg",
 		},
 	},
 	gallery: {
@@ -64,6 +65,7 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 			card3Title: "Theme",
 			card3Subtitle:
 				"Hope, dignity, freedom, resilience, identity, and humanity.",
+			featureImage: "/images/hope.png",
 		},
 	},
 	about: {
@@ -78,6 +80,7 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 				"SB Arts explores hope, dignity, freedom, nature, and the human experience through drawing, design, and visual storytelling.",
 			missionSubtext:
 				"Every piece is created with the belief that art has the power to connect, inspire, and create meaningful change.",
+			featureImage: "/images/wildlife.png",
 		},
 	},
 	contact: {
@@ -98,7 +101,7 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 export type SiteContentFieldConfig = {
 	key: string;
 	label: string;
-	type?: "text" | "textarea" | "email" | "url" | "number";
+	type?: "text" | "textarea" | "email" | "url" | "number" | "image";
 	rows?: number;
 };
 
@@ -106,6 +109,11 @@ export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 	Record<SitePageKey, SiteContentFieldConfig[]>
 > = {
 	home: [
+		{
+			key: "competitionPosterImage",
+			label: "Competition poster image",
+			type: "image",
+		},
 		{
 			key: "exhibitionCount",
 			label: "Exhibitions & awards count",
@@ -119,6 +127,11 @@ export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 		{ key: "missionCount", label: "Global mission count", type: "number" },
 	],
 	about: [
+		{
+			key: "featureImage",
+			label: "About feature image",
+			type: "image",
+		},
 		{ key: "missionLabel", label: "Mission label" },
 		{ key: "missionTitle", label: "Mission title" },
 		{
@@ -135,6 +148,11 @@ export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 		},
 	],
 	competition: [
+		{
+			key: "featureImage",
+			label: "Competition feature image",
+			type: "image",
+		},
 		{ key: "card1Title", label: "First card title" },
 		{
 			key: "card1Subtitle",
