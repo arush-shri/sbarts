@@ -3,27 +3,31 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useSiteContent } from "@/app/_context/SiteContentContext";
+import {
+	DEFAULT_HERO_SLIDES,
+	SiteHeroSlide,
+} from "@/app/_lib/siteContent";
 import PageIntro from "./PageIntro";
 
-const slides = [
-	{
-		title: "Hope & Dignity",
-		copy: "Resilience, memory, and belonging.",
-		image: "/images/hope.png",
-	},
-	{
-		title: "Portrait",
-		copy: "Character, identity, and emotion.",
-		image: "/images/portrait.png",
-	},
-	{
-		title: "Wildlife",
-		copy: "The beauty and dignity of nature.",
-		image: "/images/wildlife.png",
-	},
-];
-
 export default function HomeHero() {
+	const { getPageContent } = useSiteContent();
+	const configuredSlides = getPageContent("home").fields?.heroSlides;
+	let slides: SiteHeroSlide[] = DEFAULT_HERO_SLIDES;
+
+	try {
+		const parsed = JSON.parse(configuredSlides || "");
+		if (Array.isArray(parsed)) {
+			const validSlides = parsed.filter(
+				(slide): slide is SiteHeroSlide =>
+					typeof slide?.image === "string" && slide.image.trim().length > 0,
+			);
+			if (validSlides.length) slides = validSlides;
+		}
+	} catch {
+		// Older content uses the bundled default slideshow.
+	}
+
 	const [active, setActive] = useState(0);
 
 	useEffect(() => {
@@ -32,9 +36,10 @@ export default function HomeHero() {
 		}, 8000);
 
 		return () => window.clearInterval(interval);
-	}, []);
+	}, [slides.length]);
 
-	const slide = slides[active];
+	const safeActive = Math.min(active, slides.length - 1);
+	const slide = slides[safeActive];
 
 	return (
 		<section className="overflow-hidden bg-[#061a3d] text-white">
@@ -84,7 +89,7 @@ export default function HomeHero() {
 								type="button"
 								onClick={() => setActive(index)}
 								className={`h-2.5 w-2.5 rounded-full border border-[#d6ad58] ${
-									index === active
+									index === safeActive
 										? "bg-[#d6ad58]"
 										: "bg-transparent"
 								}`}

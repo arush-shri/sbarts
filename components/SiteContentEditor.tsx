@@ -4,9 +4,10 @@ import { useSiteContent } from "@/app/_context/SiteContentContext";
 import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import {
 	SITE_CONTENT_EXTRA_FIELDS,
+	SiteHeroSlide,
 	SitePageKey,
 } from "@/app/_lib/siteContent";
-import { Save, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Plus, Save, Trash2, X } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { ShowToast } from "@/components/Toaster";
 
@@ -15,6 +16,149 @@ type SiteContentEditorProps = {
 	open: boolean;
 	onClose: () => void;
 };
+
+type SlideshowFieldProps = {
+	initialValue: string;
+	onUpload: (file: File, previousUrl: string) => Promise<string | null>;
+};
+
+function parseSlides(value: string): SiteHeroSlide[] {
+	try {
+		const parsed = JSON.parse(value);
+		if (!Array.isArray(parsed)) return [];
+		return parsed.map((slide) => ({
+			title: typeof slide?.title === "string" ? slide.title : "",
+			copy: typeof slide?.copy === "string" ? slide.copy : "",
+			image: typeof slide?.image === "string" ? slide.image : "",
+		}));
+	} catch {
+		return [];
+	}
+}
+
+function SlideshowField({ initialValue, onUpload }: SlideshowFieldProps) {
+	const [slides, setSlides] = useState(() => parseSlides(initialValue));
+	const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+
+	const updateSlide = (index: number, changes: Partial<SiteHeroSlide>) => {
+		setSlides((current) =>
+			current.map((slide, slideIndex) =>
+				slideIndex === index ? { ...slide, ...changes } : slide,
+			),
+		);
+	};
+
+	const moveSlide = (index: number, direction: -1 | 1) => {
+		const targetIndex = index + direction;
+		if (targetIndex < 0 || targetIndex >= slides.length) return;
+		setSlides((current) => {
+			const next = [...current];
+			const target = next[index + direction];
+			next[index + direction] = next[index];
+			next[index] = target;
+			return next;
+		});
+	};
+
+	return (
+		<div className="grid gap-4">
+			<input
+				type="hidden"
+				name="fields.heroSlides"
+				value={JSON.stringify(slides)}
+			/>
+			{slides.map((slide, index) => (
+				<div
+					key={`${index}-${slide.image}`}
+					className="grid gap-3 border border-[#061a3d]/15 bg-white p-4"
+				>
+					<div className="flex items-center justify-between gap-3">
+						<strong className="text-sm text-[#061a3d]">
+							Slide {index + 1}
+						</strong>
+						<div className="flex gap-1">
+							<button
+								type="button"
+								disabled={index === 0}
+								onClick={() => moveSlide(index, -1)}
+								className="grid h-8 w-8 place-items-center border border-[#061a3d]/15 disabled:opacity-30"
+								aria-label={`Move slide ${index + 1} up`}
+								title="Move up"
+							>
+								<ArrowUp className="h-4 w-4" />
+							</button>
+							<button
+								type="button"
+								disabled={index === slides.length - 1}
+								onClick={() => moveSlide(index, 1)}
+								className="grid h-8 w-8 place-items-center border border-[#061a3d]/15 disabled:opacity-30"
+								aria-label={`Move slide ${index + 1} down`}
+								title="Move down"
+							>
+								<ArrowDown className="h-4 w-4" />
+							</button>
+							<button
+								type="button"
+								onClick={() => setSlides((current) => current.filter((_, slideIndex) => slideIndex !== index))}
+								className="grid h-8 w-8 place-items-center border border-red-200 text-red-700"
+								aria-label={`Remove slide ${index + 1}`}
+								title="Remove slide"
+							>
+								<Trash2 className="h-4 w-4" />
+							</button>
+						</div>
+					</div>
+					<div className="grid gap-3 sm:grid-cols-2">
+						<input
+							value={slide.title}
+							onChange={(event) => updateSlide(index, { title: event.target.value })}
+							placeholder="Slide title"
+							className="border border-[#061a3d]/20 px-3 py-2 font-normal outline-none focus:border-[#d6ad58]"
+						/>
+						<input
+							value={slide.copy}
+							onChange={(event) => updateSlide(index, { copy: event.target.value })}
+							placeholder="Slide description"
+							className="border border-[#061a3d]/20 px-3 py-2 font-normal outline-none focus:border-[#d6ad58]"
+						/>
+					</div>
+					{slide.image ? (
+						<img src={slide.image} alt="" className="h-32 w-full object-cover" />
+					) : (
+						<div className="grid h-32 place-items-center bg-[#061a3d]/5 text-sm text-[#6a7280]">
+							Upload an image for this slide
+						</div>
+					)}
+					<label className="inline-flex w-fit cursor-pointer border border-[#061a3d]/20 px-4 py-3 text-xs font-bold uppercase tracking-[.06em] text-[#061a3d] hover:border-[#d6ad58]">
+						{uploadingIndex === index ? "Uploading..." : "Change image"}
+						<input
+							type="file"
+							accept="image/*"
+							hidden
+							disabled={uploadingIndex !== null}
+							onChange={async (event) => {
+								const file = event.target.files?.[0];
+								if (!file) return;
+								setUploadingIndex(index);
+								const image = await onUpload(file, slide.image);
+								if (image) updateSlide(index, { image });
+								setUploadingIndex(null);
+							}}
+						/>
+					</label>
+				</div>
+			))}
+			<button
+				type="button"
+				onClick={() => setSlides((current) => [...current, { title: "", copy: "", image: "" }])}
+				className="inline-flex w-fit items-center gap-2 border border-[#061a3d]/20 px-4 py-3 text-xs font-bold uppercase tracking-[.06em] text-[#061a3d] hover:border-[#d6ad58]"
+			>
+				<Plus className="h-4 w-4" />
+				Add slide
+			</button>
+		</div>
+	);
+}
 
 export default function SiteContentEditor({
 	pageKey,
@@ -30,15 +174,19 @@ export default function SiteContentEditor({
 	const content = getPageContent(pageKey);
 	const extraFields = SITE_CONTENT_EXTRA_FIELDS[pageKey] || [];
 
-	const uploadImage = async (fieldKey: string, file: File) => {
+	const uploadImage = async (
+		fieldKey: string,
+		file: File,
+		previousUrl?: string,
+	): Promise<string | null> => {
 		if (!file.type.startsWith("image/")) {
 			ShowToast("Please choose an image file.", 1);
-			return;
+			return null;
 		}
 		const user = firebaseClientAuth.currentUser;
 		if (!user) {
 			ShowToast("Please sign in again to upload images.", 1);
-			return;
+			return null;
 		}
 
 		setUploadingField(fieldKey);
@@ -49,8 +197,9 @@ export default function SiteContentEditor({
 			const currentInput = document.querySelector<HTMLInputElement>(
 				`input[data-image-field="${fieldKey}"]`,
 			);
-			if (currentInput?.value) {
-				uploadData.append("previousUrl", currentInput.value);
+			const previousImageUrl = previousUrl || currentInput?.value;
+			if (previousImageUrl) {
+				uploadData.append("previousUrl", previousImageUrl);
 			}
 			const response = await fetch("/api/site-content/upload", {
 				method: "POST",
@@ -66,11 +215,13 @@ export default function SiteContentEditor({
 			);
 			if (preview) preview.src = result.url;
 			ShowToast("Image uploaded. Save the page to publish it.", 2);
+			return result.url;
 		} catch (error) {
 			ShowToast(
 				error instanceof Error ? error.message : "Image upload failed.",
 				0,
 			);
+			return null;
 		} finally {
 			setUploadingField(null);
 		}
@@ -176,7 +327,14 @@ export default function SiteContentEditor({
 									className="grid gap-2 text-sm font-semibold text-[#061a3d]"
 								>
 									{field.label}
-									{field.type === "image" ? (
+									{field.type === "image-list" ? (
+										<SlideshowField
+											initialValue={content.fields?.[field.key] || "[]"}
+											onUpload={(file, previousUrl) =>
+												uploadImage(field.key, file, previousUrl)
+											}
+										/>
+									) : field.type === "image" ? (
 										<div className="grid gap-3">
 											<input
 												name={`fields.${field.key}`}

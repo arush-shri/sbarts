@@ -2,21 +2,22 @@ import {
 	SITE_CONTENT_EXTRA_FIELDS,
 	SitePageKey,
 	isSitePageKey,
-	mergeSiteContent,
 } from "@/app/_lib/siteContent";
 import {
 	getSiteContent,
 	invalidateSiteContentCache,
 	updateSitePageContent,
 } from "@/app/_lib/siteContentServer";
+import { firebaseStorage } from "@/app/_firebase/storage";
 import { requireAdminUser } from "@/server/Auth";
 import { NextRequest, NextResponse } from "next/server";
 
 const MAX_FIELD_LENGTH = 600;
 
-function cleanText(value: unknown) {
+
+function cleanText(value: unknown, maxLength = MAX_FIELD_LENGTH) {
 	if (typeof value !== "string") return "";
-	return value.trim().slice(0, MAX_FIELD_LENGTH);
+	return value.trim().slice(0, maxLength);
 }
 
 function cleanFields(pageKey: string, fields: unknown) {
@@ -27,9 +28,54 @@ function cleanFields(pageKey: string, fields: unknown) {
 	const incoming = fields as Record<string, unknown>;
 
 	return allowedFields.reduce<Record<string, string>>((nextFields, field) => {
-		nextFields[field.key] = cleanText(incoming[field.key]);
+		nextFields[field.key] = cleanText(
+			incoming[field.key],
+			field.type === "image-list" ? 30000 : MAX_FIELD_LENGTH,
+		);
 		return nextFields;
 	}, {});
+}
+
+function getManagedImageUrls(fields?: Record<string, string>) {
+	const urls = new Set<string>();
+	for (const [key, value] of Object.entries(fields || {})) {
+		if (key === "heroSlides") {
+			try {
+				const slides = JSON.parse(value);
+				if (Array.isArray(slides)) {
+					for (const slide of slides) {
+						if (typeof slide?.image === "string") urls.add(slide.image);
+					}
+				}
+			} catch {
+				// Invalid legacy slideshow values do not contain managed paths.
+			}
+		} else if (key.toLowerCase().includes("image")) {
+			urls.add(value);
+		}
+	}
+	return urls;
+}
+
+async function removeManagedImage(url: string) {
+	try {
+		const parsed = new URL(url);
+		const bucket = firebaseStorage.bucket();
+		if (
+			parsed.hostname !== "storage.googleapis.com" ||
+			parsed.pathname.split("/")[1] !== bucket.name
+		) {
+			return;
+		}
+		const encodedPath = parsed.pathname.split("/").slice(2).join("/");
+		if (encodedPath) {
+			await bucket.file(decodeURIComponent(encodedPath)).delete({
+				ignoreNotFound: true,
+			});
+		}
+	} catch (error) {
+		console.error("Failed to remove deleted site content image:", error);
+	}
 }
 
 export async function GET(req: NextRequest) {
@@ -91,7 +137,11 @@ export async function PUT(req: NextRequest) {
 			);
 		}
 
-		const pages = mergeSiteContent();
+		const current = await getSiteContent();
+		const pages = current.pages;
+		const previousImageUrls = getManagedImageUrls(
+			pages[pageKey].fields,
+		);
 		const pageContent = {
 			...pages[pageKey],
 			title: cleanText(body.title),
@@ -112,6 +162,12 @@ export async function PUT(req: NextRequest) {
 
 		invalidateSiteContentCache();
 		const payload = await updateSitePageContent(pageKey, pageContent);
+		const nextImageUrls = getManagedImageUrls(pageContent.fields);
+		await Promise.all(
+			[...previousImageUrls]
+				.filter((url) => !nextImageUrls.has(url))
+				.map(removeManagedImage),
+		);
 
 		return NextResponse.json(
 			{ success: true, ...payload },

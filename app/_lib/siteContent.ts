@@ -21,6 +21,30 @@ export type SiteContentPayload = {
 	pages: SiteContentMap;
 };
 
+export type SiteHeroSlide = {
+	title: string;
+	copy: string;
+	image: string;
+};
+
+export const DEFAULT_HERO_SLIDES: SiteHeroSlide[] = [
+	{
+		title: "Hope & Dignity",
+		copy: "Resilience, memory, and belonging.",
+		image: "/images/hope.png",
+	},
+	{
+		title: "Portrait",
+		copy: "Character, identity, and emotion.",
+		image: "/images/portrait.png",
+	},
+	{
+		title: "Wildlife",
+		copy: "The beauty and dignity of nature.",
+		image: "/images/wildlife.png",
+	},
+];
+
 export const SITE_CONTENT_COLLECTION = "siteContent";
 export const SITE_CONTENT_DOCUMENT = "pages";
 
@@ -31,6 +55,7 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 		subtext:
 			"Creating artwork that invites reflection, celebrates humanity, and inspires hope through observation, craftsmanship, and imagination.",
 		fields: {
+			heroSlides: JSON.stringify(DEFAULT_HERO_SLIDES),
 			exhibitionCount: "",
 			collectionCount: "5",
 			missionCount: "1",
@@ -107,7 +132,14 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 export type SiteContentFieldConfig = {
 	key: string;
 	label: string;
-	type?: "text" | "textarea" | "email" | "url" | "number" | "image";
+	type?:
+		| "text"
+		| "textarea"
+		| "email"
+		| "url"
+		| "number"
+		| "image"
+		| "image-list";
 	rows?: number;
 };
 
@@ -115,6 +147,11 @@ export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 	Record<SitePageKey, SiteContentFieldConfig[]>
 > = {
 	home: [
+		{
+			key: "heroSlides",
+			label: "Homepage slideshow",
+			type: "image-list",
+		},
 		{
 			key: "competitionPosterImage",
 			label: "Competition poster image",
@@ -245,6 +282,15 @@ export function mergeSiteContent(
 				...(DEFAULT_SITE_CONTENT[key].fields || {}),
 				...(content?.[key]?.fields || {}),
 			},
+		};
+	}
+
+	const legacySlides = content?.gallery?.fields?.heroSlides;
+	const homeSlides = content?.home?.fields?.heroSlides;
+	if (legacySlides && !homeSlides) {
+		pages.home.fields = {
+			...(pages.home.fields || {}),
+			heroSlides: legacySlides,
 		};
 	}
 
