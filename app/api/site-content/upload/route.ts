@@ -10,11 +10,33 @@ const ALLOWED_TYPES = new Set([
 	"image/gif",
 ]);
 
+async function removeManagedImage(url: string) {
+	try {
+		const parsed = new URL(url);
+		const bucket = firebaseStorage.bucket();
+		if (
+			parsed.hostname !== "storage.googleapis.com" ||
+			parsed.pathname.split("/")[1] !== bucket.name
+		) {
+			return;
+		}
+
+		const encodedPath = parsed.pathname.split("/").slice(2).join("/");
+		if (!encodedPath) return;
+		await bucket.file(decodeURIComponent(encodedPath)).delete({
+			ignoreNotFound: true,
+		});
+	} catch (error) {
+		console.error("Failed to remove replaced site content image:", error);
+	}
+}
+
 export async function POST(req: NextRequest) {
 	try {
 		await requireAdminUser(req);
 		const formData = await req.formData();
 		const file = formData.get("file");
+		const previousUrl = String(formData.get("previousUrl") || "");
 
 		if (!(file instanceof File)) {
 			return NextResponse.json({ error: "No image provided." }, { status: 400 });
@@ -34,6 +56,7 @@ export async function POST(req: NextRequest) {
 			metadata: { cacheControl: "public,max-age=31536000,immutable" },
 		});
 		await storedFile.makePublic();
+		if (previousUrl) await removeManagedImage(previousUrl);
 
 		return NextResponse.json({
 			success: true,

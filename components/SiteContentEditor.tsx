@@ -46,6 +46,12 @@ export default function SiteContentEditor({
 			const token = await user.getIdToken();
 			const uploadData = new FormData();
 			uploadData.append("file", file);
+			const currentInput = document.querySelector<HTMLInputElement>(
+				`input[data-image-field="${fieldKey}"]`,
+			);
+			if (currentInput?.value) {
+				uploadData.append("previousUrl", currentInput.value);
+			}
 			const response = await fetch("/api/site-content/upload", {
 				method: "POST",
 				headers: { Authorization: `Bearer ${token}` },
@@ -53,9 +59,7 @@ export default function SiteContentEditor({
 			});
 			const result = await response.json();
 			if (!response.ok) throw new Error(result.error || "Image upload failed.");
-			const input = document.querySelector<HTMLInputElement>(
-				`input[data-image-field="${fieldKey}"]`,
-			);
+			const input = currentInput;
 			if (input) input.value = result.url;
 			const preview = document.querySelector<HTMLImageElement>(
 				`img[data-image-preview="${fieldKey}"]`,

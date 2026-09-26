@@ -42,7 +42,13 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 		subtitle: "Five collections. One mission.",
 		subtext:
 			"Explore work centered on humanity, portraiture, nature, aerospace, and design.",
-		fields: {},
+		fields: {
+			categoryHopeImage: "/images/hope.png",
+			categoryPortraitImage: "/images/portrait.png",
+			categoryWildlifeImage: "/images/wildlife.png",
+			categoryHighAltitudeImage: "/images/altitude.png",
+			categoryDesignImage: "/images/design.png",
+		},
 	},
 	marketplace: {
 		title: "Marketplace",
@@ -125,6 +131,33 @@ export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 			type: "number",
 		},
 		{ key: "missionCount", label: "Global mission count", type: "number" },
+	],
+	gallery: [
+		{
+			key: "categoryHopeImage",
+			label: "Hope & Dignity category image",
+			type: "image",
+		},
+		{
+			key: "categoryPortraitImage",
+			label: "Portrait category image",
+			type: "image",
+		},
+		{
+			key: "categoryWildlifeImage",
+			label: "Wildlife category image",
+			type: "image",
+		},
+		{
+			key: "categoryHighAltitudeImage",
+			label: "High Altitude category image",
+			type: "image",
+		},
+		{
+			key: "categoryDesignImage",
+			label: "Design category image",
+			type: "image",
+		},
 	],
 	about: [
 		{

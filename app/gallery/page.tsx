@@ -1,6 +1,7 @@
 "use client";
 
 import { ART_CATEGORIES } from "@/app/_lib/artCategories";
+import { useSiteContent } from "@/app/_context/SiteContentContext";
 import { PaintingType } from "@/app/_lib/customTypes";
 import PageIntro from "@/components/PageIntro";
 import PaintingCard from "@/components/PaintingCard";
@@ -14,30 +15,35 @@ const collections = [
 		title: ART_CATEGORIES[0],
 		copy: "Art exploring resilience, identity, migration, memory, and the quiet strength of everyday lives.",
 		image: "/images/hope.png",
+		imageField: "categoryHopeImage",
 	},
 	{
 		id: "portrait",
 		title: ART_CATEGORIES[1],
 		copy: "Drawing character, identity, and emotion through careful observation.",
 		image: "/images/portrait.png",
+		imageField: "categoryPortraitImage",
 	},
 	{
 		id: "wildlife",
 		title: ART_CATEGORIES[2],
 		copy: "Celebrating the beauty and dignity of the natural world.",
 		image: "/images/wildlife.png",
+		imageField: "categoryWildlifeImage",
 	},
 	{
 		id: "high-altitude",
 		title: ART_CATEGORIES[3],
 		copy: "Inspired by aviation, aerospace, mountains, clouds, and exploration.",
 		image: "/images/altitude.png",
+		imageField: "categoryHighAltitudeImage",
 	},
 	{
 		id: "design",
 		title: ART_CATEGORIES[4],
 		copy: "Where precision, creativity, and visual storytelling come together.",
 		image: "/images/design.png",
+		imageField: "categoryDesignImage",
 	},
 ] as const;
 
@@ -50,6 +56,8 @@ const collectionIdToCategory: Record<string, string> = {
 };
 
 export default function GalleryPage() {
+	const { getPageContent } = useSiteContent();
+	const galleryContent = getPageContent("gallery");
 	const [items, setItems] = useState<PaintingType[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<
@@ -169,7 +177,10 @@ export default function GalleryPage() {
 								>
 									<div className="relative min-h-32 overflow-hidden bg-gradient-to-br">
 										<Image
-											src={collection.image}
+											src={
+											galleryContent.fields?.[collection.imageField] ||
+											collection.image
+										}
 											alt={collection.title}
 											fill
 											className="object-cover"
