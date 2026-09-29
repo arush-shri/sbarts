@@ -1,7 +1,10 @@
 "use client";
 
 import { PaintingType } from "@/app/_lib/customTypes";
-import { imageUrlGenerator } from "@/app/_lib/dataProcessing";
+import {
+	imageUrlGenerator,
+	watermarkedUrlGenerator,
+} from "@/app/_lib/dataProcessing";
 import { Maximize2 } from "lucide-react";
 import Image from "next/image";
 import { ReactElement, useState } from "react";
@@ -29,7 +32,7 @@ export default function PaintingCard({
 				<div className="block">
 					<div className="group/image relative flex aspect-[1.15/1] items-center justify-center overflow-hidden bg-[#061a3d]">
 						<Image
-							src={imageUrlGenerator(artData.images)}
+							src={watermarkedUrlGenerator(artData.images)}
 							alt={`${artData.title} image`}
 							width={864}
 							height={1184}

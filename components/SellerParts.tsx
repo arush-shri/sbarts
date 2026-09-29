@@ -745,6 +745,35 @@ function ItemRow({
 	{
 		const router = useRouter();
 		const [loading, setLoading] = useState(false);
+		const [originalImageUrl, setOriginalImageUrl] = useState<string | null>(
+			null,
+		);
+
+		useEffect(() => {
+			let active = true;
+			const loadOriginalImage = async () => {
+				try {
+					const user = firebaseClientAuth.currentUser;
+					if (!user) return;
+					const token = await user.getIdToken();
+					const response = await fetch(
+						`/api/artwork-original/${encodeURIComponent(item.images)}`,
+						{ headers: { Authorization: `Bearer ${token}` } },
+					);
+					if (!response.ok) return;
+					const data = await response.json();
+					if (active && data.url) setOriginalImageUrl(data.url);
+				} catch (error) {
+					console.error("Unable to load original artwork preview:", error);
+				}
+			};
+
+			loadOriginalImage();
+			return () => {
+				active = false;
+			};
+		}, [item.images]);
+
 		return (
 			<tr
 				key={item.id}
@@ -752,10 +781,11 @@ function ItemRow({
 			>
 				<td className="px-6 py-4 flex items-center gap-3">
 					<Image
-						src={imageUrlGenerator(item.images)}
+						src={originalImageUrl || imageUrlGenerator(item.images)}
 						alt={`${item.title} image`}
 						width={864}
 						height={1184}
+						unoptimized={Boolean(originalImageUrl)}
 						className="object-cover rounded-lg aspect-square w-10 h-10 bg-slate-200 rounded-lg overflow-hidden flex-shrink-0"
 					/>
 					<div>

@@ -99,7 +99,9 @@ export const completeOrder = async (sessionId: string) => {
 };
 
 export function imageUrlGenerator(imageId: string): string {
-	const bucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
-	const imagePath: string = `originals/${imageId}/artWork.jpg`;
-	return `https://storage.googleapis.com/${bucket}/${encodeURIComponent(imagePath)}`;
+	return `/api/artwork-image/${encodeURIComponent(imageId)}`;
+}
+
+export function watermarkedUrlGenerator(imageId: string): string {
+	return `/api/artwork-image/${encodeURIComponent(imageId)}`;
 }

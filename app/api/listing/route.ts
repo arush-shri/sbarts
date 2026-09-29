@@ -80,7 +80,13 @@ export async function POST(req: NextRequest) {
 		await originalFile.save(result.original, {
 			contentType: "image/jpeg",
 		});
-		await originalFile.makePublic();
+
+		const watermarkedFile = bucket.file(
+			`watermarked/${imageId}/artWork.jpg`,
+		);
+		await watermarkedFile.save(result.watermarked, {
+			contentType: "image/jpeg",
+		});
 
 		const metadata = await sharp(result.original).metadata();
 		const width = metadata.width;
@@ -210,7 +216,9 @@ export async function PUT(req: NextRequest) {
 		const existing = docSnap.data() as PaintingType;
 
 		const session = await requireUserProfile(req);
-		if (!canManagePainting(existing, session.decoded.uid, session.profile)) {
+		if (
+			!canManagePainting(existing, session.decoded.uid, session.profile)
+		) {
 			return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 		}
 
@@ -307,7 +315,10 @@ export async function DELETE(req: NextRequest) {
 
 		// 4. DELETE STORAGE IMAGES
 		// We delete the exact files created during the upload phase
-		const filesToDelete = [`originals/${imageId}/artWork.jpg`];
+		const filesToDelete = [
+			`originals/${imageId}/artWork.jpg`,
+			`watermarked/${imageId}/artWork.jpg`,
+		];
 
 		// Map them to promises and use ignoreErrors to prevent crashes if a specific file doesn't exist
 		await Promise.all(

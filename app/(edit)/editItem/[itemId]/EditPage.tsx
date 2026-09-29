@@ -65,6 +65,9 @@ export default function EditArtwork({
 	const [painting, setPainting] = useState<PaintingType | null | undefined>(
 		null,
 	);
+	const [originalImageUrl, setOriginalImageUrl] = useState<string | null>(
+		null,
+	);
 	const [isUploading, setIsUploading] = useState(false);
 	const router = useRouter();
 
@@ -176,6 +179,33 @@ export default function EditArtwork({
 		loadData();
 	}, []);
 
+	useEffect(() => {
+		if (!painting?.images) return;
+
+		let active = true;
+		const loadOriginalImage = async () => {
+			try {
+				const user = firebaseClientAuth.currentUser;
+				if (!user) return;
+				const token = await user.getIdToken();
+				const response = await fetch(
+					`/api/artwork-original/${encodeURIComponent(painting.images)}`,
+					{ headers: { Authorization: `Bearer ${token}` } },
+				);
+				if (!response.ok) return;
+				const data = await response.json();
+				if (active && data.url) setOriginalImageUrl(data.url);
+			} catch (error) {
+				console.error("Unable to load original artwork preview:", error);
+			}
+		};
+
+		loadOriginalImage();
+		return () => {
+			active = false;
+		};
+	}, [painting?.images]);
+
 	if (painting === undefined) {
 		notFound();
 	}
@@ -271,10 +301,11 @@ export default function EditArtwork({
 						<div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
 							<Image
 								className="object-cover w-full h-full brightness-75"
-								src={imageUrlGenerator(painting.images)}
+								src={originalImageUrl || imageUrlGenerator(painting.images)}
 								alt="Art pic"
 								width={1024}
 								height={1024}
+								unoptimized={Boolean(originalImageUrl)}
 								priority
 							/>
 						</div>
