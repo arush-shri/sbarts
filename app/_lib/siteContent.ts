@@ -160,14 +160,14 @@ export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 		{
 			key: "exhibitionCount",
 			label: "Exhibitions & awards count",
-			type: "number",
+			type: "text",
 		},
 		{
 			key: "collectionCount",
 			label: "Gallery collections count",
-			type: "number",
+			type: "text",
 		},
-		{ key: "missionCount", label: "Global mission count", type: "number" },
+		{ key: "missionCount", label: "Global mission count", type: "text" },
 	],
 	gallery: [
 		{
