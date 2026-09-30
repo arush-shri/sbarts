@@ -4,7 +4,6 @@ import { ART_CATEGORIES } from "@/app/_lib/artCategories";
 import { PaintingType } from "@/app/_lib/customTypes";
 import PageIntro from "@/components/PageIntro";
 import PaintingCard from "@/components/PaintingCard";
-import { usePathname, useSearchParams } from "next/navigation";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 
 const categories = ["All", ...ART_CATEGORIES];
@@ -26,18 +25,10 @@ export default function ExplorePage({
 	keyword?: string;
 	title?: string;
 }): ReactElement {
-	const pathname = usePathname();
-	const searchParams = useSearchParams();
 	const [items, setItems] = useState<PaintingType[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState(category || "All");
 	const [search, setSearch] = useState(keyword || "");
 	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		if (searchParams.toString()) {
-			window.history.replaceState(window.history.state, "", pathname);
-		}
-	}, [pathname, searchParams]);
 
 	const loadData = useCallback(
 		async (nextCategory: string, nextSearch: string) => {
@@ -84,6 +75,13 @@ export default function ExplorePage({
 
 	const handleCategory = (nextCategory: string) => {
 		setSelectedCategory(nextCategory);
+		const nextUrl = new URL(window.location.href);
+		if (nextCategory === "All") {
+			nextUrl.searchParams.delete("category");
+		} else {
+			nextUrl.searchParams.set("category", nextCategory);
+		}
+		window.history.replaceState(window.history.state, "", nextUrl);
 		loadData(nextCategory, search);
 	};
 

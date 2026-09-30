@@ -1,14 +1,10 @@
 "use client";
 
 import { PaintingType } from "@/app/_lib/customTypes";
-import {
-	imageUrlGenerator,
-	watermarkedUrlGenerator,
-} from "@/app/_lib/dataProcessing";
-import { Maximize2 } from "lucide-react";
+import { watermarkedUrlGenerator } from "@/app/_lib/dataProcessing";
+import { cachePaintingForNavigation } from "@/app/_lib/paintingNavigation";
 import Image from "next/image";
-import { ReactElement, useState } from "react";
-import ImageLightbox from "./ImageLightbox";
+import { KeyboardEvent, MouseEvent, ReactElement, useState } from "react";
 import InquiryModal from "./InquiryModal";
 
 export default function PaintingCard({
@@ -21,16 +17,39 @@ export default function PaintingCard({
 	showInquiryButton?: boolean;
 }): ReactElement {
 	const [inquiryOpen, setInquiryOpen] = useState(false);
-	const [imageOpen, setImageOpen] = useState(false);
 	if (!artData) return <></>;
+
+	const openPainting = () => {
+		cachePaintingForNavigation(artData);
+		window.open(
+			`/product/${encodeURIComponent(artData.id)}`,
+			"_blank",
+			"noopener,noreferrer",
+		);
+	};
+
+	const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+		if (event.key === "Enter" || event.key === " ") {
+			event.preventDefault();
+			openPainting();
+		}
+	};
+
+	const stopCardNavigation = (event: MouseEvent<HTMLElement>) => {
+		event.stopPropagation();
+	};
 
 	return (
 		<>
 			<article
+				onClick={openPainting}
+				onKeyDown={handleCardKeyDown}
+				tabIndex={0}
+				role="link"
 				className={`group flex h-full w-full flex-col overflow-hidden border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.12)] transition duration-500 hover:scale-103 ${extraStyle || ""}`}
 			>
-				<div className="block">
-					<div className="group/image relative flex aspect-[1.15/1] items-center justify-center overflow-hidden bg-[#061a3d]">
+				<div className="block cursor-pointer">
+					<div className="relative flex aspect-[1.15/1] items-center justify-center overflow-hidden bg-[#061a3d]">
 						<Image
 							src={watermarkedUrlGenerator(artData.images)}
 							alt={`${artData.title} image`}
@@ -39,14 +58,6 @@ export default function PaintingCard({
 							className="h-[93%] w-auto object-contain"
 						/>
 
-						<button
-							type="button"
-							onClick={() => setImageOpen(true)}
-							className="absolute bottom-3 right-3 z-10 grid cursor-pointer place-items-center bg-black/60 p-1.5 text-white opacity-0 backdrop-blur-sm transition-all duration-200 hover:bg-black/80 group-hover/image:opacity-100"
-							aria-label={`Enlarge ${artData.title}`}
-						>
-							<Maximize2 className="h-5 w-5" />
-						</button>
 					</div>
 				</div>
 				<div className="flex flex-1 flex-col p-5">
@@ -64,7 +75,10 @@ export default function PaintingCard({
 						<div className="mt-auto flex items-center justify-between gap-3 pt-5">
 							<button
 								type="button"
-								onClick={() => setInquiryOpen(true)}
+								onClick={(event) => {
+									stopCardNavigation(event);
+									setInquiryOpen(true);
+								}}
 								className="w-full cursor-pointer inline-flex items-center justify-center bg-[#061a3d] px-4 py-3 font-bold uppercase tracking-[.06em] text-white transition hover:bg-[#0b2b63]"
 							>
 								Inquire
@@ -82,13 +96,6 @@ export default function PaintingCard({
 					onClose={() => setInquiryOpen(false)}
 				/>
 			) : null}
-			<ImageLightbox
-				src={imageUrlGenerator(artData.images)}
-				alt={`${artData.title} image`}
-				painting={artData}
-				open={imageOpen}
-				onClose={() => setImageOpen(false)}
-			/>
 		</>
 	);
 }

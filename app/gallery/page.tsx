@@ -7,6 +7,7 @@ import PageIntro from "@/components/PageIntro";
 import PaintingCard from "@/components/PaintingCard";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 const collections = [
@@ -58,11 +59,12 @@ const collectionIdToCategory: Record<string, string> = {
 export default function GalleryPage() {
 	const { getPageContent } = useSiteContent();
 	const galleryContent = getPageContent("gallery");
+	const searchParams = useSearchParams();
 	const [items, setItems] = useState<PaintingType[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<
 		string | null
-	>(null);
+	>(() => searchParams.get("collection"));
 
 	const selectedCollection = useMemo(
 		() =>
@@ -101,14 +103,33 @@ export default function GalleryPage() {
 		loadCollection(selectedCollectionId);
 	}, [loadCollection, selectedCollectionId]);
 
+	useEffect(() => {
+		const syncCollectionFromUrl = () => {
+			const collectionId = new URLSearchParams(window.location.search).get(
+				"collection",
+			);
+			setSelectedCollectionId(collectionId);
+			if (!collectionId) setItems([]);
+		};
+
+		window.addEventListener("popstate", syncCollectionFromUrl);
+		return () => window.removeEventListener("popstate", syncCollectionFromUrl);
+	}, []);
+
 	const handleOpenCollection = (collectionId: string) => {
 		setSelectedCollectionId(collectionId);
+		const nextUrl = new URL(window.location.href);
+		nextUrl.searchParams.set("collection", collectionId);
+		window.history.replaceState(window.history.state, "", nextUrl);
 		window.scrollTo({ top: 0, behavior: "smooth" });
 	};
 
 	const handleBack = () => {
 		setSelectedCollectionId(null);
 		setItems([]);
+		const nextUrl = new URL(window.location.href);
+		nextUrl.searchParams.delete("collection");
+		window.history.replaceState(window.history.state, "", nextUrl);
 	};
 
 	return (

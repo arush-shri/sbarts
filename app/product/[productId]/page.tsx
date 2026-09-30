@@ -2,6 +2,7 @@
 
 import { PaintingType } from "@/app/_lib/customTypes";
 import { imageUrlGenerator } from "@/app/_lib/dataProcessing";
+import { getCachedPainting } from "@/app/_lib/paintingNavigation";
 import InquiryModal from "@/components/InquiryModal";
 import Loading from "@/components/Loading";
 import { PaintingImage } from "@/components/PaintingParts";
@@ -20,6 +21,12 @@ export default function ProductPage() {
 
 	useEffect(() => {
 		const loadData = async () => {
+			const cachedPainting = getCachedPainting(String(productId));
+			if (cachedPainting) {
+				setPainting(cachedPainting);
+				return;
+			}
+
 			try {
 				const shouldIncrementView = !hasCountedView.current;
 				hasCountedView.current = true;
@@ -57,6 +64,8 @@ export default function ProductPage() {
 		return <Loading />;
 	}
 
+	const isGalleryOnly = painting.createdByAdmin === true;
+
 	const handleShare = async () => {
 		const shareData = {
 			title: painting.title,
@@ -65,14 +74,42 @@ export default function ProductPage() {
 		};
 
 		try {
-			if (navigator.share) {
-				await navigator.share(shareData);
-			} else {
+			if (typeof navigator.share === "function") {
+				try {
+					await navigator.share(shareData);
+					return;
+				} catch (error) {
+					if (
+						error instanceof DOMException &&
+						error.name === "AbortError"
+					) {
+						return;
+					}
+					console.warn("Native sharing is unavailable", error);
+				}
+			}
+
+			if (typeof navigator.clipboard?.writeText === "function") {
 				await navigator.clipboard.writeText(window.location.href);
 				ShowToast("Link copied to clipboard.", 2);
+				return;
 			}
-		} catch {
-			console.log("Share cancelled");
+
+			const fallbackInput = document.createElement("textarea");
+			fallbackInput.value = window.location.href;
+			fallbackInput.setAttribute("readonly", "");
+			fallbackInput.style.position = "fixed";
+			fallbackInput.style.opacity = "0";
+			document.body.appendChild(fallbackInput);
+			fallbackInput.select();
+			const copied = document.execCommand("copy");
+			fallbackInput.remove();
+
+			if (!copied) throw new Error("Unable to copy the artwork link");
+			ShowToast("Link copied to clipboard.", 2);
+		} catch (error) {
+			console.error("Unable to share artwork", error);
+			ShowToast("Unable to share this artwork link.", 0);
 		}
 	};
 
@@ -130,13 +167,15 @@ export default function ProductPage() {
 					</div>
 
 					<div className="flex flex-wrap gap-3">
-						<button
-							type="button"
-							onClick={() => setInquiryOpen(true)}
-							className="flex-1 bg-[#d6ad58] px-6 py-4 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
-						>
-							Inquire
-						</button>
+						{!isGalleryOnly && (
+							<button
+								type="button"
+								onClick={() => setInquiryOpen(true)}
+								className="flex-1 bg-[#d6ad58] px-6 py-4 text-sm font-bold uppercase tracking-[.06em] text-[#061a3d] transition hover:bg-[#b88d39]"
+							>
+								Inquire
+							</button>
+						)}
 						<button
 							type="button"
 							onClick={handleShare}
@@ -162,11 +201,13 @@ export default function ProductPage() {
 				</div>
 			</section>
 
-			<InquiryModal
-				painting={painting}
-				open={inquiryOpen}
-				onClose={() => setInquiryOpen(false)}
-			/>
+			{!isGalleryOnly && (
+				<InquiryModal
+					painting={painting}
+					open={inquiryOpen}
+					onClose={() => setInquiryOpen(false)}
+				/>
+			)}
 		</main>
 	);
 }
