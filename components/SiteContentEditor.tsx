@@ -8,7 +8,7 @@ import {
 	SitePageKey,
 } from "@/app/_lib/siteContent";
 import { ArrowDown, ArrowUp, Plus, Save, Trash2, X } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { ShowToast } from "@/components/Toaster";
 
 type SiteContentEditorProps = {
@@ -160,6 +160,70 @@ function SlideshowField({ initialValue, onUpload }: SlideshowFieldProps) {
 	);
 }
 
+function parseImageList(value: string): string[] {
+	try {
+		const parsed = JSON.parse(value);
+		return Array.isArray(parsed)
+			? parsed.filter((image): image is string => typeof image === "string")
+			: [];
+	} catch {
+		return [];
+	}
+}
+
+function ImageReorderField({ initialValue, onUpload }: SlideshowFieldProps) {
+	const [images, setImages] = useState(() => parseImageList(initialValue));
+	const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+
+	const moveImage = (index: number, direction: -1 | 1) => {
+		const targetIndex = index + direction;
+		if (targetIndex < 0 || targetIndex >= images.length) return;
+		setImages((current) => {
+			const next = [...current];
+			next[targetIndex] = current[index];
+			next[index] = current[targetIndex];
+			return next;
+		});
+	};
+
+	return (
+		<div className="grid gap-4">
+			<input type="hidden" name="fields.artistStoryImages" value={JSON.stringify(images)} />
+			{images.map((image, index) => (
+				<div key={`${image}-${index}`} className="grid gap-3 border border-[#061a3d]/15 bg-white p-4">
+					<div className="flex items-center justify-between gap-3">
+						<strong className="text-sm text-[#061a3d]">Image {index + 1}</strong>
+						<div className="flex gap-1">
+							<button type="button" disabled={index === 0} onClick={() => moveImage(index, -1)} className="grid h-8 w-8 place-items-center border border-[#061a3d]/15 disabled:opacity-30" aria-label={`Move image ${index + 1} up`}><ArrowUp className="h-4 w-4" /></button>
+							<button type="button" disabled={index === images.length - 1} onClick={() => moveImage(index, 1)} className="grid h-8 w-8 place-items-center border border-[#061a3d]/15 disabled:opacity-30" aria-label={`Move image ${index + 1} down`}><ArrowDown className="h-4 w-4" /></button>
+							<button type="button" onClick={() => setImages((current) => current.filter((_, imageIndex) => imageIndex !== index))} className="grid h-8 w-8 place-items-center border border-red-200 text-red-700" aria-label={`Remove image ${index + 1}`}><Trash2 className="h-4 w-4" /></button>
+						</div>
+					</div>
+					{image ? (
+						<img src={image} alt="" className="h-32 w-[180px] object-cover" />
+					) : (
+						<div className="grid h-32 w-[180px] place-items-center bg-[#061a3d]/5 text-center text-xs text-[#6a7280]">
+							Choose an image to upload
+						</div>
+					)}
+					<label className="inline-flex w-fit cursor-pointer border border-[#061a3d]/20 px-4 py-3 text-xs font-bold uppercase tracking-[.06em] text-[#061a3d] hover:border-[#d6ad58]">
+						{uploadingIndex === index ? "Uploading..." : "Change image"}
+						<input type="file" accept="image/*" hidden disabled={uploadingIndex !== null} onChange={async (event) => {
+							const file = event.target.files?.[0];
+							if (!file) return;
+							setUploadingIndex(index);
+							const uploadedImage = await onUpload(file, image);
+							if (uploadedImage) setImages((current) => current.map((currentImage, imageIndex) => imageIndex === index ? uploadedImage : currentImage));
+							setUploadingIndex(null);
+						}} />
+					</label>
+				</div>
+			))}
+			<button type="button" onClick={() => setImages((current) => [...current, ""])} className="inline-flex w-fit items-center gap-2 border border-[#061a3d]/20 px-4 py-3 text-xs font-bold uppercase tracking-[.06em] text-[#061a3d] hover:border-[#d6ad58]"><Plus className="h-4 w-4" />Add image</button>
+		</div>
+	);
+}
+
 export default function SiteContentEditor({
 	pageKey,
 	open,
@@ -168,6 +232,17 @@ export default function SiteContentEditor({
 	const { getPageContent, updatePageContent } = useSiteContent();
 	const [saving, setSaving] = useState(false);
 	const [uploadingField, setUploadingField] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (!open) return;
+
+		const handleEscape = (event: KeyboardEvent) => {
+			if (event.key === "Escape") onClose();
+		};
+
+		document.addEventListener("keydown", handleEscape);
+		return () => document.removeEventListener("keydown", handleEscape);
+	}, [open, onClose]);
 
 	if (!open || !pageKey) return null;
 
@@ -256,7 +331,12 @@ export default function SiteContentEditor({
 	};
 
 	return (
-		<div className="fixed left-0 top-0 z-[9999] flex h-screen w-screen items-center justify-center bg-[#061a3d]/75 px-5 py-8">
+		<div
+			className="fixed left-0 top-0 z-[9999] flex h-screen w-screen items-center justify-center bg-[#061a3d]/75 px-5 py-8"
+			onMouseDown={(event) => {
+				if (event.target === event.currentTarget) onClose();
+			}}
+		>
 			<form
 				key={`${pageKey}-${content.title}-${content.subtitle}-${content.subtext}-${JSON.stringify(content.fields || {})}`}
 				onSubmit={handleSubmit}
@@ -329,6 +409,13 @@ export default function SiteContentEditor({
 									{field.label}
 									{field.type === "image-list" ? (
 										<SlideshowField
+											initialValue={content.fields?.[field.key] || "[]"}
+											onUpload={(file, previousUrl) =>
+												uploadImage(field.key, file, previousUrl)
+											}
+										/>
+									) : field.type === "image-reorder-list" ? (
+										<ImageReorderField
 											initialValue={content.fields?.[field.key] || "[]"}
 											onUpload={(file, previousUrl) =>
 												uploadImage(field.key, file, previousUrl)

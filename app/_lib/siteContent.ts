@@ -112,6 +112,8 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 			missionSubtext:
 				"Every piece is created with the belief that art has the power to connect, inspire, and create meaningful change.",
 			featureImage: "/images/wildlife.png",
+			artistStoryText: "",
+			artistStoryImages: "[]",
 		},
 	},
 	contact: {
@@ -138,7 +140,8 @@ export type SiteContentFieldConfig = {
 		| "url"
 		| "number"
 		| "image"
-		| "image-list";
+		| "image-list"
+		| "image-reorder-list";
 	rows?: number;
 };
 
@@ -214,6 +217,17 @@ export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 			label: "Mission subtext",
 			type: "textarea",
 			rows: 3,
+		},
+		{
+			key: "artistStoryText",
+			label: "More about the artist",
+			type: "textarea",
+			rows: 8,
+		},
+		{
+			key: "artistStoryImages",
+			label: "Artist section images",
+			type: "image-reorder-list",
 		},
 	],
 	competition: [
