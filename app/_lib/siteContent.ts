@@ -124,7 +124,6 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 			websiteText: "msbart.com",
 			websiteUrl: "https://msbart.com",
 			instagramUrl: "#",
-			xUrl: "#",
 		},
 	},
 };
@@ -250,7 +249,6 @@ export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 		{ key: "websiteText", label: "Website display text" },
 		{ key: "websiteUrl", label: "Website link", type: "url" },
 		{ key: "instagramUrl", label: "Instagram link", type: "url" },
-		{ key: "xUrl", label: "X link", type: "url" },
 	],
 };
 

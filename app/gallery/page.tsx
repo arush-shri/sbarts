@@ -7,6 +7,7 @@ import PageIntro from "@/components/PageIntro";
 import PaintingCard from "@/components/PaintingCard";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -214,18 +215,13 @@ export default function GalleryPage() {
 										<p className="mt-2 text-[#6a7280]">
 											{collection.copy}
 										</p>
-										<button
-											type="button"
-											onClick={() =>
-												handleOpenCollection(
-													collection.id,
-												)
-											}
+						<Link
+							href={`/gallery/${collection.id}`}
 											className="mt-4 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[.06em] text-[#b88d39] transition duration-300 hover:translate-x-1"
 										>
 											View collection
 											<span aria-hidden="true">→</span>
-										</button>
+						</Link>
 									</div>
 								</article>
 							))}

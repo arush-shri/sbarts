@@ -13,7 +13,6 @@ export default function ContactPage() {
 	const websiteText = content.fields?.websiteText || "msbart.com";
 	const websiteUrl = content.fields?.websiteUrl || "https://msbart.com";
 	const instagramUrl = content.fields?.instagramUrl || "#";
-	const xUrl = content.fields?.xUrl || "#";
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [subject, setSubject] = useState("");
@@ -106,20 +105,6 @@ export default function ContactPage() {
 									alt="SB Arts"
 									width={29}
 									height={29}
-								/>
-							</a>
-							<a
-								href={xUrl}
-								target={xUrl === "#" ? undefined : "_blank"}
-								rel={xUrl === "#" ? undefined : "noreferrer"}
-								aria-label="X"
-								className="grid h-11 w-11 place-items-center rounded-full bg-[#061a3d] font-bold text-[#d6ad58]"
-							>
-								<Image
-									src="/svg/x.svg"
-									alt="SB Arts"
-									width={32}
-									height={32}
 								/>
 							</a>
 						</div>
