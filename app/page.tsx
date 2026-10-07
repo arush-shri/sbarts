@@ -1,44 +1,9 @@
-import { ART_CATEGORIES } from "@/app/_lib/artCategories";
 import CountShowCard from "@/components/CountShowCard";
+import CategoryCollectionCards from "@/components/CategoryCollectionCards";
 import FeaturedArtworks from "@/components/FeaturedArtworks";
 import HomeHero from "@/components/HomeHero";
 import { CompetetionCard } from "@/components/HomeParts";
 import Poster from "@/components/Poster";
-import Image from "next/image";
-import Link from "next/link";
-
-const collections = [
-	{
-		id: "hope",
-		title: ART_CATEGORIES[0],
-		image: "/images/hope.png",
-		className: "from-[#d6ad58] to-[#0c2a62]",
-	},
-	{
-		id: "portrait",
-		title: ART_CATEGORIES[1],
-		image: "/images/portrait.png",
-		className: "from-[#b9a190] to-[#463029]",
-	},
-	{
-		id: "wildlife",
-		title: ART_CATEGORIES[2],
-		image: "/images/wildlife.png",
-		className: "from-[#304b36] to-[#b39250]",
-	},
-	{
-		id: "high-altitude",
-		title: ART_CATEGORIES[3],
-		image: "/images/altitude.png",
-		className: "from-[#a4bfd8] to-[#112957]",
-	},
-	{
-		id: "design",
-		title: ART_CATEGORIES[4],
-		image: "/images/design.png",
-		className: "from-[#0f2e67] to-[#d6ad58]",
-	},
-];
 
 export default function Home() {
 	return (
@@ -66,29 +31,7 @@ export default function Home() {
 						</p>
 					</div>
 
-					<div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-						{collections.map((collection) => (
-											<Link key={collection.id} href={`/gallery/${collection.id}`}>
-								<article className="border border-[#061a3d]/12 bg-white shadow-[0_18px_50px_rgba(6,26,61,.12)] cursor-pointer transition duration-300 hover:scale-105 origin-center h-full">
-									<div
-										className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${collection.className}`}
-									>
-										<Image
-											src={collection.image}
-											alt={collection.title}
-											fill
-											className="object-cover"
-										/>
-									</div>
-									<div className="p-5 text-center">
-										<h3 className=" text-xl font-medium text-[#061a3d]">
-											{collection.title}
-										</h3>
-									</div>
-								</article>
-							</Link>
-						))}
-					</div>
+					<CategoryCollectionCards />
 				</div>
 			</section>
 
