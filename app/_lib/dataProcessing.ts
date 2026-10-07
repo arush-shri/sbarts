@@ -99,9 +99,5 @@ export const completeOrder = async (sessionId: string) => {
 };
 
 export function imageUrlGenerator(imageId: string): string {
-	return `/api/artwork-image/${encodeURIComponent(imageId)}`;
-}
-
-export function watermarkedUrlGenerator(imageId: string): string {
-	return `/api/artwork-image/${encodeURIComponent(imageId)}`;
+	return `/api/artwork-image/${encodeURIComponent(imageId)}?variant=original`;
 }

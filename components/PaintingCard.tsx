@@ -1,7 +1,7 @@
 "use client";
 
 import { PaintingType } from "@/app/_lib/customTypes";
-import { watermarkedUrlGenerator } from "@/app/_lib/dataProcessing";
+import { imageUrlGenerator } from "@/app/_lib/dataProcessing";
 import { cachePaintingForNavigation } from "@/app/_lib/paintingNavigation";
 import Image from "next/image";
 import { KeyboardEvent, MouseEvent, ReactElement, useState } from "react";
@@ -51,7 +51,7 @@ export default function PaintingCard({
 				<div className="block cursor-pointer">
 					<div className="relative flex aspect-[1.15/1] items-center justify-center overflow-hidden bg-[#061a3d]">
 						<Image
-							src={watermarkedUrlGenerator(artData.images)}
+							src={imageUrlGenerator(artData.images)}
 							alt={`${artData.title} image`}
 							width={864}
 							height={1184}
