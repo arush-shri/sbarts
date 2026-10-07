@@ -6,6 +6,7 @@ import { PaintingProvider } from "./_context/PaintingConext";
 import { SellerProvider } from "./_context/SellerContext";
 import { SiteContentProvider } from "./_context/SiteContentContext";
 import { fontCormorant, fontMontserrat } from "./_lib/fonts";
+//@ts-ignore
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,7 +23,7 @@ export default async function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${fontCormorant.className} ${fontMontserrat.className} bg-[#f7f1e6]`}
+				className={`${fontCormorant.variable} ${fontMontserrat.variable} bg-[#f7f1e6]`}
 			>
 				<Toaster
 					position="top-center"

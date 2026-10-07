@@ -1,13 +1,15 @@
-import { Cormorant_Garamond, Montserrat } from "next/font/google";
+import localFont from "next/font/local";
 
-export const fontCormorant = Cormorant_Garamond({
-	subsets: ["latin"],
-	weight: ["300", "400", "500", "600", "700"],
+export const fontCormorant = localFont({
+	src: "../../public/fonts/CormorantGaramond-Variable.ttf",
 	variable: "--font-heading",
+	weight: "300 700",
+	display: "swap",
 });
 
-export const fontMontserrat = Montserrat({
-	subsets: ["latin"],
-	weight: ["300", "400", "500", "600", "700"],
+export const fontMontserrat = localFont({
+	src: "../../public/fonts/Montserrat-Variable.ttf",
 	variable: "--font-body",
+	weight: "100 900",
+	display: "swap",
 });
