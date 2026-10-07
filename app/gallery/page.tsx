@@ -9,7 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
 const collections = [
 	{
@@ -57,7 +57,7 @@ const collectionIdToCategory: Record<string, string> = {
 	design: "Design",
 };
 
-export default function GalleryPage() {
+function GalleryPageContent() {
 	const { getPageContent } = useSiteContent();
 	const galleryContent = getPageContent("gallery");
 	const searchParams = useSearchParams();
@@ -230,5 +230,19 @@ export default function GalleryPage() {
 				</div>
 			</section>
 		</main>
+	);
+}
+
+export default function GalleryPage() {
+	return (
+		<Suspense
+			fallback={
+				<main className="flex min-h-screen items-center justify-center bg-white text-[#6a7280]">
+					Loading gallery...
+				</main>
+			}
+		>
+			<GalleryPageContent />
+		</Suspense>
 	);
 }
