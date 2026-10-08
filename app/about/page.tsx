@@ -17,12 +17,30 @@ export default function AboutPage() {
 		content.fields?.missionSubtext ||
 		"Every piece is created with the belief that art has the power to connect, inspire, and create meaningful change.";
 	const artistStoryText = content.fields?.artistStoryText?.trim() || "";
+	let aboutSections: { text: string; image: string }[] = [];
+	try {
+		const parsedSections = JSON.parse(
+			content.fields?.aboutSections || "[]",
+		);
+		if (Array.isArray(parsedSections)) {
+			aboutSections = parsedSections.filter(
+				(section): section is { text: string; image: string } =>
+					typeof section?.text === "string" &&
+					typeof section?.image === "string",
+			);
+		}
+	} catch {
+		aboutSections = [];
+	}
 	let artistStoryImages: string[] = [];
 	try {
-		const parsedImages = JSON.parse(content.fields?.artistStoryImages || "[]");
+		const parsedImages = JSON.parse(
+			content.fields?.artistStoryImages || "[]",
+		);
 		if (Array.isArray(parsedImages)) {
 			artistStoryImages = parsedImages.filter(
-				(image): image is string => typeof image === "string" && image.length > 0,
+				(image): image is string =>
+					typeof image === "string" && image.length > 0,
 			);
 		}
 	} catch {
@@ -67,31 +85,29 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{artistStoryText || artistStoryImages.length ? (
-				<section className="py-20">
-					<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_180px] lg:gap-12">
-						{artistStoryText ? (
-							<div className="min-w-0 whitespace-pre-line break-words text-lg leading-relaxed text-[#6a7280] [overflow-wrap:anywhere]">
-								{artistStoryText}
-							</div>
-						) : (
-							<div />
-						)}
-						{artistStoryImages.length ? (
-							<div className="min-w-0 grid justify-items-end gap-4">
-								{artistStoryImages.map((image, index) => (
+			{aboutSections.length
+				? aboutSections.map((section, index) => (
+						<section
+							key={`${section.image}-${index}`}
+							className="py-20"
+						>
+							<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] items-center lg:grid-cols-2">
+								<div className="whitespace-pre-line break-words text-lg leading-relaxed text-[#6a7280] [overflow-wrap:anywhere]">
+									{section.text}
+								</div>
+								{section.image ? (
 									<img
-										key={`${image}-${index}`}
-										src={image}
+										src={section.image}
 										alt=""
-										className="h-32 w-[180px] object-cover"
+										className="h-75 w-[480px] max-w-full justify-self-center object-cover"
 									/>
-								))}
+								) : (
+									<div className="h-75 w-[480px] max-w-full justify-self-center bg-[#061a3d]/5" />
+								)}
 							</div>
-						) : null}
-					</div>
-				</section>
-			) : null}
+						</section>
+					))
+				: null}
 
 			<section className="py-20">
 				<CountShowCard

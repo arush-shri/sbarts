@@ -27,6 +27,11 @@ export type SiteHeroSlide = {
 	image: string;
 };
 
+export type AboutSection = {
+	text: string;
+	image: string;
+};
+
 export const DEFAULT_HERO_SLIDES: SiteHeroSlide[] = [
 	{
 		title: "Hope & Dignity",
@@ -114,6 +119,7 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 			featureImage: "/images/wildlife.png",
 			artistStoryText: "",
 			artistStoryImages: "[]",
+			aboutSections: "[]",
 		},
 	},
 	contact: {
@@ -141,7 +147,8 @@ export type SiteContentFieldConfig = {
 		| "number"
 		| "image"
 		| "image-list"
-		| "image-reorder-list";
+		| "image-reorder-list"
+		| "about-sections";
 	rows?: number;
 };
 
@@ -219,15 +226,9 @@ export const SITE_CONTENT_EXTRA_FIELDS: Partial<
 			rows: 3,
 		},
 		{
-			key: "artistStoryText",
-			label: "More about the artist",
-			type: "textarea",
-			rows: 8,
-		},
-		{
-			key: "artistStoryImages",
-			label: "Artist section images",
-			type: "image-reorder-list",
+			key: "aboutSections",
+			label: "About sections",
+			type: "about-sections",
 		},
 	],
 	competition: [

@@ -5,6 +5,7 @@ import { firebaseClientAuth } from "@/app/_firebase/clientAuth";
 import {
 	SITE_CONTENT_EXTRA_FIELDS,
 	SiteHeroSlide,
+	AboutSection,
 	SitePageKey,
 } from "@/app/_lib/siteContent";
 import { ArrowDown, ArrowUp, Plus, Save, Trash2, X } from "lucide-react";
@@ -169,6 +170,67 @@ function parseImageList(value: string): string[] {
 	} catch {
 		return [];
 	}
+}
+
+function parseAboutSections(value: string): AboutSection[] {
+	try {
+		const parsed = JSON.parse(value);
+		return Array.isArray(parsed)
+			? parsed.map((section) => ({
+					text: typeof section?.text === "string" ? section.text : "",
+					image: typeof section?.image === "string" ? section.image : "",
+				}))
+			: [];
+	} catch {
+		return [];
+	}
+}
+
+function AboutSectionsField({ initialValue, onUpload }: SlideshowFieldProps) {
+	const [sections, setSections] = useState(() => parseAboutSections(initialValue));
+	const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+
+	const updateSection = (index: number, changes: Partial<AboutSection>) => {
+		setSections((current) => current.map((section, sectionIndex) =>
+			sectionIndex === index ? { ...section, ...changes } : section,
+		));
+	};
+
+	return (
+		<div className="grid gap-4">
+			<input type="hidden" name="fields.aboutSections" value={JSON.stringify(sections)} />
+			{sections.map((section, index) => (
+				<div key={`${index}-${section.image}`} className="grid gap-3 border border-[#061a3d]/15 bg-white p-4">
+					<div className="flex items-center justify-between gap-3">
+						<strong className="text-sm text-[#061a3d]">Section {index + 1}</strong>
+						<button type="button" onClick={() => setSections((current) => current.filter((_, sectionIndex) => sectionIndex !== index))} className="grid h-8 w-8 place-items-center border border-red-200 text-red-700" aria-label={`Remove section ${index + 1}`} title="Remove section">
+							<Trash2 className="h-4 w-4" />
+						</button>
+					</div>
+					<textarea
+						value={section.text}
+						onChange={(event) => updateSection(index, { text: event.target.value })}
+						placeholder="Section text"
+						rows={8}
+						className="resize-y border border-[#061a3d]/20 px-3 py-2 font-normal outline-none focus:border-[#d6ad58]"
+					/>
+					{section.image ? <img src={section.image} alt="" className="h-64 w-full object-cover" /> : <div className="grid h-64 place-items-center bg-[#061a3d]/5 text-sm text-[#6a7280]">Choose an image to upload</div>}
+					<label className="inline-flex w-fit cursor-pointer border border-[#061a3d]/20 px-4 py-3 text-xs font-bold uppercase tracking-[.06em] text-[#061a3d] hover:border-[#d6ad58]">
+						{uploadingIndex === index ? "Uploading..." : "Change image"}
+						<input type="file" accept="image/*" hidden disabled={uploadingIndex !== null} onChange={async (event) => {
+							const file = event.target.files?.[0];
+							if (!file) return;
+							setUploadingIndex(index);
+							const image = await onUpload(file, section.image);
+							if (image) updateSection(index, { image });
+							setUploadingIndex(null);
+						}} />
+					</label>
+				</div>
+			))}
+			<button type="button" onClick={() => setSections((current) => [...current, { text: "", image: "" }])} className="inline-flex w-fit items-center gap-2 border border-[#061a3d]/20 px-4 py-3 text-xs font-bold uppercase tracking-[.06em] text-[#061a3d] hover:border-[#d6ad58]"><Plus className="h-4 w-4" />Add section</button>
+		</div>
+	);
 }
 
 function ImageReorderField({ initialValue, onUpload }: SlideshowFieldProps) {
@@ -421,6 +483,13 @@ export default function SiteContentEditor({
 												uploadImage(field.key, file, previousUrl)
 											}
 										/>
+									) : field.type === "about-sections" ? (
+										<AboutSectionsField
+											initialValue={content.fields?.[field.key] || "[]"}
+											onUpload={(file, previousUrl) =>
+												uploadImage(field.key, file, previousUrl)
+											}
+										/>
 									) : field.type === "image" ? (
 										<div className="grid gap-3">
 											<input
@@ -455,7 +524,6 @@ export default function SiteContentEditor({
 											defaultValue={
 												content.fields?.[field.key] || ""
 											}
-											maxLength={600}
 											rows={field.rows || 3}
 											className="resize-y border border-[#061a3d]/20 bg-white px-4 py-3 font-normal outline-none focus:border-[#d6ad58]"
 										/>

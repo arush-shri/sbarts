@@ -28,10 +28,15 @@ function cleanFields(pageKey: string, fields: unknown) {
 	const incoming = fields as Record<string, unknown>;
 
 	return allowedFields.reduce<Record<string, string>>((nextFields, field) => {
-		nextFields[field.key] = cleanText(
-			incoming[field.key],
-			field.type === "image-list" ? 30000 : MAX_FIELD_LENGTH,
-		);
+		const value = incoming[field.key];
+		if (field.type === "about-sections") {
+			nextFields[field.key] = typeof value === "string" ? value.trim() : "[]";
+		} else {
+			nextFields[field.key] = cleanText(
+				value,
+				field.type === "image-list" ? 30000 : MAX_FIELD_LENGTH,
+			);
+		}
 		return nextFields;
 	}, {});
 }
@@ -49,6 +54,17 @@ function getManagedImageUrls(fields?: Record<string, string>) {
 				}
 			} catch {
 				// Invalid legacy slideshow values do not contain managed paths.
+			}
+		} else if (key === "aboutSections") {
+			try {
+				const sections = JSON.parse(value);
+				if (Array.isArray(sections)) {
+					for (const section of sections) {
+						if (typeof section?.image === "string") urls.add(section.image);
+					}
+				}
+			} catch {
+				// Invalid section values do not contain managed paths.
 			}
 		} else if (key.toLowerCase().includes("image")) {
 			urls.add(value);
