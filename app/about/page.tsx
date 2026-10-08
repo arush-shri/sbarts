@@ -91,18 +91,18 @@ export default function AboutPage() {
 							key={`${section.image}-${index}`}
 							className="py-20"
 						>
-							<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] items-center lg:grid-cols-2">
-								<div className="whitespace-pre-line break-words text-lg leading-relaxed text-[#6a7280] [overflow-wrap:anywhere]">
+							<div className="mx-auto grid min-w-0 w-[min(1180px,calc(100%-40px))] items-center gap-10 overflow-hidden lg:grid-cols-2">
+								<div className="min-w-0 whitespace-pre-line break-words text-lg leading-relaxed text-[#6a7280] [overflow-wrap:anywhere]">
 									{section.text}
 								</div>
 								{section.image ? (
 									<img
 										src={section.image}
 										alt=""
-										className="h-75 w-[480px] max-w-full justify-self-center object-cover"
+										className="h-auto max-h-[300px] w-full max-w-[480px] justify-self-center object-cover sm:h-[300px]"
 									/>
 								) : (
-									<div className="h-75 w-[480px] max-w-full justify-self-center bg-[#061a3d]/5" />
+									<div className="h-[300px] w-full max-w-[480px] justify-self-center bg-[#061a3d]/5" />
 								)}
 							</div>
 						</section>
