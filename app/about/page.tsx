@@ -60,7 +60,7 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			<section className="bg-[#061a3d] py-20 text-white">
+			<section className="bg-[#061a3d] pt-10 pb-20 text-white">
 				<div className="mx-auto grid w-[min(1180px,calc(100%-40px))] items-center gap-10 lg:grid-cols-2">
 					<div>
 						<div className="text-xs font-bold uppercase tracking-[.22em] text-[#d6ad58]">
@@ -72,7 +72,7 @@ export default function AboutPage() {
 						<p className="mt-5 text-white/75">{missionSubtitle}</p>
 						<p className="mt-4 text-white/75">{missionSubtext}</p>
 					</div>
-					<div className="relative min-h-[420px] overflow-hidden border border-[#d6ad58] bg-[#0c2a62]">
+					<div className="relative min-h-[420px] w-[80%] justify-self-center overflow-hidden border border-[#d6ad58] bg-[#0c2a62]">
 						<img
 							src={
 								content.fields?.featureImage ||
