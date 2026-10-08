@@ -1,7 +1,7 @@
 "use client";
 
-import { useEditablePageForPath } from "@/app/_context/SiteContentContext";
 import { useSellerContext } from "@/app/_context/SellerContext";
+import { useEditablePageForPath } from "@/app/_context/SiteContentContext";
 import { Edit3, Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,7 +44,7 @@ export default function Header(): ReactElement {
 					/>
 					<div>
 						<strong className="block  text-2xl font-bold tracking-[.08em] text-[#d6ad58]">
-							SB ARTS
+							SB Arts
 						</strong>
 						<span className="block text-[10px] uppercase tracking-[.13em] text-[#ece7dd]">
 							Art for Hope, Dignity & Freedom
