@@ -89,7 +89,7 @@ export default function AboutPage() {
 				? aboutSections.map((section, index) => (
 						<section
 							key={`${section.image}-${index}`}
-							className="py-20"
+							className="py-10"
 						>
 							<div className="mx-auto grid min-w-0 w-[min(1180px,calc(100%-40px))] items-center gap-10 overflow-hidden lg:grid-cols-2">
 								<div className="min-w-0 whitespace-pre-line break-words text-lg leading-relaxed text-[#6a7280] [overflow-wrap:anywhere]">
