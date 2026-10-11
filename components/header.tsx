@@ -37,9 +37,9 @@ export default function Header(): ReactElement {
 					<Image
 						src="/images/logo.png"
 						alt="SB Arts logo"
-						width={58}
-						height={58}
-						className="h-[58px] w-[58px] rounded-xl object-contain"
+						width={100}
+						height={100}
+						className="h-[72px] w-[72px] rounded-xl object-contain"
 						priority
 					/>
 					<div>
