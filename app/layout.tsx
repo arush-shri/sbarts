@@ -8,17 +8,18 @@ import { SiteContentProvider } from "./_context/SiteContentContext";
 import { fontCormorant, fontMontserrat } from "./_lib/fonts";
 import "./globals.css";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://msbart.com";
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://msbart.com").replace(/\/$/, "");
+const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL;
 
 export const metadata: Metadata = {
 	metadataBase: new URL(siteUrl),
 	title: {
-		default: "SB Arts | Shubhra Art & Paintings",
+		default: "SB Arts",
 		template: "%s | SB Arts",
 	},
 	description:
-		"Discover Shubhra’s original art and paintings at SB Arts: a curated gallery of portrait, wildlife, design, and visual storytelling rooted in hope, dignity, and freedom.",
-	keywords: ["Shubhra", "SB Arts", "art", "painting", "art gallery", "original paintings"],
+		"SB Arts is the official website and online art gallery of Shubhra, featuring original paintings, portrait, wildlife, design, and visual storytelling rooted in hope, dignity, and freedom.",
+	keywords: ["SB Arts", "Shubhra", "official SB Arts website", "original art", "original paintings", "art gallery"],
 	authors: [{ name: "Shubhra", url: siteUrl }],
 	creator: "Shubhra / SB Arts",
 	applicationName: "SB Arts",
@@ -28,15 +29,15 @@ export const metadata: Metadata = {
 		type: "website",
 		url: siteUrl,
 		siteName: "SB Arts",
-		title: "SB Arts | Shubhra Art & Paintings",
+		title: "SB Arts",
 		description:
-			"Explore Shubhra’s original art, paintings, and gallery collections at SB Arts.",
+			"Explore Shubhra’s original art, paintings, and gallery collections at the official SB Arts website.",
 		images: [{ url: "/images/hope.png", width: 1200, height: 630, alt: "SB Arts artwork" }],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "SB Arts | Shubhra Art & Paintings",
-		description: "Explore Shubhra’s original art and paintings at SB Arts.",
+		title: "SB Arts",
+		description: "Explore Shubhra’s original art and paintings at the official SB Arts website.",
 		images: ["/images/hope.png"],
 	},
 	robots: { index: true, follow: true },
@@ -59,9 +60,14 @@ export default async function RootLayout({
 							"@context": "https://schema.org",
 							"@type": "Organization",
 							name: "SB Arts",
-							alternateName: ["Shubhra", "SB Arts art gallery"],
+							alternateName: ["Shubhra", "SB Arts art gallery", "SB Arts official website"],
 							url: siteUrl,
 							logo: `${siteUrl}/images/logo.png`,
+							description:
+								"The official website of Shubhra, featuring original art and paintings by SB Arts.",
+							founder: { "@type": "Person", name: "Shubhra" },
+							knowsAbout: ["Original art", "Painting", "Portraiture", "Wildlife art", "Visual storytelling"],
+							...(instagramUrl ? { sameAs: [instagramUrl] } : {}),
 						}),
 					}}
 				/>
@@ -72,8 +78,9 @@ export default async function RootLayout({
 							"@context": "https://schema.org",
 							"@type": "WebSite",
 							name: "SB Arts",
-							alternateName: "Shubhra Art",
+							alternateName: ["Shubhra Art", "SB Arts official website"],
 							url: siteUrl,
+							inLanguage: "en",
 						}),
 					}}
 				/>
