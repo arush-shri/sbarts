@@ -29,6 +29,10 @@ export default function Home() {
 							Distinct bodies of work connected by observation,
 							empathy, craft, and meaning.
 						</p>
+						<p className="mx-auto mt-4 max-w-2xl text-base text-[#6a7280]">
+							SB Arts is Shubhra&apos;s online art gallery for original paintings,
+							visual stories, and thoughtful design.
+						</p>
 					</div>
 
 					<CategoryCollectionCards />
