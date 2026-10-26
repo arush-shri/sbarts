@@ -6,9 +6,12 @@ import { PaintingProvider } from "./_context/PaintingConext";
 import { SellerProvider } from "./_context/SellerContext";
 import { SiteContentProvider } from "./_context/SiteContentContext";
 import { fontCormorant, fontMontserrat } from "./_lib/fonts";
+//@ts-ignore
 import "./globals.css";
 
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://msbart.com").replace(/\/$/, "");
+const siteUrl = (
+	process.env.NEXT_PUBLIC_SITE_URL || "https://msbart.com"
+).replace(/\/$/, "");
 const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL;
 
 export const metadata: Metadata = {
@@ -19,7 +22,14 @@ export const metadata: Metadata = {
 	},
 	description:
 		"SB Arts is the official website and online art gallery of Shubhra, featuring original paintings, portrait, wildlife, design, and visual storytelling rooted in hope, dignity, and freedom.",
-	keywords: ["SB Arts", "Shubhra", "official SB Arts website", "original art", "original paintings", "art gallery"],
+	keywords: [
+		"SB Arts",
+		"Shubhra",
+		"official SB Arts website",
+		"original art",
+		"original paintings",
+		"art gallery",
+	],
 	authors: [{ name: "Shubhra", url: siteUrl }],
 	creator: "Shubhra / SB Arts",
 	applicationName: "SB Arts",
@@ -32,12 +42,20 @@ export const metadata: Metadata = {
 		title: "SB Arts",
 		description:
 			"Explore Shubhra’s original art, paintings, and gallery collections at the official SB Arts website.",
-		images: [{ url: "/images/hope.png", width: 1200, height: 630, alt: "SB Arts artwork" }],
+		images: [
+			{
+				url: "/images/hope.png",
+				width: 1200,
+				height: 630,
+				alt: "SB Arts artwork",
+			},
+		],
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "SB Arts",
-		description: "Explore Shubhra’s original art and paintings at the official SB Arts website.",
+		description:
+			"Explore Shubhra’s original art and paintings at the official SB Arts website.",
 		images: ["/images/hope.png"],
 	},
 	robots: { index: true, follow: true },
@@ -60,13 +78,23 @@ export default async function RootLayout({
 							"@context": "https://schema.org",
 							"@type": "Organization",
 							name: "SB Arts",
-							alternateName: ["Shubhra", "SB Arts art gallery", "SB Arts official website"],
+							alternateName: [
+								"Shubhra",
+								"SB Arts art gallery",
+								"SB Arts official website",
+							],
 							url: siteUrl,
 							logo: `${siteUrl}/images/logo.png`,
 							description:
 								"The official website of Shubhra, featuring original art and paintings by SB Arts.",
 							founder: { "@type": "Person", name: "Shubhra" },
-							knowsAbout: ["Original art", "Painting", "Portraiture", "Wildlife art", "Visual storytelling"],
+							knowsAbout: [
+								"Original art",
+								"Painting",
+								"Portraiture",
+								"Wildlife art",
+								"Visual storytelling",
+							],
 							...(instagramUrl ? { sameAs: [instagramUrl] } : {}),
 						}),
 					}}
@@ -78,7 +106,10 @@ export default async function RootLayout({
 							"@context": "https://schema.org",
 							"@type": "WebSite",
 							name: "SB Arts",
-							alternateName: ["Shubhra Art", "SB Arts official website"],
+							alternateName: [
+								"Shubhra Art",
+								"SB Arts official website",
+							],
 							url: siteUrl,
 							inLanguage: "en",
 						}),
