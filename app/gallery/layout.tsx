@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Art Gallery | Original Paintings by Shubhra",
+	title: "SB Arts Gallery | Original Art by Shubhra Raj",
 	description:
 		"Browse the SB Arts gallery of original art and paintings by Shubhra, including portrait, wildlife, design, hope, and high-altitude collections.",
 	alternates: { canonical: "/gallery" },

@@ -4,7 +4,18 @@ export const metadata: Metadata = {
 	title: "Shubhra Raj | SB Arts",
 	description:
 		"Learn about Shubhra Raj, the artist and founder of SB Arts, and explore the ideas behind her original art and paintings.",
-	keywords: ["Shubhra Raj", "SB Arts", "Shubhra Raj artist", "SB Arts artist"],
+	keywords: [
+		"Shubhra",
+		"Shubhra Raj",
+		"Shubhra artist",
+		"Shubhra Raj artist",
+		"SB Arts",
+		"SB Art",
+		"MSB Art",
+		"msbart",
+		"original art",
+		"original paintings",
+	],
 	alternates: { canonical: "/about" },
 };
 
@@ -21,6 +32,7 @@ export default function AboutLayout({ children }: { children: React.ReactNode })
 						"@context": "https://schema.org",
 						"@type": "Person",
 						name: "Shubhra Raj",
+						alternateName: "Shubhra",
 						url: `${siteUrl}/about`,
 						jobTitle: "Artist",
 						description: "Artist and founder of SB Arts.",
@@ -30,6 +42,24 @@ export default function AboutLayout({ children }: { children: React.ReactNode })
 							url: siteUrl,
 						},
 						...(instagramUrl ? { sameAs: [instagramUrl] } : {}),
+					}),
+				}}
+			/>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "ProfilePage",
+						name: "Shubhra Raj | SB Arts",
+						url: `${siteUrl}/about`,
+						mainEntity: {
+							"@type": "Person",
+							name: "Shubhra Raj",
+							alternateName: "Shubhra",
+							url: `${siteUrl}/about`,
+							jobTitle: "Artist and Founder of SB Arts",
+						},
 					}),
 				}}
 			/>
