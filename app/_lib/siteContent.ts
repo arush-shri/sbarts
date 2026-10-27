@@ -105,10 +105,10 @@ export const DEFAULT_SITE_CONTENT: SiteContentMap = {
 		},
 	},
 	about: {
-		title: "About SB Arts",
+		title: "About Shubhra Raj | SB Arts",
 		subtitle: "",
 		subtext:
-			"Art rooted in careful observation, empathy, craftsmanship, and imagination.",
+			"Shubhra Raj is the artist and founder of SB Arts, creating art rooted in careful observation, empathy, craftsmanship, and imagination.",
 		fields: {
 			missionLabel: "Mission",
 			missionTitle: "Observation can become empathy.",
